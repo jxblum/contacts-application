@@ -30,6 +30,7 @@ import example.app.model.PhoneNumber;
  *
  * @author John Blum
  * @see java.lang.String
+ * @see java.util.regex.Pattern
  * @see com.fasterxml.jackson.databind.ObjectMapper
  * @see org.springframework.core.convert.converter.Converter
  * @see example.app.model.PhoneNumber
@@ -45,6 +46,7 @@ public class StringToPhoneNumberConverter implements Converter<String, PhoneNumb
 	protected static final Pattern JSON_PHONE_NUMBER =
 		Pattern.compile("\\{\"areaCode\":\"\\d{3}\",\"prefix\":\"\\d{3}\",\"suffix\":\"\\d{4}\"\\}");
 
+  /* (non-Javadoc) */
 	protected String getDigits(String value) {
 		StringBuilder buffer = new StringBuilder();
 
@@ -57,16 +59,17 @@ public class StringToPhoneNumberConverter implements Converter<String, PhoneNumb
 		return buffer.toString();
 	}
 
+  /* (non-Javadoc) */
 	protected char[] nullSafeCharArray(String value) {
 		return (value != null ? value.toCharArray() : EMPTY_CHAR_ARRAY);
 	}
 
+  /* (non-Javadoc) */
 	@Override
 	public PhoneNumber convert(String value) {
 		try {
 			if (JSON_PHONE_NUMBER.matcher(value).find()) {
-				ObjectMapper objectMapper = new ObjectMapper();
-				return objectMapper.readValue(value, PhoneNumber.class);
+				return new ObjectMapper().readValue(value, PhoneNumber.class);
 			}
 
 			String digits = getDigits(value);
@@ -75,10 +78,14 @@ public class StringToPhoneNumberConverter implements Converter<String, PhoneNumb
 				return PhoneNumber.newPhoneNumber(digits.substring(0, 3), digits.substring(3, 6), digits.substring(6));
 			}
 
-			throw new IllegalArgumentException(String.format("Value [%s] is not valid PhoneNumber", value));
+			throw new IllegalArgumentException(String.format("Value [%s] is not valid phone number", value));
 		}
 		catch (Exception e) {
-			throw new RuntimeException(String.format("Failed to convert value [%1$s] into a %2$s",
+			if (e instanceof IllegalArgumentException) {
+				throw (IllegalArgumentException) e;
+			}
+
+			throw new IllegalArgumentException(String.format("Failed to convert value [%1$s] into a %2$s",
 				value, PhoneNumber.class.getName()), e);
 		}
 	}
