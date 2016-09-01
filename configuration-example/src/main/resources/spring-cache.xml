@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:gfe="http://www.springframework.org/schema/gemfire"
+	   xmlns:util="http://www.springframework.org/schema/util"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+        http://www.springframework.org/schema/gemfire http://www.springframework.org/schema/gemfire/spring-gemfire.xsd
+">
+
+	<util:properties id="applicationProperties">
+		<prop key="gemfire.cache.server.max-connections">50</prop>
+		<prop key="gemfire.cache.server.max-time-between-pings">300000</prop>
+		<prop key="gemfire.locator.embedded.host-port">localhost[10334]</prop>
+		<prop key="gemfire.manager.enabled">true</prop>
+		<prop key="gemfire.manager.start">true</prop>
+	</util:properties>
+
+	<context:property-placeholder properties-ref="applicationProperties"/>
+
+	<util:properties id="gemfireProperties">
+		<prop key="name">XmlConfiguredGeodeServerApplication</prop>
+		<prop key="mcast-port">0</prop>
+		<prop key="log-level">${gemfire.log.level:config}</prop>
+		<prop key="jmx-manager">${gemfire.manager.enabled:false}</prop>
+		<prop key="jmx-manager-port">${gemfire.manager.port:1099}</prop>
+		<prop key="jmx-manager-start">${gemfire.manager.start:false}</prop>
+		<prop key="start-locator">${gemfire.locator.embedded.host-port:}</prop>
+	</util:properties>
+
+	<gfe:cache properties-ref="gemfireProperties"/>
+
+	<gfe:cache-server auto-startup="true"
+					  bind-address="${gemfire.cache.server.bind-address:localhost}"
+					  host-name-for-clients="${gemfire.cache.server.hostname-for-clients:localhost}"
+					  max-connections="${gemfire.cache.server.max-connections}"
+					  max-time-between-pings="${gemfire.cache.server.max-time-between-pings}"
+					  port="${gemfire.cache.server.port:40404}"/>
+
+	<gfe:partitioned-region id="Echo" persistent="false" key-constraint="java.lang.String"
+							value-constraint="java.lang.String">
+		<gfe:cache-loader>
+			<bean class="example.app.geode.cache.loader.EchoCacheLoader" factory-method="getInstance"/>
+		</gfe:cache-loader>
+	</gfe:partitioned-region>
+
+</beans>

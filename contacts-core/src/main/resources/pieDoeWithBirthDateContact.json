@@ -1,0 +1,25 @@
+{
+  "id" : 3,
+  "person" : {
+    "birthDate" : {
+      "year" : "2000",
+      "month" : "AUGUST",
+      "dayOfMonth" : 4
+    },
+    "firstName" : "Pie",
+    "gender" : "FEMALE",
+    "lastName" : "Doe"
+  },
+  "address" : {
+    "street": "3730 S Las Vegas Blvd",
+    "city" : "Las Vegas",
+    "state" : "NEVADA",
+    "zipCode" : "89158"
+  },
+  "email" : "pieDoe@springone.com",
+  "phoneNumber" : {
+    "areaCode" : "702",
+    "prefix" : "590",
+    "suffix" : "7111"
+  }
+}

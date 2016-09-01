@@ -1,0 +1,21 @@
+{
+  "id" : 2,
+  "person" : {
+    "birthDateFor" : 21,
+    "firstName" : "Jane",
+    "gender" : "FEMALE",
+    "lastName" : "Doe"
+  },
+  "address" : {
+    "street": "3730 S Las Vegas Blvd",
+    "city" : "Las Vegas",
+    "state" : "NEVADA",
+    "zipCode" : "89158"
+  },
+  "email" : "janeDoe@springone.com",
+  "phoneNumber" : {
+    "areaCode" : "702",
+    "prefix" : "590",
+    "suffix" : "7111"
+  }
+}

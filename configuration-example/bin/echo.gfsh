@@ -1,0 +1,14 @@
+#!/bin/gfsh
+
+connect
+list members
+#describe member --name=GeodeServerApplication
+#describe member --name=CacheXmlBasedGeodeServerApplication
+#describe member --name=SpringXmlBasedGeodeServerApplication
+#describe member --name=BootGeodeServerApplication
+describe member --name=DataGeodeServerApplication
+list regions
+describe region --name=/Echo
+get --region=/Echo --key=TEST
+get --region=/Echo --key=Hello
+describe region --name=/Echo
