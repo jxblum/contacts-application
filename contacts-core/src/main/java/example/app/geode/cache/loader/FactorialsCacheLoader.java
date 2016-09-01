@@ -51,7 +51,7 @@ public class FactorialsCacheLoader extends CacheLoaderSupport<Long, Long> {
     Assert.isTrue(key >= 0L, String.format("Number [%d] must be greater than equal to 0", key));
 
     if (key <= 2L) {
-      return (key <= 1L ? 1L : 2L);
+      return (key < 2L ? 1L : 2L);
     }
 
     long result = key;
