@@ -114,10 +114,10 @@
 					</execution>
 				</executions>
 				<configuration>
-	<!--
+<!--
 					<executable>rm -Rf `find . -name "transaction-logs"`</executable>
 					<executable>bash 'rm -Rf transaction-logs'</executable>
-	-->
+-->
 					<executable>./bin/post-build.sh</executable>
 				</configuration>
 			</plugin>

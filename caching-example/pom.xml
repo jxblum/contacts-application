@@ -50,8 +50,25 @@
   </developers>
 
   <properties>
+    <caching-api.version>1.0.1</caching-api.version>
+    <google-maps-api.version>0.1.15</google-maps-api.version>
+    <hazelcast.version>3.7</hazelcast.version>
     <spring-data-geode.version>1.0.0.APACHE-GEODE-INCUBATING-M3-SNAPSHOT</spring-data-geode.version>
   </properties>
+
+  <repositories>
+    <repository>
+      <id>sonatype-nexus-snapshots</id>
+      <name>Sonatype Nexus Snapshots</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
 
   <dependencies>
     <dependency>
@@ -59,13 +76,22 @@
       <artifactId>contacts-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.google.maps</groupId>
-      <artifactId>google-maps-services</artifactId>
-      <version>0.1.15</version>
+      <groupId>javax.cache</groupId>
+<!--
+      <artifactId>caching-api</artifactId>
+-->
+      <artifactId>test-domain</artifactId>
+      <version>${caching-api.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-web</artifactId>
+      <groupId>com.google.maps</groupId>
+      <artifactId>google-maps-services</artifactId>
+      <version>${google-maps-api.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.hazelcast</groupId>
+      <artifactId>hazelcast</artifactId>
+      <version>${hazelcast.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
