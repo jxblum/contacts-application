@@ -16,23 +16,21 @@
 
 package example.app.geode.cache.loader;
 
-import com.gemstone.gemfire.cache.CacheLoader;
 import com.gemstone.gemfire.cache.CacheLoaderException;
 import com.gemstone.gemfire.cache.LoaderHelper;
 
-import example.app.geode.cache.support.DeclarableSupport;
+import example.app.geode.cache.loader.support.CacheLoaderSupport;
 
 /**
- * The EchoCacheLoader class is a Apache Geode {@link CacheLoader} implementation that echoes back the key
- * as the value for the key.
+ * The EchoCacheLoader class is a Apache Geode {@link com.gemstone.gemfire.cache.CacheLoader} implementation
+ * that echoes back the key as the value for the key.
  *
  * @author John Blum
- * @see com.gemstone.gemfire.cache.CacheLoader
- * @see example.app.geode.cache.support.DeclarableSupport
+ * @see example.app.geode.cache.loader.support.CacheLoaderSupport
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class EchoCacheLoader extends DeclarableSupport implements CacheLoader<String, String> {
+public class EchoCacheLoader extends CacheLoaderSupport<String, String> {
 
 	private static final EchoCacheLoader INSTANCE = new EchoCacheLoader();
 
@@ -43,9 +41,5 @@ public class EchoCacheLoader extends DeclarableSupport implements CacheLoader<St
 	@Override
 	public String load(LoaderHelper<String, String> helper) throws CacheLoaderException {
 		return helper.getKey();
-	}
-
-	@Override
-	public void close() {
 	}
 }
