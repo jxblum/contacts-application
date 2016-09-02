@@ -59,8 +59,9 @@ public class CachingExampleConfiguration {
   }
 
   @Bean
-  public GeocodingRepository geocodingRepository() {
-    return new GoogleMapsApiGeocodingRepository();
+  @SuppressWarnings("unchecked")
+  public <T extends GeocodingRepository> T geocodingRepository() {
+    return (T) new GoogleMapsApiGeocodingRepository();
   }
 
   @Bean
