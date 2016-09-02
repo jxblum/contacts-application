@@ -52,8 +52,8 @@ import example.app.caching.provider.support.Calculator;
  * @since 1.0.0
  */
 @RunWith(SpringRunner.class)
-@ActiveProfiles("cache")
-@EnableAutoConfiguration
+@ActiveProfiles("cache-manager")
+@EnableAutoConfiguration(excludeName = "HazelcastAutoConfiguration")
 @SpringBootTest(classes = TestConfiguration.class, webEnvironment = WebEnvironment.NONE)
 public class ApacheGeodeJsr107Tests extends AbstractJsr107CachingProviderTests {
 

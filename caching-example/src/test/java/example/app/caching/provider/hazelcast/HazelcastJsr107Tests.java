@@ -16,13 +16,19 @@
 
 package example.app.caching.provider.hazelcast;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import javax.cache.CacheManager;
+import javax.cache.Caching;
+import javax.cache.configuration.MutableConfiguration;
+
 import org.junit.runner.RunWith;
 
+import com.hazelcast.cache.ICache;
 import com.hazelcast.config.Config;
-import com.hazelcast.core.Hazelcast;
-import com.hazelcast.core.HazelcastInstance;
 
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.cache.JCacheManagerCustomizer;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.cache.annotation.EnableCaching;
@@ -41,22 +47,35 @@ import example.app.caching.provider.support.Calculator;
  * @since 1.0.0
  */
 @RunWith(SpringRunner.class)
+@EnableAutoConfiguration
 @SpringBootTest(classes = HazelcastJsr107Tests.TestConfiguration.class, webEnvironment = WebEnvironment.NONE)
 public class HazelcastJsr107Tests extends AbstractJsr107CachingProviderTests {
+
+  @Override
+  protected void assertCacheSize(int expectedSize) {
+    ICache factorials = Caching.getCachingProvider().getCacheManager()
+      .getCache("Factorials").unwrap(ICache.class);
+
+    assertThat(factorials.size()).isEqualTo(expectedSize);
+  }
 
   @Configuration
   @SuppressWarnings("unused")
   static class HazelcastConfiguration {
 
     @Bean
-    HazelcastInstance hazelcastInstance() {
-      return Hazelcast.newHazelcastInstance(new Config(HazelcastJsr107Tests.class.getSimpleName()));
+    Config hazelcastConfig() {
+      return new Config(HazelcastJsr107Tests.class.getSimpleName());
     }
   }
 
-  @EnableAutoConfiguration
   @EnableCaching
   @Import({ HazelcastConfiguration.class, Calculator.class })
-  static class TestConfiguration {
+  static class TestConfiguration implements JCacheManagerCustomizer {
+
+    @Override
+    public void customize(CacheManager cacheManager) {
+      cacheManager.createCache("Factorials", new MutableConfiguration());
+    }
   }
 }
