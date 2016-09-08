@@ -1,3 +1,3 @@
 #!/bin/bash
 
-gfsh -e "run --file=/Users/jblum/pivdev/springonePlatform-2016/configuration-example/bin/echo.gfsh"
+gfsh -e "run --file=/Users/jblum/pivdev/spring-data-examples-workspace/contacts-application-workspace/configuration-example/bin/echo.gfsh"

@@ -3,10 +3,9 @@
 connect
 list members
 #describe member --name=GeodeServerApplication
-#describe member --name=CacheXmlBasedGeodeServerApplication
-#describe member --name=SpringXmlBasedGeodeServerApplication
-#describe member --name=BootGeodeServerApplication
-describe member --name=DataGeodeServerApplication
+#describe member --name=XmlConfiguredGeodeServerApplication
+#describe member --name=JavaConfiguredGeodeServerApplication
+describe member --name=AnnotationConfiguredGeodeServerApplication
 list regions
 describe region --name=/Echo
 get --region=/Echo --key=TEST
