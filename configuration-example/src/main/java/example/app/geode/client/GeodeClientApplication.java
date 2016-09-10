@@ -87,10 +87,12 @@ public class GeodeClientApplication implements Runnable {
 
       assertThat(echo.getName()).isEqualTo(ECHO_REGION_NAME);
       assertThat(echo.isEmpty()).isTrue();
+      assertThat(echo.size()).isEqualTo(0);
       assertThat(sendEchoRequest("Hello")).isEqualTo("Hello");
       assertThat(sendEchoRequest("Test")).isEqualTo("Test");
       assertThat(sendEchoRequest("Good-Bye")).isEqualTo("Good-Bye");
       assertThat(echo.isEmpty()).isTrue();
+      assertThat(echo.size()).isEqualTo(0);
     }
     catch (Exception e) {
       e.printStackTrace(System.err);
