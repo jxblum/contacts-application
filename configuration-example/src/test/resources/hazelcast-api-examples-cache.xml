@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<!DOCTYPE cache PUBLIC  "-//GemStone Systems, Inc.//GemFire Declarative Caching 8.0//EN"
+  "http://www.gemstone.com/dtd/cache8_0.dtd">
+<cache>
+  <region name="my-distributed-map" refid="LOCAL">
+    <region-attributes>
+      <key-constraint>java.lang.String</key-constraint>
+      <value-constraint>java.lang.String</value-constraint>
+    </region-attributes>
+  </region>
+</cache>
