@@ -10,6 +10,7 @@
 		<artifactId>contacts-application</artifactId>
 		<version>1.0.0.RELEASE</version>
 	</parent>
+
 	<artifactId>configuration-example</artifactId>
 	<packaging>jar</packaging>
 
@@ -55,13 +56,18 @@
 	</developers>
 
 	<properties>
-		<spring-data-geode.version>1.0.0.APACHE-GEODE-INCUBATING-M3-SNAPSHOT</spring-data-geode.version>
+		<hazelcast.version>3.7.2</hazelcast.version>
 	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>example.apps</groupId>
 			<artifactId>contacts-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.hazelcast</groupId>
+			<artifactId>hazelcast</artifactId>
+			<version>${hazelcast.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
