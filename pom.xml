@@ -10,6 +10,7 @@
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>1.4.0.RELEASE</version>
 	</parent>
+
 	<groupId>example.apps</groupId>
 	<artifactId>contacts-application</artifactId>
 	<version>1.0.0.RELEASE</version>
@@ -84,13 +85,13 @@
 	</scm>
 
 	<properties>
-		<java.version>1.8</java.version>
+    <java.version>1.8</java.version>
 		<maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
 		<maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
 		<multithreadedtc.version>1.01</multithreadedtc.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<spring-data-gemfire.version>1.9.0.M1</spring-data-gemfire.version>
-		<spring-data-geode.version>1.0.0.APACHE-GEODE-INCUBATING-M2</spring-data-geode.version>
+		<spring-data-geode.version>1.0.0.APACHE-GEODE-INCUBATING-M3</spring-data-geode.version>
 		<spring-shell.version>1.1.0.RELEASE</spring-shell.version>
 	</properties>
 
