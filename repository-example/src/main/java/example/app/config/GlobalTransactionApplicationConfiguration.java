@@ -47,7 +47,7 @@ import example.app.service.ContactsService;
  * @see org.springframework.context.annotation.Import
  * @see org.springframework.data.jpa.repository.config.EnableJpaRepositories
  * @see org.springframework.transaction.annotation.EnableTransactionManagement
- * @see com.gemstone.gemfire.cache.GemFireCache#setCopyOnRead(boolean)
+ * @see org.apache.geode.cache.GemFireCache#setCopyOnRead(boolean)
  * @see example.app.config.ApplicationConfiguration
  * @see example.app.config.gemfire.GemFireDependsOnBeanFactoryPostProcessor
  * @see example.app.config.support.NamingContextBuilderFactoryBean

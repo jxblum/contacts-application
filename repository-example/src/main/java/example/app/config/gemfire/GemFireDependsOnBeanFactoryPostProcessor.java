@@ -28,7 +28,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.data.gemfire.config.GemfireConstants;
+import org.springframework.data.gemfire.config.xml.GemfireConstants;
 
 /**
  * The GemFireDependsOnBeanFactoryPostProcessor class is a Spring {@link BeanFactoryPostProcessor} that adds
@@ -37,9 +37,9 @@ import org.springframework.data.gemfire.config.GemfireConstants;
  * @author John Blum
  * @see org.springframework.beans.factory.config.BeanFactoryPostProcessor
  * @see org.springframework.beans.factory.config.ConfigurableListableBeanFactory
- * @see com.gemstone.gemfire.cache.Cache
- * @see com.gemstone.gemfire.cache.GemFireCache
- * @see com.gemstone.gemfire.cache.client.ClientCache
+ * @see org.apache.geode.cache.Cache
+ * @see org.apache.geode.cache.GemFireCache
+ * @see org.apache.geode.cache.client.ClientCache
  * @since 1.0.0
  */
 public class GemFireDependsOnBeanFactoryPostProcessor implements BeanFactoryPostProcessor {

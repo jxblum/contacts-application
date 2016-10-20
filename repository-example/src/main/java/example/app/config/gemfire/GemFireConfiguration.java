@@ -43,7 +43,7 @@ import example.app.model.Customer;
  * @author John Blum
  * @see org.springframework.context.annotation.Bean
  * @see org.springframework.context.annotation.Configuration
- * @see com.gemstone.gemfire.cache.GemFireCache
+ * @see org.apache.geode.cache.GemFireCache
  * @see example.app.RepositoryExampleApplication
  * @see example.app.config.ApplicationConfiguration
  * @since 1.0.0

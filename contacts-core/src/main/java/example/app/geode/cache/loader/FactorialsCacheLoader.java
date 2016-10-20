@@ -23,7 +23,7 @@ import org.springframework.util.Assert;
 import example.app.geode.cache.loader.support.CacheLoaderSupport;
 
 /**
- * The FactorialsCacheLoader class is a GemFire {@link com.gemstone.gemfire.cache.CacheLoader} that computes
+ * The FactorialsCacheLoader class is a GemFire {@link org.apache.geode.cache.CacheLoader} that computes
  * the factorial of a key as it's value. I.e. f(n) = n! = n * (n - 1) * (n - 2) .. * 1.
  *
  * For example:

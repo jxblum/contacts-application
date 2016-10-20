@@ -26,7 +26,7 @@ import org.apache.geode.cache.Declarable;
  * declared in (cache) XML.
  *
  * @author John Blum
- * @see com.gemstone.gemfire.cache.Declarable
+ * @see org.apache.geode.cache.Declarable
  * @since 1.0.0
  */
 @SuppressWarnings("unused")

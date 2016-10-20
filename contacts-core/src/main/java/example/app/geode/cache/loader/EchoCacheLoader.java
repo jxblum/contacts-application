@@ -22,7 +22,7 @@ import org.apache.geode.cache.LoaderHelper;
 import example.app.geode.cache.loader.support.CacheLoaderSupport;
 
 /**
- * The EchoCacheLoader class is a Apache Geode {@link com.gemstone.gemfire.cache.CacheLoader} implementation
+ * The EchoCacheLoader class is a Apache Geode {@link org.apache.geode.cache.CacheLoader} implementation
  * that echoes back the key as the value for the key.
  *
  * @author John Blum

@@ -43,11 +43,11 @@ import org.springframework.data.gemfire.RegionAttributesFactoryBean;
  * @author John Blum
  * @see org.springframework.context.annotation.Bean
  * @see org.springframework.context.annotation.Configuration
- * @see com.gemstone.gemfire.cache.Cache
- * @see com.gemstone.gemfire.cache.EvictionAttributes
- * @see com.gemstone.gemfire.cache.ExpirationAttributes
- * @see com.gemstone.gemfire.cache.Region
- * @see com.gemstone.gemfire.cache.RegionAttributes
+ * @see org.apache.geode.cache.Cache
+ * @see org.apache.geode.cache.EvictionAttributes
+ * @see org.apache.geode.cache.ExpirationAttributes
+ * @see org.apache.geode.cache.Region
+ * @see org.apache.geode.cache.RegionAttributes
  * @since 1.0.0
  */
 @Configuration

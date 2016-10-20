@@ -43,8 +43,8 @@ import example.app.repo.gemfire.CustomerRepository;
  *
  * @author John Blum
  * @see org.springframework.data.gemfire.function.annotation.GemfireFunction
- * @see com.gemstone.gemfire.cache.execute.RegionFunctionContext
- * @see com.gemstone.gemfire.cache.query.QueryService
+ * @see org.apache.geode.cache.execute.RegionFunctionContext
+ * @see org.apache.geode.cache.query.QueryService
  * @see CustomerRepository
  * @see <a href="http://gemfire.docs.pivotal.io/docs-gemfire/latest/developing/partitioned_regions/join_query_partitioned_regions.html">Equi-Join Query on collocated PRs</a>
  * @see <a href="http://geode.docs.pivotal.io/docs/developing/partitioned_regions/join_query_partitioned_regions.html">Equi-Join Query on collocated PRs</a>

@@ -33,9 +33,6 @@ import org.springframework.data.gemfire.config.annotation.EnableManager;
  * @since 1.0.0
  */
 @SpringBootApplication
-@CacheServerApplication
-@EnableLocator
-@EnableManager
 @Import(DemoApplication.Configuration.class)
 @SuppressWarnings("unused")
 public class DemoApplication {
@@ -44,6 +41,9 @@ public class DemoApplication {
     SpringApplication.run(DemoApplication.class, args);
   }
 
+  @CacheServerApplication
+  @EnableLocator
+  @EnableManager
   @org.springframework.context.annotation.Configuration
   static class Configuration {
 

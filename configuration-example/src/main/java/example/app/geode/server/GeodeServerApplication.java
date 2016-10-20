@@ -41,9 +41,9 @@ import example.app.geode.cache.loader.EchoCacheLoader;
  *
  * @author John Blum
  * @see java.lang.Runnable
- * @see com.gemstone.gemfire.cache.Cache
- * @see com.gemstone.gemfire.cache.CacheFactory
- * @see com.gemstone.gemfire.cache.server.CacheServer
+ * @see org.apache.geode.cache.Cache
+ * @see org.apache.geode.cache.CacheFactory
+ * @see org.apache.geode.cache.server.CacheServer
  * @see <a href="http://geode.incubator.apache.org/releases/latest/javadoc/index.html">Geode Java API</a>
  * @since 1.0.0
  */

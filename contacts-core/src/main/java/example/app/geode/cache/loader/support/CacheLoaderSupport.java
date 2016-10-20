@@ -26,7 +26,7 @@ import example.app.geode.cache.support.DeclarableSupport;
  * that gets called when a cache miss for a particular key occurs.
  *
  * @author John Blum
- * @see com.gemstone.gemfire.cache.CacheLoader
+ * @see org.apache.geode.cache.CacheLoader
  * @see example.app.geode.cache.support.DeclarableSupport
  * @since 1.0.0
  */

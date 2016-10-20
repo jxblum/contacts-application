@@ -41,7 +41,7 @@ import example.app.config.server.EchoServerApplicationConfiguration;
  * @see org.springframework.context.annotation.Bean
  * @see org.springframework.context.annotation.Import
  * @see org.springframework.context.support.PropertySourcesPlaceholderConfigurer
- * @see com.gemstone.gemfire.cache.Cache
+ * @see org.apache.geode.cache.Cache
  * @see EchoServerApplicationConfiguration
  * @since 1.0.0
  */

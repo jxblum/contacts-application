@@ -22,26 +22,26 @@ import org.apache.geode.cache.CacheFactory;
 import org.apache.geode.cache.GemFireCache;
 
 /**
- * The App class...
+ * The GeodeApiExampleApplication class...
  *
  * @author John Blum
  * @since 1.0.0
  */
-public class App implements Runnable {
+public class GeodeApiExampleApplication implements Runnable {
 
   protected static final String DEFAULT_GEMFIRE_LOG_LEVEL = "config";
 
   public static void main(String[] args) {
-    newApp(args).run();
+    newGeodeApiExampleApplication(args).run();
   }
 
-  protected static App newApp(String[] args) {
-    return new App(args);
+  protected static GeodeApiExampleApplication newGeodeApiExampleApplication(String[] args) {
+    return new GeodeApiExampleApplication(args);
   }
 
   private final String[] args;
 
-  protected App(String[] args) {
+  protected GeodeApiExampleApplication(String[] args) {
     this.args = args;
   }
 
@@ -60,12 +60,13 @@ public class App implements Runnable {
     return (T) new CacheFactory()
       .set("name", applicationName())
       .set("mcast-port", "0")
+      .set("locators", "")
       .set("log-level", logLevel())
       .create();
   }
 
   protected String applicationName() {
-    return ("GemFirePeerCache" + App.class.getSimpleName());
+    return ("GemFirePeerCache" + GeodeApiExampleApplication.class.getSimpleName());
   }
 
   protected String logLevel() {

@@ -53,7 +53,7 @@
   <properties>
     <caching-api.version>1.0.1</caching-api.version>
     <google-maps-api.version>0.1.15</google-maps-api.version>
-    <hazelcast.version>3.7</hazelcast.version>
+    <hazelcast.version>3.7.2</hazelcast.version>
   </properties>
 
   <repositories>
