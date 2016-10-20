@@ -27,7 +27,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.gemstone.gemfire.cache.LoaderHelper;
+import org.apache.geode.cache.LoaderHelper;
 
 /**
  * Test suite of test cases testing the contract and functionality of the {@link FactorialsCacheLoader} class.

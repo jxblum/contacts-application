@@ -20,8 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import javax.annotation.Resource;
 
-import com.gemstone.gemfire.cache.Region;
-
+import org.apache.geode.cache.Region;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

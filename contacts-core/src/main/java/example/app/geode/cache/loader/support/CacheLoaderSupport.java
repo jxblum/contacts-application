@@ -16,8 +16,8 @@
 
 package example.app.geode.cache.loader.support;
 
-import com.gemstone.gemfire.cache.AttributesMutator;
-import com.gemstone.gemfire.cache.CacheLoader;
+import org.apache.geode.cache.AttributesMutator;
+import org.apache.geode.cache.CacheLoader;
 
 import example.app.geode.cache.support.DeclarableSupport;
 

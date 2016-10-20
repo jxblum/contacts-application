@@ -16,8 +16,8 @@
 
 package example.app.geode.cache.loader;
 
-import com.gemstone.gemfire.cache.CacheLoaderException;
-import com.gemstone.gemfire.cache.LoaderHelper;
+import org.apache.geode.cache.CacheLoaderException;
+import org.apache.geode.cache.LoaderHelper;
 
 import example.app.geode.cache.loader.support.CacheLoaderSupport;
 

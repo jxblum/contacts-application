@@ -18,7 +18,7 @@ package example.app.geode.cache.support;
 
 import java.util.Properties;
 
-import com.gemstone.gemfire.cache.Declarable;
+import org.apache.geode.cache.Declarable;
 
 /**
  * DeclarableSupport is an abstract class implementing the GemFire {@link Declarable} interface with a

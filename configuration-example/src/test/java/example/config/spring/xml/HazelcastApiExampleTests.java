@@ -23,8 +23,7 @@ import javax.annotation.Resource;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.gemstone.gemfire.cache.Region;
-
+import org.apache.geode.cache.Region;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 

@@ -20,9 +20,8 @@ import javax.annotation.Resource;
 
 import org.junit.runner.RunWith;
 
-import com.gemstone.gemfire.cache.Cache;
-import com.gemstone.gemfire.cache.Region;
-
+import org.apache.geode.cache.Cache;
+import org.apache.geode.cache.Region;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;

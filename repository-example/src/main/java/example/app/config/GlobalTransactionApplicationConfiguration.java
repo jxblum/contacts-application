@@ -19,8 +19,7 @@ package example.app.config;
 import javax.annotation.PostConstruct;
 import javax.transaction.TransactionManager;
 
-import com.gemstone.gemfire.cache.GemFireCache;
-
+import org.apache.geode.cache.GemFireCache;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;

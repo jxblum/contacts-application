@@ -24,7 +24,7 @@ import static org.mockito.Mockito.when;
 
 import org.junit.Test;
 
-import com.gemstone.gemfire.cache.LoaderHelper;
+import org.apache.geode.cache.LoaderHelper;
 
 /**
  * Test suite of test cases testing the contract and functionality of the {@link EchoCacheLoader} class.

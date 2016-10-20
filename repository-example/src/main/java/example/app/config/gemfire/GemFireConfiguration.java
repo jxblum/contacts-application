@@ -18,10 +18,9 @@ package example.app.config.gemfire;
 
 import java.util.Properties;
 
-import com.gemstone.gemfire.cache.GemFireCache;
-import com.gemstone.gemfire.cache.PartitionAttributes;
-import com.gemstone.gemfire.cache.RegionAttributes;
-
+import org.apache.geode.cache.GemFireCache;
+import org.apache.geode.cache.PartitionAttributes;
+import org.apache.geode.cache.RegionAttributes;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

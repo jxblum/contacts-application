@@ -16,8 +16,7 @@
 
 package example.app.config.gemfire;
 
-import com.gemstone.gemfire.cache.Cache;
-
+import org.apache.geode.cache.Cache;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.gemfire.LocalRegionFactoryBean;
