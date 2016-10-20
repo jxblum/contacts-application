@@ -10,6 +10,7 @@
     <artifactId>contacts-application</artifactId>
     <version>1.0.0.RELEASE</version>
   </parent>
+
   <artifactId>caching-example</artifactId>
   <packaging>jar</packaging>
 
@@ -53,7 +54,6 @@
     <caching-api.version>1.0.1</caching-api.version>
     <google-maps-api.version>0.1.15</google-maps-api.version>
     <hazelcast.version>3.7</hazelcast.version>
-    <spring-data-geode.version>1.0.0.APACHE-GEODE-INCUBATING-M3-SNAPSHOT</spring-data-geode.version>
   </properties>
 
   <repositories>

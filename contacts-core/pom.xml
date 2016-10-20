@@ -10,6 +10,7 @@
     <artifactId>contacts-application</artifactId>
     <version>1.0.0.RELEASE</version>
   </parent>
+
   <artifactId>contacts-core</artifactId>
   <packaging>jar</packaging>
 
