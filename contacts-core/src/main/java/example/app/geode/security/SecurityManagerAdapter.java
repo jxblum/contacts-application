@@ -29,6 +29,8 @@ import org.slf4j.LoggerFactory;
  * default implementations of the {@link SecurityManager} interface operations.
  *
  * @author John Blum
+ * @see java.security.Principal
+ * @see org.apache.geode.security.ResourcePermission
  * @see org.apache.geode.security.SecurityManager
  * @since 1.0.0
  */
@@ -55,10 +57,12 @@ public abstract class SecurityManagerAdapter implements org.apache.geode.securit
     return getPropertyValue(securityProperties, SECURITY_USERNAME_PROPERTY);
   }
 
+  /* (non-Javadoc)*/
   protected String getPropertyValue(Properties properties, String propertyName) {
     return properties.getProperty(propertyName);
   }
 
+  /* (non-Javadoc)*/
   protected void logDebug(String message, Object... args) {
     if (logger.isDebugEnabled()) {
       logger.debug(message, args);
