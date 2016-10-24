@@ -132,16 +132,16 @@ public class SimpleSecurityManager extends SecurityManagerAdapter {
   }
 
   /* (non-Javadoc) */
-  protected boolean isAuthorized(Object principle, ResourcePermission permission) {
-    User user = resolveUser(principle);
+  protected boolean isAuthorized(Object principal, ResourcePermission permission) {
+    User user = resolveUser(principal);
 
     return (user != null && isAuthorized(user, permission));
   }
 
   /* (non-Javadoc) */
-  protected User resolveUser(Object principle) {
-    return (principle instanceof User ? (User) principle
-      : getSecurityRepository().findBy(getName(principle)));
+  protected User resolveUser(Object principal) {
+    return (principal instanceof User ? (User) principal
+      : getSecurityRepository().findBy(getName(principal)));
   }
 
   /* (non-Javadoc) */
@@ -168,19 +168,24 @@ public class SimpleSecurityManager extends SecurityManagerAdapter {
   }
 
   /* (non-Javadoc) */
-  private String toPermissionDescriptor(ResourcePermission permission) {
+  String toPermissionDescriptor(ResourcePermission permission) {
     StringBuilder builder = new StringBuilder(permission.getResource().name());
 
     builder.append(":").append(permission.getOperation().name());
 
-    if (StringUtils.hasText(permission.getRegionName())) {
+    if (isRequiredPermissionAttribute(permission.getRegionName())) {
       builder.append(":").append(permission.getRegionName());
     }
 
-    if (StringUtils.hasText(permission.getKey())) {
+    if (isRequiredPermissionAttribute(permission.getKey())) {
       builder.append(":").append(permission.getKey());
     }
 
     return builder.toString();
+  }
+
+  /* (non-Javadoc) */
+  boolean isRequiredPermissionAttribute(String value) {
+    return (StringUtils.hasText(value) && !"*".equals(value.trim()));
   }
 }
