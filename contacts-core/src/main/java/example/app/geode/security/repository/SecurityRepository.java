@@ -88,7 +88,7 @@ public interface SecurityRepository<T extends User> {
   /* (non-Javadoc) */
   @SuppressWarnings("unchecked")
   default T create(String username, Role... roles) {
-    return save((T) newUser(username).with(roles));
+    return save((T) newUser(username).in(roles));
   }
 
   /* (non-Javadoc) */

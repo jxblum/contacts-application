@@ -116,7 +116,7 @@ public class User implements Comparable<User>, Cloneable, Identifiable<String>, 
   @SuppressWarnings("all")
   protected Object clone() throws CloneNotSupportedException {
     return newUser(getName()).with(getCredentials())
-      .with(this.roles.toArray(new Role[this.roles.size()]));
+      .in(this.roles.toArray(new Role[this.roles.size()]));
   }
 
   /**
@@ -209,7 +209,7 @@ public class User implements Comparable<User>, Cloneable, Identifiable<String>, 
    * @return this {@link User}.
    * @see example.app.geode.security.model.Role
    */
-  public User with(Role... roles) {
+  public User in(Role... roles) {
     Collections.addAll(this.roles, roles);
     return this;
   }
@@ -221,8 +221,8 @@ public class User implements Comparable<User>, Cloneable, Identifiable<String>, 
    * @return this {@link User}.
    * @see example.app.geode.security.model.Role
    */
-  public User with(Iterable<Role> roles) {
-    return with(toArray(roles));
+  public User in(Iterable<Role> roles) {
+    return in(toArray(roles));
   }
 
   /**

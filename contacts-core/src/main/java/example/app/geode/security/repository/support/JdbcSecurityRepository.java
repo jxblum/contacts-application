@@ -115,7 +115,7 @@ public class JdbcSecurityRepository extends CachingSecurityRepository<User>
 
     for (User user : users) {
       getJdbcTemplate().query(USER_ROLES_QUERY, toArray(user.getName()),
-        (resultSet, row) -> user.with(roleMapping.get(resultSet.getString(1))));
+        (resultSet, row) -> user.in(roleMapping.get(resultSet.getString(1))));
 
       save(user);
     }
