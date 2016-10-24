@@ -37,8 +37,8 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings("unused")
 public abstract class SecurityManagerAdapter implements org.apache.geode.security.SecurityManager {
 
-  protected static final String SECURITY_PASSWORD_PROPERTY = "security-password";
-  protected static final String SECURITY_USERNAME_PROPERTY = "security-username";
+  public static final String SECURITY_PASSWORD_PROPERTY = "security-password";
+  public static final String SECURITY_USERNAME_PROPERTY = "security-username";
 
   protected final Logger logger = LoggerFactory.getLogger(getClass());
 
