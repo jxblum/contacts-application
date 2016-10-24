@@ -54,16 +54,24 @@ public class GoogleMapsApiGeocodingRepositoryIntegrationTests {
   @SuppressWarnings("unused")
   private GeocodingService geocodingService;
 
+  protected Point fixedPoint(Point point) {
+    return newPoint(truncateAndRound(point.getX()), truncateAndRound(point.getY()));
+  }
+
   protected Point newPoint(double latitude, double longitude) {
     return new Point(latitude, longitude);
+  }
+
+  protected double truncateAndRound(double value) {
+    return (Math.round((value * 1000d)) / 1000d);
   }
 
   @Test
   public void gecodeAddressIsSuccessful() {
     Address address = Address.newAddress("1600 Amphitheatre Parkway", "Mountain View", State.CALIFORNIA, "94043");
-    Point latitudeLongitude = newPoint(37.422344d, -122.0844266d);
+    Point latitudeLongitude = fixedPoint(newPoint(37.422366d, -122.084406d));
 
-    assertThat(geocodingService.geocode(address)).isEqualTo(latitudeLongitude);
+    assertThat(fixedPoint(geocodingService.geocode(address))).isEqualTo(latitudeLongitude);
   }
 
   @Test
