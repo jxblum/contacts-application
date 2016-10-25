@@ -14,7 +14,7 @@
  * permissions and limitations under the License.
  */
 
-package demo.app;
+package demo.app.server;
 
 import org.apache.geode.cache.GemFireCache;
 import org.springframework.boot.SpringApplication;
@@ -26,33 +26,37 @@ import org.springframework.data.gemfire.config.annotation.CacheServerApplication
 import org.springframework.data.gemfire.config.annotation.EnableLocator;
 import org.springframework.data.gemfire.config.annotation.EnableManager;
 
+import example.app.geode.cache.loader.EchoCacheLoader;
+
 /**
- * The DemoApplication class...
+ * The {@link DemoGeodeServerApplication} class...
  *
  * @author John Blum
  * @since 1.0.0
  */
 @SpringBootApplication
-@Import(DemoApplication.Configuration.class)
+@Import(DemoGeodeServerApplication.Configuration.class)
 @SuppressWarnings("unused")
-public class DemoApplication {
+public class DemoGeodeServerApplication {
 
   public static void main(String[] args) {
-    SpringApplication.run(DemoApplication.class, args);
+    SpringApplication.run(DemoGeodeServerApplication.class, args);
   }
 
-  @CacheServerApplication
+  @CacheServerApplication(name = "DemoEchoServer")
   @EnableLocator
   @EnableManager
-  @org.springframework.context.annotation.Configuration
   static class Configuration {
 
-    @Bean(name = "Example")
-    LocalRegionFactoryBean<String, String> exampleRegion(GemFireCache gemfireCache) {
-      LocalRegionFactoryBean<String, String> exampleRegion = new LocalRegionFactoryBean<>();
-      exampleRegion.setCache(gemfireCache);
-      exampleRegion.setClose(false);
-      return exampleRegion;
+    @Bean(name = "Echo")
+    LocalRegionFactoryBean<String, String> echoRegion(GemFireCache gemfireCache) {
+      LocalRegionFactoryBean<String, String> echoRegion = new LocalRegionFactoryBean<>();
+
+      echoRegion.setCache(gemfireCache);
+      echoRegion.setCacheLoader(EchoCacheLoader.getInstance());
+      echoRegion.setClose(false);
+
+      return echoRegion;
     }
   }
 }
