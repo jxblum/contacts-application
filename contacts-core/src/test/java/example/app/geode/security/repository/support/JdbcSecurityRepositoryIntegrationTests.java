@@ -119,14 +119,14 @@ public class JdbcSecurityRepositoryIntegrationTests {
         .setScriptEncoding("UTF-8")
         .setType(EmbeddedDatabaseType.HSQL)
         .addScript("geode-security-schema-ddl.sql")
-        .addScript("roles-table-ddl.sql")
-        .addScript("roles-permissions-table-ddl.sql")
-        .addScript("users-table-ddl.sql")
-        .addScript("users-roles-table-ddl.sql")
-        .addScript("create-roles-dml.sql")
-        .addScript("create-roles-permissions-dml.sql")
-        .addScript("create-users-dml.sql")
-        .addScript("create-users-roles-dml.sql")
+        .addScript("define-roles-table-ddl.sql")
+        .addScript("define-roles-permissions-table-ddl.sql")
+        .addScript("define-users-table-ddl.sql")
+        .addScript("define-users-roles-table-ddl.sql")
+        .addScript("insert-roles-dml.sql")
+        .addScript("insert-roles-permissions-dml.sql")
+        .addScript("insert-users-dml.sql")
+        .addScript("insert-users-roles-dml.sql")
         .build();
     }
 
