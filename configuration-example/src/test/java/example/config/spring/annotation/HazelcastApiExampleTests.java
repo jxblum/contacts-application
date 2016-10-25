@@ -26,7 +26,6 @@ import org.junit.runner.RunWith;
 import org.apache.geode.cache.GemFireCache;
 import org.apache.geode.cache.Region;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.data.gemfire.LocalRegionFactoryBean;
 import org.springframework.data.gemfire.config.annotation.PeerCacheApplication;
 import org.springframework.test.context.ContextConfiguration;
@@ -58,7 +57,6 @@ public class HazelcastApiExampleTests {
     assertThat(myDistributedMap.replace("key", "value", "newvalue")).isTrue();
   }
 
-  @Configuration
   @PeerCacheApplication
   static class ExampleApplicationConfiguration {
 
