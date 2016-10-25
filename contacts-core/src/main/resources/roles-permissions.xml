@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<roles group="default">
+  <role name="ADMIN">
+    <permissions>
+      <permission resource="CLUSTER" operation="MANAGE"/>
+      <permission resource="CLUSTER" operation="READ"/>
+      <permission resource="CLUSTER" operation="WRITE"/>
+    </permissions>
+  </role>
+  <role name="DATA_SCIENTIST">
+    <permissions>
+      <permission resource="DATA" operation="MANAGE"/>
+      <permission resource="DATA" operation="READ"/>
+      <permission resource="DATA" operation="WRITE"/>
+    </permissions>
+  </role>
+  <role name="DATA_ANALYST">
+    <permissions>
+      <permission resource="DATA" operation="READ"/>
+      <permission resource="DATA" operation="WRITE"/>
+    </permissions>
+  </role>
+  <role name="GUEST">
+    <permissions>
+      <permission resource="DATA" operation="READ"/>
+    </permissions>
+  </role>
+</roles>

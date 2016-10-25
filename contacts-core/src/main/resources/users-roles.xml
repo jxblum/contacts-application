@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<users group="default">
+  <user name="root" password="s3cr3t!">
+    <roles>
+      <role name="ADMIN"/>
+      <role name="DATA_SCIENTIST"/>
+    </roles>
+  </user>
+  <user name="scientist" password="w0rk!ng4u">
+    <roles>
+      <role name="DATA_SCEINTIST"/>
+    </roles>
+  </user>
+  <user name="analyst" password="p@55w0rd">
+    <roles>
+      <role name="DATA_ANALYST"/>
+    </roles>
+  </user>
+  <user name="guest" password="guest">
+    <roles>
+      <role name="GUEST"/>
+    </roles>
+  </user>
+</users>
