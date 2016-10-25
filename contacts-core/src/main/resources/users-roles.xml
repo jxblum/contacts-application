@@ -8,7 +8,7 @@
   </user>
   <user name="scientist" password="w0rk!ng4u">
     <roles>
-      <role name="DATA_SCEINTIST"/>
+      <role name="DATA_SCIENTIST"/>
     </roles>
   </user>
   <user name="analyst" password="p@55w0rd">
