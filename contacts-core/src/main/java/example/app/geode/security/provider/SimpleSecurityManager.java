@@ -28,6 +28,7 @@ import example.app.geode.security.SecurityManagerAdapter;
 import example.app.geode.security.model.Role;
 import example.app.geode.security.model.User;
 import example.app.geode.security.repository.SecurityRepository;
+import example.app.geode.security.repository.support.XmlSecurityRepository;
 
 /**
  * The {@link SimpleSecurityManager} class is an example Apache Geode {@link SecurityManager} provider implementation
@@ -48,6 +49,17 @@ import example.app.geode.security.repository.SecurityRepository;
 public class SimpleSecurityManager extends SecurityManagerAdapter {
 
   private final SecurityRepository<User> securityRepository;
+
+  /**
+   * Default constructor constructing an instance of the {@link SimpleSecurityManager} initialized with an instance
+   * of the {@link XmlSecurityRepository}, reading security configuration meta-data from a XML document/file.
+   *
+   * @see example.app.geode.security.repository.support.XmlSecurityRepository
+   * @see #SimpleSecurityManager(SecurityRepository)
+   */
+  public SimpleSecurityManager() {
+    this(new XmlSecurityRepository());
+  }
 
   /**
    * Constructs an instance of the {@link SimpleSecurityManager} initialized with the given {@link SecurityRepository}
