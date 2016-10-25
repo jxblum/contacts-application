@@ -38,10 +38,16 @@ import example.app.geode.security.model.User;
 import example.app.geode.security.repository.CachingSecurityRepository;
 
 /**
- * The {@link XmlSecurityRepository} class...
+ * The {@link XmlSecurityRepository} class is a {@link example.app.geode.security.repository.SecurityRepository}
+ * implementation that accesses security configuration meta-data stored in an XML document, accessed via JDOM.
  *
  * @author John Blum
+ * @see org.apache.geode.security.ResourcePermission
+ * @see org.jdom2.Document
+ * @see org.jdom2.input.SAXBuilder
  * @see org.springframework.beans.factory.InitializingBean
+ * @see org.springframework.core.io.ClassPathResource
+ * @see org.springframework.core.io.Resource
  * @see example.app.geode.security.model.Role
  * @see example.app.geode.security.model.User
  * @see example.app.geode.security.repository.CachingSecurityRepository
@@ -56,12 +62,28 @@ public class XmlSecurityRepository extends CachingSecurityRepository<User> imple
   private final Resource rolesPermissions;
   private final Resource usersRoles;
 
-  /* (non-Javadoc) */
+  /**
+   * Constructs an instance of {@link XmlSecurityRepository} initialized with the default
+   * {@literal roles-permissions.xml} and {@literal users-roles.xml} security configuration meta-data resources.
+   *
+   * @see #XmlSecurityRepository(Resource, Resource)
+   */
   public XmlSecurityRepository() {
     this(new ClassPathResource(ROLES_PERMISSIONS_XML), new ClassPathResource(USERS_ROLES_XML));
   }
 
-  /* (non-Javadoc) */
+  /**
+   * Constructs an instance of {@link XmlSecurityRepository} initialized with the given roles/permissions
+   * and users/roles {@link Resource resources}.
+   *
+   * @param rolesPermissions {@link Resource} reference containing roles and their associated permissions
+   * security configuration meta-data.
+   * @param usersRoles {@link Resource} reference containing users and their associated roles
+   * security configuration meta-data.
+   * @throws IllegalArgumentException if either {@code rolesPermissions} or {@code usersRoles} {@link Resource}
+   * references are {@literal null}.
+   * @see org.springframework.core.io.Resource
+   */
   public XmlSecurityRepository(Resource rolesPermissions, Resource usersRoles) {
     Assert.notNull(rolesPermissions, "The rolesPermissions Resource cannot be null");
     Assert.notNull(usersRoles, "The usersRoles Resource cannot be null");
@@ -70,12 +92,22 @@ public class XmlSecurityRepository extends CachingSecurityRepository<User> imple
     this.usersRoles = usersRoles;
   }
 
-  /* (non-Javadoc) */
+  /**
+   * Return a reference to the {@link Resource} containing roles and permissions security configuration meta-data.
+   *
+   * @return a reference to the roles/permissions security configuration meta-data {@link Resource}.
+   * @see org.springframework.core.io.Resource
+   */
   protected Resource getRolesPermissions() {
     return this.rolesPermissions;
   }
 
-  /* (non-Javadoc) */
+  /**
+   * Return a reference to the {@link Resource} containing usesrs and roles security configuration meta-data.
+   *
+   * @return a reference to the users/roles security configuration meta-data {@link Resource}.
+   * @see org.springframework.core.io.Resource
+   */
   protected Resource getUsersRoles() {
     return this.usersRoles;
   }
