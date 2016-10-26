@@ -26,7 +26,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import example.app.config.gemfire.GemFireDependsOnBeanFactoryPostProcessor;
 import example.app.config.support.NamingContextBuilderFactoryBean;
@@ -47,6 +49,7 @@ import example.app.service.ContactsService;
  * @see org.springframework.context.annotation.Import
  * @see org.springframework.data.jpa.repository.config.EnableJpaRepositories
  * @see org.springframework.transaction.annotation.EnableTransactionManagement
+ * @see org.springframework.transaction.support.TransactionTemplate
  * @see org.apache.geode.cache.GemFireCache#setCopyOnRead(boolean)
  * @see example.app.config.ApplicationConfiguration
  * @see example.app.config.gemfire.GemFireDependsOnBeanFactoryPostProcessor
@@ -79,6 +82,11 @@ public class GlobalTransactionApplicationConfiguration {
 	@Bean(name = "NamingContextBuilder")
 	public NamingContextBuilderFactoryBean namingContextBuilder(TransactionManager transactionManager) {
 		return new NamingContextBuilderFactoryBean().bind(USER_TRANSACTION_NAMING_CONTEXT_NAME, transactionManager);
+	}
+
+	@Bean
+	public TransactionTemplate transactionTemplate(PlatformTransactionManager transactionManager) {
+		return new TransactionTemplate(transactionManager);
 	}
 
 	@PostConstruct

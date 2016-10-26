@@ -33,6 +33,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import example.app.config.GlobalTransactionApplicationConfiguration;
 import example.app.model.Contact;
@@ -64,10 +65,16 @@ public class ContactsServiceJtaTransactionIntegrationTests {
 	@Autowired
 	private ContactsService contactsService;
 
+	@Autowired
+	private TransactionTemplate transactionTemplate;
+
 	@After
 	public void tearDown() {
-		gemfireContactRepository.deleteAll();
-		jpaContactRepository.deleteAll();
+		transactionTemplate.execute((transactionStatus) -> {
+			gemfireContactRepository.deleteAll();
+			jpaContactRepository.deleteAll();
+			return null;
+		});
 	}
 
 	@Test
@@ -91,6 +98,7 @@ public class ContactsServiceJtaTransactionIntegrationTests {
 		assertThat(jpaContactRepository.count()).isEqualTo(0);
 
 		Person jackHandy = newPerson("Jack", "Handy");
+
 		PhoneNumber phoneNumber = newPhoneNumber("503", "555", "1234");
 
 		Contact contact = newContact(jackHandy, "jackHandy@work.com")
