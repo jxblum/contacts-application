@@ -203,7 +203,8 @@ public class SimpleSecurityManager extends SecurityManagerAdapter {
 
   /* (non-Javadoc) */
   protected boolean isPermitted(ResourcePermission userPermission, ResourcePermission resourcePermission) {
-    return toPermissionDescriptor(resourcePermission).startsWith(toPermissionDescriptor(userPermission));
+    //return toPermissionDescriptor(resourcePermission).startsWith(toPermissionDescriptor(userPermission));
+    return userPermission.implies(resourcePermission);
   }
 
   /* (non-Javadoc) */
