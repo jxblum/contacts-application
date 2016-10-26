@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <artifactId>contacts-application</artifactId>
+    <groupId>example.apps</groupId>
+    <version>1.0.0.RELEASE</version>
+  </parent>
+
+  <artifactId>security-example</artifactId>
+  <packaging>jar</packaging>
+
+  <name>Apache Shiro Security Example</name>
+  <description>
+    The Apache Shiro Security Example module for the Contacts Application project contains examples of
+    configuring Apache Geode in a Spring context with security enabled by Apache Shiro
+  </description>
+  <url>https://cwiki.apache.org/confluence/display/GEODE/Geode+Integrated+Security</url>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+    </license>
+  </licenses>
+
+  <organization>
+    <name>Pivotal Software, Inc.</name>
+    <url>http://www.pivotal.io</url>
+  </organization>
+
+  <developers>
+    <developer>
+      <id>jblum</id>
+      <name>John Blum</name>
+      <email>jblum at pivotal dot io</email>
+      <organization>Pivotal Software, Inc.</organization>
+      <organizationUrl>http://www.spring.io</organizationUrl>
+      <roles>
+        <role>Spring Data Team</role>
+        <role>Spring Data Cassandra Project Lead (Committer)</role>
+        <role>Spring Data GemFire Project Lead (Committer)</role>
+        <role>Spring Data Geode Project Lead (Committer)</role>
+        <role>Apache Geode Committer</role>
+      </roles>
+    </developer>
+  </developers>
+
+  <properties>
+    <apache-geode.version>1.1.0-incubating-SNAPSHOT</apache-geode.version>
+    <spring-data-geode.version>1.0.0.APACHE-GEODE-INCUBATING-SNAPSHOT</spring-data-geode.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>example.apps</groupId>
+      <artifactId>contacts-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.geode</groupId>
+      <artifactId>geode-core</artifactId>
+      <version>${apache-geode.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.data</groupId>
+      <artifactId>spring-data-geode</artifactId>
+<!--
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.geode</groupId>
+          <artifactId>geode-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.geode</groupId>
+          <artifactId>geode-cq</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.geode</groupId>
+          <artifactId>geode-wan</artifactId>
+        </exclusion>
+      </exclusions>
+-->
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.shell</groupId>
+      <artifactId>spring-shell</artifactId>
+    </dependency>
+  </dependencies>
+
+</project>
