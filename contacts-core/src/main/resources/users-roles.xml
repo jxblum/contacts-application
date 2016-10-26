@@ -3,7 +3,7 @@
   <user name="root" password="s3cr3t!">
     <roles>
       <role name="ADMIN"/>
-      <role name="DATA_SCIENTIST"/>
+      <role name="DBA"/>
     </roles>
   </user>
   <user name="scientist" password="w0rk!ng4u">

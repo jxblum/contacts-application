@@ -51,6 +51,7 @@ public abstract class AbstractSecurityRepositoryIntegrationTests {
   protected static final ResourcePermission DATA_WRITE = new ResourcePermission(Resource.DATA, Operation.WRITE);
 
   protected static final Role ADMIN = newRole("ADMIN");
+  protected static final Role DBA = newRole("DBA");
   protected static final Role DATA_SCIENTIST = newRole("DATA_SCIENTIST");
   protected static final Role DATA_ANALYST = newRole("DATA_ANALYST");
   protected static final Role GUEST = newRole("GUEST");
@@ -86,15 +87,15 @@ public abstract class AbstractSecurityRepositoryIntegrationTests {
 
   @Test
   public void usersRolesPermissionsAreConfiguredProperly() {
-    assertPermissions(assertRoles(assertUser(getSecurityRepository().findBy("root"), "s3cr3t!"), ADMIN, DATA_SCIENTIST),
+    assertPermissions(assertRoles(assertUser(getSecurityRepository().findBy("root"), "s3cr3t!"), ADMIN, DBA),
       CLUSTER_MANAGE, CLUSTER_READ, CLUSTER_WRITE, DATA_MANAGE, DATA_READ, DATA_WRITE);
 
     assertPermissions(assertRoles(assertUser(getSecurityRepository().findBy("scientist"), "w0rk!ng4u"), DATA_SCIENTIST),
-      DATA_MANAGE, DATA_READ, DATA_WRITE);
-
-    assertPermissions(assertRoles(assertUser(getSecurityRepository().findBy("analyst"), "p@55w0rd"), DATA_ANALYST),
       DATA_READ, DATA_WRITE);
 
-    assertPermissions(assertRoles(assertUser(getSecurityRepository().findBy("guest"), "guest"), GUEST), DATA_READ);
+    assertPermissions(assertRoles(assertUser(getSecurityRepository().findBy("analyst"), "p@55w0rd"), DATA_ANALYST),
+      DATA_READ);
+
+    assertPermissions(assertRoles(assertUser(getSecurityRepository().findBy("guest"), "guest"), GUEST));
   }
 }

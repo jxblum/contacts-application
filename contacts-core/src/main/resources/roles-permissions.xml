@@ -7,9 +7,15 @@
       <permission resource="CLUSTER" operation="WRITE"/>
     </permissions>
   </role>
-  <role name="DATA_SCIENTIST">
+  <role name="DBA">
     <permissions>
       <permission resource="DATA" operation="MANAGE"/>
+      <permission resource="DATA" operation="READ"/>
+      <permission resource="DATA" operation="WRITE"/>
+    </permissions>
+  </role>
+  <role name="DATA_SCIENTIST">
+    <permissions>
       <permission resource="DATA" operation="READ"/>
       <permission resource="DATA" operation="WRITE"/>
     </permissions>
@@ -17,12 +23,10 @@
   <role name="DATA_ANALYST">
     <permissions>
       <permission resource="DATA" operation="READ"/>
-      <permission resource="DATA" operation="WRITE"/>
     </permissions>
   </role>
   <role name="GUEST">
     <permissions>
-      <permission resource="DATA" operation="READ"/>
     </permissions>
   </role>
 </roles>
