@@ -49,6 +49,7 @@ import org.apache.geode.security.ResourcePermission.Resource;
 
 import example.app.geode.security.model.User;
 import example.app.geode.security.repository.SecurityRepository;
+import example.app.geode.security.repository.support.XmlSecurityRepository;
 
 /**
  * Unit tests for {@link SimpleSecurityManager}.
@@ -57,6 +58,8 @@ import example.app.geode.security.repository.SecurityRepository;
  * @see org.junit.Test
  * @see org.mockito.Mockito
  * @see example.app.geode.security.provider.SimpleSecurityManager
+ * @see example.app.geode.security.repository.SecurityRepository
+ * @see example.app.geode.security.repository.support.XmlSecurityRepository
  * @since 1.0.0
  */
 @RunWith(MockitoJUnitRunner.class)
@@ -86,6 +89,13 @@ public class SimpleSecurityManagerTests {
   protected ResourcePermission newResourcePermission(Resource resource, Operation operation,
       String region, String key) {
     return new ResourcePermission(resource, operation, region, key);
+  }
+
+  @Test
+  public void constructSimpleSecurityManagerWithDefaultSecurityRepository() {
+    SimpleSecurityManager securityManager = new SimpleSecurityManager();
+
+    assertThat(securityManager.getSecurityRepository()).isInstanceOf(XmlSecurityRepository.class);
   }
 
   @Test

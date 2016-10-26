@@ -22,6 +22,7 @@ import org.apache.geode.security.AuthenticationFailedException;
 import org.apache.geode.security.ResourcePermission;
 import org.apache.shiro.util.Assert;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import example.app.geode.security.SecurityManagerAdapter;
@@ -51,14 +52,40 @@ public class SimpleSecurityManager extends SecurityManagerAdapter {
   private final SecurityRepository<User> securityRepository;
 
   /**
+   * Factory method used to construct and initialize a default instance of the {@link SecurityRepository}.
+   * By default, Apache Geode Security is configured with XML security configuration meta-data.
+   *
+   * @return an instance of the {@link SecurityRepository} used as the default implementation when a
+   * {@link SecurityRepository} is not explicitly configured.
+   * @see example.app.geode.security.repository.support.XmlSecurityRepository
+   * @see example.app.geode.security.repository.SecurityRepository
+   */
+  private static SecurityRepository<User> defaultSecurityRepository() {
+    XmlSecurityRepository securityRepository = null;
+
+    try {
+      securityRepository = new XmlSecurityRepository();
+      securityRepository.afterPropertiesSet();
+
+      return securityRepository;
+    }
+    catch (Exception e) {
+      throw new RuntimeException(String.format(
+        "Failed to construct and initialize an instance of the SecurityRepository [%s]",
+        ObjectUtils.nullSafeClassName(securityRepository)));
+    }
+  }
+
+  /**
    * Default constructor constructing an instance of the {@link SimpleSecurityManager} initialized with an instance
    * of the {@link XmlSecurityRepository}, reading security configuration meta-data from a XML document/file.
    *
    * @see example.app.geode.security.repository.support.XmlSecurityRepository
    * @see #SimpleSecurityManager(SecurityRepository)
+   * @see #defaultSecurityRepository()
    */
   public SimpleSecurityManager() {
-    this(new XmlSecurityRepository());
+    this(defaultSecurityRepository());
   }
 
   /**
