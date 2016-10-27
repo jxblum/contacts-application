@@ -28,6 +28,8 @@ import org.apache.geode.cache.client.ClientCache;
 import org.apache.geode.cache.client.ClientCacheFactory;
 import org.apache.geode.cache.client.ClientRegionShortcut;
 import org.apache.geode.cache.server.CacheServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
 /**
@@ -57,6 +59,8 @@ public class GeodeClientApplication implements Runnable {
     cacheClientApplication.run();
     return cacheClientApplication;
   }
+
+  protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   private final List<String> arguments;
 
@@ -143,7 +147,7 @@ public class GeodeClientApplication implements Runnable {
 
   String sendEchoRequest(String echoRequest) {
     String echoResponse = echo.get(echoRequest);
-    System.err.printf("Client said [%1$s]; Server said [%2$s]%n", echoRequest, echoResponse);
+    logger.info("Client said {}; Server said {}", echoRequest, echoResponse);
     return echoResponse;
   }
 }

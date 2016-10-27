@@ -31,6 +31,8 @@ import org.apache.geode.cache.Region;
 import org.apache.geode.cache.RegionFactory;
 import org.apache.geode.cache.RegionShortcut;
 import org.apache.geode.cache.server.CacheServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
 import example.app.geode.cache.loader.EchoCacheLoader;
@@ -81,6 +83,8 @@ public class GeodeServerApplication implements Runnable {
     peerCacheApplication.run();
     return peerCacheApplication;
   }
+
+  protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   private final AtomicBoolean cacheXmlDriven = new AtomicBoolean(false);
 
@@ -162,7 +166,7 @@ public class GeodeServerApplication implements Runnable {
   }
 
   void waitOnInput() {
-    System.out.println("Press <enter> to exit.");
+    logger.info("Press <enter> to exit.");
     Scanner in = new Scanner(System.in);
     in.nextLine();
   }

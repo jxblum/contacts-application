@@ -23,6 +23,8 @@ import javax.annotation.Resource;
 import org.apache.geode.cache.GemFireCache;
 import org.apache.geode.cache.Region;
 import org.apache.geode.cache.client.ClientRegionShortcut;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -44,6 +46,8 @@ public class DemoGeodeClientApplication implements CommandLineRunner {
     SpringApplication.run(DemoGeodeClientApplication.class, args);
   }
 
+  protected final Logger logger = LoggerFactory.getLogger(getClass());
+
   @Resource(name = "Echo")
   private Region<String, String> echo;
 
@@ -52,7 +56,7 @@ public class DemoGeodeClientApplication implements CommandLineRunner {
     for (String key : args) {
       String value = echo.get(key);
       assertThat(key).isEqualTo(value);
-      System.err.printf("Client says [%1$s]; Server says [%2$s]%n", key, value);
+      logger.info("Client says {}; Server says {}", key, value);
     }
   }
 

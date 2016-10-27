@@ -21,6 +21,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import javax.annotation.Resource;
 
 import org.apache.geode.cache.Region;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -62,6 +64,8 @@ public class AnnotationConfiguredGeodeClientApplication implements CommandLineRu
 		SpringApplication.run(AnnotationConfiguredGeodeClientApplication.class, args);
 	}
 
+	protected final Logger logger = LoggerFactory.getLogger(getClass());
+
 	@Resource(name = "Echo")
 	private Region<String, String> echo;
 
@@ -74,7 +78,7 @@ public class AnnotationConfiguredGeodeClientApplication implements CommandLineRu
 
 	private String sendEchoRequest(String echoRequest) {
 		String echoResponse = echo.get(echoRequest);
-		System.err.printf("Client says [%1$s]; Server says [%2$s]%n", echoRequest, echoResponse);
+		logger.info("Client says {}; Server says {}", echoRequest, echoResponse);
 		return echoResponse;
 	}
 }

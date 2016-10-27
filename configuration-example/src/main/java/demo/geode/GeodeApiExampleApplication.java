@@ -20,6 +20,8 @@ import java.util.Scanner;
 
 import org.apache.geode.cache.CacheFactory;
 import org.apache.geode.cache.GemFireCache;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The GeodeApiExampleApplication class...
@@ -38,6 +40,8 @@ public class GeodeApiExampleApplication implements Runnable {
   protected static GeodeApiExampleApplication newGeodeApiExampleApplication(String[] args) {
     return new GeodeApiExampleApplication(args);
   }
+
+  protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   private final String[] args;
 
@@ -74,7 +78,7 @@ public class GeodeApiExampleApplication implements Runnable {
   }
 
   protected String waitForUserInput(String message) {
-    System.err.println(message);
+    logger.info(message);
     Scanner in = new Scanner(System.in);
     return in.next();
   }

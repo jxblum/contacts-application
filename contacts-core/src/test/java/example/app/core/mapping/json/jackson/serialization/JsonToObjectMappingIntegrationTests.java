@@ -28,6 +28,8 @@ import org.junit.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 
 import example.app.model.Address;
@@ -54,6 +56,8 @@ import example.app.model.State;
  */
 @SuppressWarnings("unused")
 public class JsonToObjectMappingIntegrationTests {
+
+	protected final Logger logger = LoggerFactory.getLogger(getClass());
 
 	protected void assertAddress(Address address, String street, String city, State state, String zipCode) {
 		assertAddress(address, street, city, state, zipCode, Address.Type.HOME);
@@ -116,7 +120,7 @@ public class JsonToObjectMappingIntegrationTests {
 
 		Contact contact = objectMapper.readValue(toInputStream("/janeDoeWithAgeContact.json"), Contact.class);
 
-		System.err.printf("Contact is [%s]%n", contact);
+		logger.debug("Contact is {}", contact);
 
 		assertThat(contact).isNotNull();
 		assertThat(contact.getId()).isEqualTo(2L);
@@ -141,7 +145,7 @@ public class JsonToObjectMappingIntegrationTests {
 
 		Contact contact = objectMapper.readValue(toInputStream("/pieDoeWithBirthDateContact.json"), Contact.class);
 
-		System.err.printf("Contact is [%s]%n", contact);
+		logger.debug("Contact is {}", contact);
 
 		assertThat(contact).isNotNull();
 		assertThat(contact.getId()).isEqualTo(3L);

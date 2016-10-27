@@ -51,6 +51,8 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.realm.Realm;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.util.PropertiesBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.SpringApplication;
@@ -128,6 +130,8 @@ public class GeodeSecurityIntegrationTests extends AbstractGeodeIntegrationTests
 
   @Rule
   public ExpectedException exception = ExpectedException.none();
+
+  protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   @Resource(name = "Echo")
   private Region<String, String> echo;
@@ -290,7 +294,7 @@ public class GeodeSecurityIntegrationTests extends AbstractGeodeIntegrationTests
      */
     @Override
     public boolean authorize(Object principal, ResourcePermission permission) {
-      System.err.printf("Principal [%1$s] requires Permission [%2$s]%n", principal, permission);
+      logger.debug("Principal {} requires Permission {}", principal, permission);
       return super.authorize(principal, permission);
     }
   }

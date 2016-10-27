@@ -21,6 +21,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.shiro.util.Assert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import example.app.geode.security.model.User;
 
@@ -35,6 +37,8 @@ import example.app.geode.security.model.User;
  */
 @SuppressWarnings("unused")
 public abstract class CachingSecurityRepository<T extends User> implements SecurityRepository<T> {
+
+  protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   protected final Map<String, T> users = new ConcurrentHashMap<>();
 

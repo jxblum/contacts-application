@@ -120,7 +120,7 @@ public class JdbcSecurityRepository extends CachingSecurityRepository<User>
       save(user);
     }
 
-    System.out.printf("%nUsers [%s]%n", users);
+    logger.debug("Users {}", users);
   }
 
   /* (non-Javadoc) */

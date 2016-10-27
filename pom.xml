@@ -143,7 +143,7 @@
 			<dependency>
 				<groupId>example.apps</groupId>
 				<artifactId>contacts-core</artifactId>
-				<version>1.0.0.RELEASE</version>
+				<version>${project.version}</version>
 			</dependency>
       <dependency>
         <groupId>com.gemstone.gemfire</groupId>
@@ -203,6 +203,22 @@
 			<artifactId>cp-elements</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jul-to-slf4j</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>log4j-over-slf4j</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
@@ -234,6 +250,7 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>${maven-surefire-plugin.version}</version>
 				<configuration>
+					<argLine>-Dorg.slf4j.simpleLogger.defaultLogLevel=error -Dgemfire.log-level=warning</argLine>
 					<includes>
 						<include>**/*Test.java</include>
 						<include>**/*Tests.java</include>

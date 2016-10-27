@@ -28,6 +28,8 @@ import org.apache.geode.cache.ExpirationAction;
 import org.apache.geode.cache.ExpirationAttributes;
 import org.apache.geode.cache.Region;
 import org.apache.geode.cache.RegionAttributes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.gemfire.EvictionAttributesFactoryBean;
@@ -108,13 +110,15 @@ public class ExampleApplicationConfiguration {
 		return exampleExpirationAttributes;
 	}
 
+	protected final Logger logger = LoggerFactory.getLogger(getClass());
+
 	@Resource(name = "Example")
 	@SuppressWarnings("all")
 	private Region<String, Object> example;
 
 	@PostConstruct
 	public void postConstruct() {
-		System.err.printf("int[] class type is (%s)%n", int[].class);
+		logger.info("int[] class type is {}", int[].class);
 		example.put("key1", new int[] { 0, 1, 2 });
 	}
 }
