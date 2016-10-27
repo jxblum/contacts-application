@@ -165,7 +165,6 @@
         <artifactId>hsqldb</artifactId>
         <version>${hsqldb.version}</version>
         <scope>runtime</scope>
-				<optional>true</optional>
       </dependency>
 			<dependency>
 				<groupId>org.springframework.data</groupId>
@@ -182,7 +181,6 @@
 				<artifactId>spring-shell</artifactId>
 				<version>${spring-shell.version}</version>
 				<scope>runtime</scope>
-				<optional>true</optional>
 			</dependency>
 			<dependency>
 				<groupId>edu.umd.cs.mtc</groupId>
@@ -209,14 +207,17 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>jcl-over-slf4j</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>jul-to-slf4j</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>log4j-over-slf4j</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

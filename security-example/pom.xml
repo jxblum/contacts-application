@@ -14,7 +14,7 @@
   <artifactId>security-example</artifactId>
   <packaging>jar</packaging>
 
-  <name>Apache Shiro Security Example</name>
+  <name>Security Example</name>
   <description>
     The Apache Shiro Security Example module for the Contacts Application project contains examples of
     configuring Apache Geode in a Spring context with security enabled by Apache Shiro
@@ -66,6 +66,7 @@
     <dependency>
       <groupId>org.springframework.shell</groupId>
       <artifactId>spring-shell</artifactId>
+      <optional>true</optional>
     </dependency>
   </dependencies>
 

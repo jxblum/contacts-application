@@ -1,87 +1,88 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>example.apps</groupId>
-		<artifactId>contacts-application</artifactId>
-		<version>1.0.0.RELEASE</version>
-	</parent>
+  <parent>
+    <groupId>example.apps</groupId>
+    <artifactId>contacts-application</artifactId>
+    <version>1.0.0.RELEASE</version>
+  </parent>
 
-	<artifactId>configuration-example</artifactId>
-	<packaging>jar</packaging>
+  <artifactId>configuration-example</artifactId>
+  <packaging>jar</packaging>
 
-	<name>Configuration Example</name>
-	<description>
-		The Configuration Example module for the Actionable Contacts Application project contains examples
-		of using Spring Data GemFire's new and improved Java annotation-based configuration meta-data model
-		and approach to configuring and bootstrapping Apache Geode or Pivotal GemFire Servers and cache client
-		applications, to both simplify and speed up the application development of Spring, Java applications
-		using Apache Geode or Pivotal GemFire.  This new Java annotation-based configuration meta-data model
-		was inspired by Spring Boot's Java annotation and auto-configuration, convention over configuration
-		approach.
-	</description>
-	<url>http://docs.spring.io/spring-data-gemfire/docs/current/reference/html/#bootstrap</url>
+  <name>Configuration Example</name>
+  <description>
+    The Configuration Example module for the Actionable Contacts Application project contains examples
+    of using Spring Data GemFire's new and improved Java annotation-based configuration meta-data model
+    and approach to configuring and bootstrapping Apache Geode or Pivotal GemFire Servers and cache client
+    applications, to both simplify and speed up the application development of Spring, Java applications
+    using Apache Geode or Pivotal GemFire. This new Java annotation-based configuration meta-data model
+    was inspired by Spring Boot's Java annotation and auto-configuration, convention over configuration
+    approach.
+  </description>
+  <url>http://docs.spring.io/spring-data-gemfire/docs/current/reference/html/#bootstrap</url>
 
-	<licenses>
-		<license>
-			<name>Apache License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0</url>
-		</license>
-	</licenses>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+    </license>
+  </licenses>
 
-	<organization>
-		<name>Pivotal Software, Inc.</name>
-		<url>http://www.pivotal.io</url>
-	</organization>
+  <organization>
+    <name>Pivotal Software, Inc.</name>
+    <url>http://www.pivotal.io</url>
+  </organization>
 
-	<developers>
-		<developer>
-			<id>jblum</id>
-			<name>John Blum</name>
-			<email>jblum at pivotal dot io</email>
-			<organization>Pivotal Software, Inc.</organization>
-			<organizationUrl>http://www.spring.io</organizationUrl>
-			<roles>
-				<role>Spring Data Team</role>
-				<role>Spring Data Cassandra Project Lead (Committer)</role>
-				<role>Spring Data GemFire Project Lead (Committer)</role>
-				<role>Spring Data Geode Project Lead (Committer)</role>
-				<role>Apache Geode Committer</role>
-			</roles>
-		</developer>
-	</developers>
+  <developers>
+    <developer>
+      <id>jblum</id>
+      <name>John Blum</name>
+      <email>jblum at pivotal dot io</email>
+      <organization>Pivotal Software, Inc.</organization>
+      <organizationUrl>http://www.spring.io</organizationUrl>
+      <roles>
+        <role>Spring Data Team</role>
+        <role>Spring Data Cassandra Project Lead (Committer)</role>
+        <role>Spring Data GemFire Project Lead (Committer)</role>
+        <role>Spring Data Geode Project Lead (Committer)</role>
+        <role>Apache Geode Committer</role>
+      </roles>
+    </developer>
+  </developers>
 
-	<properties>
-		<hazelcast.version>3.7.2</hazelcast.version>
-	</properties>
+  <properties>
+    <hazelcast.version>3.7.2</hazelcast.version>
+  </properties>
 
-	<dependencies>
-		<dependency>
-			<groupId>example.apps</groupId>
-			<artifactId>contacts-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.hazelcast</groupId>
-			<artifactId>hazelcast</artifactId>
-			<version>${hazelcast.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.data</groupId>
-			<artifactId>spring-data-geode</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.shell</groupId>
-			<artifactId>spring-shell</artifactId>
-		</dependency>
-	</dependencies>
+  <dependencies>
+    <dependency>
+      <groupId>example.apps</groupId>
+      <artifactId>contacts-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.hazelcast</groupId>
+      <artifactId>hazelcast</artifactId>
+      <version>${hazelcast.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.data</groupId>
+      <artifactId>spring-data-geode</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.shell</groupId>
+      <artifactId>spring-shell</artifactId>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
 
 </project>
