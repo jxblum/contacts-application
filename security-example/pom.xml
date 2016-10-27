@@ -20,6 +20,7 @@
     configuring Apache Geode in a Spring context with security enabled by Apache Shiro
   </description>
   <url>https://cwiki.apache.org/confluence/display/GEODE/Geode+Integrated+Security</url>
+
   <licenses>
     <license>
       <name>Apache License, Version 2.0</name>
@@ -49,11 +50,6 @@
     </developer>
   </developers>
 
-  <properties>
-    <apache-geode.version>1.1.0-incubating-SNAPSHOT</apache-geode.version>
-    <spring-data-geode.version>1.0.0.APACHE-GEODE-INCUBATING-SNAPSHOT</spring-data-geode.version>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>example.apps</groupId>
@@ -64,29 +60,8 @@
       <artifactId>spring-boot-starter</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.geode</groupId>
-      <artifactId>geode-core</artifactId>
-      <version>${apache-geode.version}</version>
-    </dependency>
-    <dependency>
       <groupId>org.springframework.data</groupId>
       <artifactId>spring-data-geode</artifactId>
-<!--
-      <exclusions>
-        <exclusion>
-          <groupId>org.apache.geode</groupId>
-          <artifactId>geode-core</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.geode</groupId>
-          <artifactId>geode-cq</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.geode</groupId>
-          <artifactId>geode-wan</artifactId>
-        </exclusion>
-      </exclusions>
--->
     </dependency>
     <dependency>
       <groupId>org.springframework.shell</groupId>

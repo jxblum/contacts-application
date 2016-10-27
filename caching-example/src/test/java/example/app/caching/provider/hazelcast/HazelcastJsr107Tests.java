@@ -29,14 +29,14 @@ import com.hazelcast.config.Config;
 
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.cache.JCacheManagerCustomizer;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import example.app.caching.provider.hazelcast.HazelcastJsr107Tests.TestConfiguration;
 import example.app.caching.provider.support.AbstractJsr107CachingProviderTests;
 import example.app.caching.provider.support.Calculator;
 
@@ -47,8 +47,7 @@ import example.app.caching.provider.support.Calculator;
  * @since 1.0.0
  */
 @RunWith(SpringRunner.class)
-@EnableAutoConfiguration
-@SpringBootTest(classes = HazelcastJsr107Tests.TestConfiguration.class, webEnvironment = WebEnvironment.NONE)
+@ContextConfiguration(classes = TestConfiguration.class)
 public class HazelcastJsr107Tests extends AbstractJsr107CachingProviderTests {
 
   @Override
@@ -60,6 +59,7 @@ public class HazelcastJsr107Tests extends AbstractJsr107CachingProviderTests {
   }
 
   @Configuration
+  @EnableAutoConfiguration
   @SuppressWarnings("unused")
   static class HazelcastConfiguration {
 

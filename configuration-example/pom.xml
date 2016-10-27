@@ -68,6 +68,7 @@
 			<groupId>com.hazelcast</groupId>
 			<artifactId>hazelcast</artifactId>
 			<version>${hazelcast.version}</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

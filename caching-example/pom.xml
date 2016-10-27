@@ -51,7 +51,7 @@
   </developers>
 
   <properties>
-    <caching-api.version>1.0.1</caching-api.version>
+    <cache-api.version>1.0.0</cache-api.version>
     <google-maps-api.version>0.1.15</google-maps-api.version>
     <hazelcast.version>3.7.2</hazelcast.version>
   </properties>
@@ -77,11 +77,9 @@
     </dependency>
     <dependency>
       <groupId>javax.cache</groupId>
-<!--
-      <artifactId>caching-api</artifactId>
--->
-      <artifactId>test-domain</artifactId>
-      <version>${caching-api.version}</version>
+      <artifactId>cache-api</artifactId>
+      <version>${cache-api.version}</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.maps</groupId>
@@ -92,6 +90,7 @@
       <groupId>com.hazelcast</groupId>
       <artifactId>hazelcast</artifactId>
       <version>${hazelcast.version}</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
