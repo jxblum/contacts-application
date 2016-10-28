@@ -21,8 +21,8 @@ import java.util.Properties;
 import org.apache.geode.security.AuthenticationFailedException;
 import org.apache.geode.security.ResourcePermission;
 import org.apache.shiro.util.Assert;
+import org.cp.elements.lang.ObjectUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import example.app.geode.security.SecurityManagerAdapter;
@@ -72,7 +72,7 @@ public class SimpleSecurityManager extends SecurityManagerAdapter {
     catch (Exception e) {
       throw new RuntimeException(String.format(
         "Failed to construct and initialize an instance of the SecurityRepository [%s]",
-        ObjectUtils.nullSafeClassName(securityRepository)));
+        ObjectUtils.getClassName(securityRepository)));
     }
   }
 
@@ -141,7 +141,7 @@ public class SimpleSecurityManager extends SecurityManagerAdapter {
 
   /* (non-Javadoc) */
   protected boolean isAuthentic(User user, String credentials) {
-    return (user != null && equalsIgnoreNull(user.getCredentials(), credentials));
+    return (user != null && ObjectUtils.equalsIgnoreNull(user.getCredentials(), credentials));
   }
 
   /* (non-Javadoc) */
@@ -152,11 +152,6 @@ public class SimpleSecurityManager extends SecurityManagerAdapter {
   /* (non-Javadoc) */
   protected boolean isNotAuthentic(User user, String credentials) {
     return !isAuthentic(user, credentials);
-  }
-
-  /* (non-Javadoc) */
-  private boolean equalsIgnoreNull(Object obj1, Object obj2) {
-    return (obj1 == null ? obj2 == null : obj1.equals(obj2));
   }
 
   /**
@@ -179,18 +174,18 @@ public class SimpleSecurityManager extends SecurityManagerAdapter {
 
   /* (non-Javadoc) */
   protected User resolveUser(Object principal) {
-    return (principal instanceof User ? (User) principal
-      : getSecurityRepository().findBy(getName(principal)));
+    return (principal instanceof User ? (User) principal : getSecurityRepository().findBy(getName(principal)));
   }
 
   /* (non-Javadoc) */
-  protected boolean isAuthorized(User user, ResourcePermission permission) {
-    boolean permitted = user.hasPermission(permission);
+  protected boolean isAuthorized(User user, ResourcePermission requiredPermission) {
+    boolean permitted = user.hasPermission(requiredPermission);
 
     if (!permitted) {
-      OUT: for (Role userRole : user) {
-        for (ResourcePermission userPermission : userRole) {
-          permitted = isPermitted(userPermission, permission);
+      OUT: for (Role role : user) {
+        for (ResourcePermission permission : role) {
+          permitted = isPermitted(permission, requiredPermission);
+
           if (permitted) {
             break OUT;
           }
@@ -203,7 +198,6 @@ public class SimpleSecurityManager extends SecurityManagerAdapter {
 
   /* (non-Javadoc) */
   protected boolean isPermitted(ResourcePermission userPermission, ResourcePermission resourcePermission) {
-    //return toPermissionDescriptor(resourcePermission).startsWith(toPermissionDescriptor(userPermission));
     return userPermission.implies(resourcePermission);
   }
 
