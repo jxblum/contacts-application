@@ -24,7 +24,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * The {@link CollectionUtils} class is an abstract utility class for working with Java Collection Framework classes
@@ -104,5 +106,24 @@ public abstract class CollectionUtils {
 
       return set;
     }
+  }
+
+  /* (non-Javadoc) */
+  public static String toString(Map<?, ?> map) {
+    StringBuilder builder = new StringBuilder("{\n");
+
+    int count = 0;
+
+    for (Entry<?, ?> entry : new TreeMap<>(map).entrySet()) {
+      builder.append(++count > 1 ? ",\n" : "");
+      builder.append("\t");
+      builder.append(entry.getKey());
+      builder.append(" = ");
+      builder.append(entry.getValue());
+    }
+
+    builder.append("\n}");
+
+    return builder.toString();
   }
 }
