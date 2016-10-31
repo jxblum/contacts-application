@@ -18,8 +18,11 @@ package example.app.geode.tests.integration;
 
 import static org.cp.elements.lang.concurrent.ThreadUtils.waitFor;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,20 +35,28 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.geode.cache.CacheClosedException;
 import org.apache.geode.cache.client.ClientCache;
 import org.apache.geode.cache.client.ClientCacheFactory;
+import org.cp.elements.io.IOUtils;
 import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.StringUtils;
 import org.cp.elements.net.NetworkUtils;
-import org.springframework.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The {@link AbstractGeodeIntegrationTests} class is an abstrat base class for developing
  * Apache Geode Integration Tests.
  *
  * @author John Blum
+ * @see java.lang.Process
  * @see org.apache.geode.cache.client.ClientCache
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
 public abstract class AbstractGeodeIntegrationTests {
+
+  protected static final boolean DEFAULT_DAEMON_THREAD = true;
+
+  protected static final int DEFAULT_THREAD_PRIORITY = Thread.NORM_PRIORITY;
 
   protected static final long DEFAULT_WAIT_TIME_DURATION = TimeUnit.SECONDS.toMillis(20);
   protected static final long DEFAULT_WAIT_TIME_INTERVAL = 500L; // milliseconds
@@ -55,7 +66,11 @@ public abstract class AbstractGeodeIntegrationTests {
   protected static final File USER_HOME = new File(System.getProperty("user.home"));
   protected static final File WORKING_DIRECTORY = new File(System.getProperty("user.dir"));
 
+  protected static final Logger logger = LoggerFactory.getLogger(AbstractGeodeIntegrationTests.class);
+
   protected static final Set<String> JAVA_LAUNCHER_OPTIONS = new HashSet<>();
+
+  protected static final String DEFAULT_LABEL = "";
 
   static {
     JAVA_LAUNCHER_OPTIONS.addAll(Arrays.asList(
@@ -99,15 +114,25 @@ public abstract class AbstractGeodeIntegrationTests {
 
   /* (non-Javadoc) */
   protected static Process run(File workingDirectory, Class type, String... args) throws IOException {
-    Process process = new ProcessBuilder()
-      .command(buildJavaCommandLine(type, args))
-      .directory(workingDirectory)
-      .redirectErrorStream(true)
-      .start();
+    if (Boolean.FALSE.equals(Boolean.getBoolean("run.manual"))) {
+      String[] javaCommandLine = buildJavaCommandLine(type, args);
 
-    Runtime.getRuntime().addShutdownHook(new Thread(() -> stop(process)));
+      logger.info("Java command-line {}", Arrays.toString(javaCommandLine));
 
-    return process;
+      Process process = new ProcessBuilder()
+        .command(javaCommandLine)
+        .directory(workingDirectory)
+        .redirectErrorStream(true)
+        .start();
+
+      Runtime.getRuntime().addShutdownHook(new Thread(() -> stop(process)));
+
+      newThread("Process STDOUT Stream Reader", newInputStreamLoggingRunnable("FORK", process.getInputStream())).start();
+
+      return process;
+    }
+
+    return null;
   }
 
   /* (non-Javadoc) */
@@ -180,6 +205,41 @@ public abstract class AbstractGeodeIntegrationTests {
     return programArguments;
   }
 
+  protected static Runnable newInputStreamLoggingRunnable(InputStream in) {
+    return newInputStreamLoggingRunnable(DEFAULT_LABEL, in);
+  }
+
+  protected static Runnable newInputStreamLoggingRunnable(String label, InputStream in) {
+    return () -> {
+      BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+
+      try {
+        for (String line = reader.readLine(); line != null; line = reader.readLine()) {
+          logger.info("{} - {}", label, line);
+        }
+      }
+      catch (IOException ignore) {
+      }
+      finally {
+        IOUtils.close(reader);
+      }
+    };
+  }
+
+  protected static Thread newThread(String name, Runnable runnable) {
+    return newThread(name, runnable, DEFAULT_DAEMON_THREAD, DEFAULT_THREAD_PRIORITY);
+  }
+
+  protected static Thread newThread(String name, Runnable runnable, boolean daemon, int priority) {
+    Thread thread = new Thread(runnable, name);
+
+    thread.setDaemon(daemon);
+    thread.setPriority(priority);
+    thread.setUncaughtExceptionHandler((t, throwable) -> logger.warn("Thread {} threw an unhandled exception {}",
+      t.getName(), throwable));
+
+    return thread;
+  }
   protected static boolean stop(Process process) {
     return stop(process, DEFAULT_WAIT_TIME_DURATION);
   }
@@ -240,32 +300,36 @@ public abstract class AbstractGeodeIntegrationTests {
   }
 
   /* (non-Javadoc) */
-  protected static boolean waitForServerToStart(String host, int port) {
-    return waitForServerToStart(host, port, DEFAULT_WAIT_TIME_DURATION);
+  protected static boolean waitForServerToStart(Process process, String host, int port) {
+    return waitForServerToStart(process, host, port, DEFAULT_WAIT_TIME_DURATION);
   }
 
   /* (non-Javadoc) */
-  protected static boolean waitForServerToStart(String host, int port, long duration) {
-    AtomicBoolean connected = new AtomicBoolean(false);
+  protected static boolean waitForServerToStart(Process process, String host, int port, long duration) {
+    if (isAlive(process)) {
+      AtomicBoolean connected = new AtomicBoolean(false);
 
-    waitFor(duration).checkEvery(DEFAULT_WAIT_TIME_INTERVAL).on(() -> {
-      Socket socket = null;
+      waitFor(duration).checkEvery(DEFAULT_WAIT_TIME_INTERVAL).on(() -> {
+        Socket socket = null;
 
-      try {
-        if (!connected.get()) {
-          socket = new Socket(host, port);
-          connected.set(true);
+        try {
+          if (!connected.get()) {
+            socket = new Socket(host, port);
+            connected.set(true);
+          }
         }
-      }
-      catch (IOException ignore) {
-      }
-      finally {
-        NetworkUtils.close(socket);
-      }
+        catch (IOException ignore) {
+        }
+        finally {
+          NetworkUtils.close(socket);
+        }
+
+        return connected.get();
+      });
 
       return connected.get();
-    });
+    }
 
-    return connected.get();
+    return false;
   }
 }
