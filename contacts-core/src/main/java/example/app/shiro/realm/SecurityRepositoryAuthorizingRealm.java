@@ -35,8 +35,9 @@ import example.app.geode.security.repository.SecurityRepository;
 import example.app.shiro.authz.support.ComposableAuthorizationInfo;
 
 /**
- * The {@link RepositoryAuthorizingRealm} class is an Adapter and a Apache Shiro {@link org.apache.shiro.realm.Realm}
- * used to access security configuration meta-data using a {@link SecurityRepository}.
+ * The {@link SecurityRepositoryAuthorizingRealm} class is an Adapter and a Apache Shiro
+ * {@link org.apache.shiro.realm.Realm} used to access security configuration meta-data
+ * using a {@link SecurityRepository}.
  *
  * @author John Blum
  * @see org.apache.shiro.realm.AuthorizingRealm
@@ -45,12 +46,12 @@ import example.app.shiro.authz.support.ComposableAuthorizationInfo;
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class RepositoryAuthorizingRealm<T extends User> extends AuthorizingRealm {
+public class SecurityRepositoryAuthorizingRealm<T extends User> extends AuthorizingRealm {
 
   private final SecurityRepository<T> securityRepository;
 
   /**
-   * Constructs an instance of the {@link RepositoryAuthorizingRealm} initialized with a {@link SecurityRepository}
+   * Constructs an instance of the {@link SecurityRepositoryAuthorizingRealm} initialized with a {@link SecurityRepository}
    * containing security configuration meta-data to enforce authentication/authorization in a Apache Shiro secured
    * application.
    *
@@ -59,7 +60,7 @@ public class RepositoryAuthorizingRealm<T extends User> extends AuthorizingRealm
    * @throws IllegalArgumentException if {@link SecurityRepository} is null.
    * @see example.app.geode.security.repository.SecurityRepository
    */
-  public RepositoryAuthorizingRealm(SecurityRepository<T>  securityRepository) {
+  public SecurityRepositoryAuthorizingRealm(SecurityRepository<T> securityRepository) {
     Assert.notNull(securityRepository, "SecurityRepository must not be null");
     this.securityRepository = securityRepository;
   }

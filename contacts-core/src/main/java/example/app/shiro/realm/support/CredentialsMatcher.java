@@ -18,18 +18,24 @@ package example.app.shiro.realm.support;
 
 import java.security.MessageDigest;
 
+import org.apache.shiro.authc.AuthenticationInfo;
+import org.apache.shiro.authc.AuthenticationToken;
 import org.cp.elements.lang.ObjectUtils;
 import org.springframework.core.convert.converter.Converter;
 
+import example.app.shiro.realm.SecurityRepositoryAuthorizingRealm;
+
 /**
- * The {@link CredentialsMatcher} class is used by the {@link example.app.shiro.realm.RepositoryAuthorizingRealm}
+ * The {@link CredentialsMatcher} class is used by the {@link SecurityRepositoryAuthorizingRealm}
  * as the default user authenticating, credential matching algorithm.
  *
  * @author John Blum
+ * @see org.apache.shiro.authc.credential.CredentialsMatcher
+ * @see org.springframework.core.convert.converter.Converter
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class CredentialsMatcher {
+public class CredentialsMatcher implements org.apache.shiro.authc.credential.CredentialsMatcher {
 
   protected static final Converter<Object, byte[]> DEFAULT_OBJECT_TO_BYTE_ARRAY_CONVERTER =
     ObjectToByteArrayConverter.INSTANCE;
@@ -65,6 +71,14 @@ public class CredentialsMatcher {
   @SuppressWarnings("unchecked")
   protected Converter<Object, byte[]> getConverter() {
     return ObjectUtils.defaultIfNull(this.objectToByteArray, DEFAULT_OBJECT_TO_BYTE_ARRAY_CONVERTER);
+  }
+
+  /**
+   * @inheritDoc
+   */
+  @Override
+  public boolean doCredentialsMatch(AuthenticationToken token, AuthenticationInfo info) {
+    return match(info.getCredentials(), token.getCredentials());
   }
 
   /**
