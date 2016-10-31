@@ -1,150 +1,150 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.4.1.RELEASE</version>
-	</parent>
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>1.4.1.RELEASE</version>
+  </parent>
 
-	<groupId>example.apps</groupId>
-	<artifactId>contacts-application</artifactId>
-	<version>1.0.0.RELEASE</version>
-	<packaging>pom</packaging>
+  <groupId>example.apps</groupId>
+  <artifactId>contacts-application</artifactId>
+  <version>1.0.0.RELEASE</version>
+  <packaging>pom</packaging>
 
-	<modules>
-		<module>contacts-core</module>
-		<module>caching-example</module>
-		<module>configuration-example</module>
-		<module>repository-example</module>
+  <modules>
+    <module>contacts-core</module>
+    <module>caching-example</module>
+    <module>configuration-example</module>
+    <module>repository-example</module>
     <module>security-example</module>
   </modules>
 
-	<name>Contacts Application</name>
-	<description>
-		The Contacts Application is a reference implementation of all things Spring, Apache Geode/Pivotal GemFire, JDBC,
-		JPA, along with many other technologies, related, integrated and tested.  The purpose of this application is to
-		showcase the many features and capabilities of all these technologies both individually and together, as one
-		cohesive, working application that demonstrates the full power, recommended practices and design patterns of these
-		technologies in practice.
-	</description>
-	<url>https://www.github/jxblum/contacts-application/wiki</url>
+  <name>Contacts Application</name>
+  <description>
+    The Contacts Application is a reference implementation of all things Spring, Apache Geode/Pivotal GemFire, JDBC,
+    JPA, along with many other technologies, related, integrated and tested. The purpose of this application is to
+    showcase the many features and capabilities of all these technologies both individually and together, as one
+    cohesive, working application that demonstrates the full power, recommended practices and design patterns of these
+    technologies in practice.
+  </description>
+  <url>https://www.github/jxblum/contacts-application/wiki</url>
 
-	<licenses>
-		<license>
-			<name>Apache License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0</url>
-			<comments>
-				Copyright 2016 the original author or authors.
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+      <comments>
+        Copyright 2016 the original author or authors.
 
-				Licensed under the Apache License, Version 2.0 (the "License");
-				you may not use this file except in compliance with the License.
-				You may obtain a copy of the License at
+        Licensed under the Apache License, Version 2.0 (the "License");
+        you may not use this file except in compliance with the License.
+        You may obtain a copy of the License at
 
-				http://www.apache.org/licenses/LICENSE-2.0
+        http://www.apache.org/licenses/LICENSE-2.0
 
-				Unless required by applicable law or agreed to in writing, software
-				distributed under the License is distributed on an "AS IS" BASIS,
-				WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-				implied.
-				See the License for the specific language governing permissions and
-				limitations under the License.
-			</comments>
-		</license>
-	</licenses>
+        Unless required by applicable law or agreed to in writing, software
+        distributed under the License is distributed on an "AS IS" BASIS,
+        WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+        implied.
+        See the License for the specific language governing permissions and
+        limitations under the License.
+      </comments>
+    </license>
+  </licenses>
 
-	<organization>
-		<name>Pivotal Software, Inc.</name>
-		<url>http://www.pivotal.io</url>
-	</organization>
+  <organization>
+    <name>Pivotal Software, Inc.</name>
+    <url>http://www.pivotal.io</url>
+  </organization>
 
-	<developers>
-		<developer>
-			<id>jblum</id>
-			<name>John Blum</name>
-			<email>jblum at pivotal dot io</email>
-			<organization>Pivotal Software, Inc.</organization>
-			<organizationUrl>http://www.spring.io</organizationUrl>
-			<roles>
-				<role>Spring Data Team</role>
-				<role>Spring Data Cassandra Project Lead (Committer)</role>
-				<role>Spring Data GemFire Project Lead (Committer)</role>
-				<role>Spring Data Geode Project Lead (Committer)</role>
-				<role>Apache Geode Committer</role>
-			</roles>
-		</developer>
-	</developers>
+  <developers>
+    <developer>
+      <id>jblum</id>
+      <name>John Blum</name>
+      <email>jblum at pivotal dot io</email>
+      <organization>Pivotal Software, Inc.</organization>
+      <organizationUrl>http://www.spring.io</organizationUrl>
+      <roles>
+        <role>Spring Data Team</role>
+        <role>Spring Data Cassandra Project Lead (Committer)</role>
+        <role>Spring Data GemFire Project Lead (Committer)</role>
+        <role>Spring Data Geode Project Lead (Committer)</role>
+        <role>Apache Geode Committer</role>
+      </roles>
+    </developer>
+  </developers>
 
-	<scm>
-		<url>git@github.com:jxblum/contacts-application.git</url>
-		<connection>git@github.com:jxblum/contacts-application.git</connection>
-		<developerConnection>git@github.com:jxblum/contacts-application.git</developerConnection>
-	</scm>
+  <scm>
+    <url>git@github.com:jxblum/contacts-application.git</url>
+    <connection>git@github.com:jxblum/contacts-application.git</connection>
+    <developerConnection>git@github.com:jxblum/contacts-application.git</developerConnection>
+  </scm>
 
-	<properties>
-		<apache-geode.version>1.1.0-incubating-SNAPSHOT</apache-geode.version>
-		<cp-elements.version>1.0.0.M2</cp-elements.version>
+  <properties>
+    <apache-geode.version>1.1.0-incubating-SNAPSHOT</apache-geode.version>
+    <cp-elements.version>1.0.0.M2</cp-elements.version>
     <hsqldb.version>2.3.4</hsqldb.version>
     <java.version>1.8</java.version>
-		<maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
-		<maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
-		<multithreadedtc.version>1.01</multithreadedtc.version>
+    <maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
+    <maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
+    <multithreadedtc.version>1.01</multithreadedtc.version>
     <pivotal-gemfire.version>8.2.1</pivotal-gemfire.version>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<spring-data-gemfire.version>1.9.0.M1</spring-data-gemfire.version>
-		<spring-data-geode.version>1.0.0.APACHE-GEODE-INCUBATING-SNAPSHOT</spring-data-geode.version>
-<!--
-		<spring-data-geode.version>1.0.0.APACHE-GEODE-INCUBATING-M3</spring-data-geode.version>
--->
-		<spring-shell.version>1.1.0.RELEASE</spring-shell.version>
-	</properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <spring-data-gemfire.version>1.9.0.M1</spring-data-gemfire.version>
+    <spring-data-geode.version>1.0.0.APACHE-GEODE-INCUBATING-SNAPSHOT</spring-data-geode.version>
+    <!--
+        <spring-data-geode.version>1.0.0.APACHE-GEODE-INCUBATING-M3</spring-data-geode.version>
+    -->
+    <spring-shell.version>1.1.0.RELEASE</spring-shell.version>
+  </properties>
 
-	<repositories>
-		<repository>
-			<id>spring-libs-release</id>
-			<name>Spring libs-release Maven Repository</name>
-			<url>https://repo.spring.io/libs-release</url>
-		</repository>
-		<repository>
-			<id>spring-libs-milestone</id>
-			<name>Spring libs-milestone Maven Repository</name>
-			<url>https://repo.spring.io/libs-milestone</url>
-		</repository>
-		<repository>
-			<id>spring-libs-snapshot</id>
-			<name>Spring libs-snapshot Maven Repository</name>
-			<url>https://repo.spring.io/libs-snapshot</url>
-		</repository>
-		<repository>
-			<id>gemstone-release</id>
-			<name>GemStone RELEASE Maven Repository</name>
-			<url>http://dist.gemstone.com/maven/release</url>
-			<!-- <url>http://dist.gemstone.com.s3.amazonaws.com/maven/release</url> -->
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>always</updatePolicy>
-			</snapshots>
-		</repository>
-	</repositories>
+  <repositories>
+    <repository>
+      <id>spring-libs-release</id>
+      <name>Spring libs-release Maven Repository</name>
+      <url>https://repo.spring.io/libs-release</url>
+    </repository>
+    <repository>
+      <id>spring-libs-milestone</id>
+      <name>Spring libs-milestone Maven Repository</name>
+      <url>https://repo.spring.io/libs-milestone</url>
+    </repository>
+    <repository>
+      <id>spring-libs-snapshot</id>
+      <name>Spring libs-snapshot Maven Repository</name>
+      <url>https://repo.spring.io/libs-snapshot</url>
+    </repository>
+    <repository>
+      <id>gemstone-release</id>
+      <name>GemStone RELEASE Maven Repository</name>
+      <url>http://dist.gemstone.com/maven/release</url>
+      <!-- <url>http://dist.gemstone.com.s3.amazonaws.com/maven/release</url> -->
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+      </snapshots>
+    </repository>
+  </repositories>
 
-	<pluginRepositories>
-		<pluginRepository>
-			<id>spring-plugins-release</id>
-			<url>http://repo.spring.io/plugins-release</url>
-		</pluginRepository>
-	</pluginRepositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>spring-plugins-release</id>
+      <url>http://repo.spring.io/plugins-release</url>
+    </pluginRepository>
+  </pluginRepositories>
 
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>example.apps</groupId>
-				<artifactId>contacts-core</artifactId>
-				<version>${project.version}</version>
-			</dependency>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>example.apps</groupId>
+        <artifactId>contacts-core</artifactId>
+        <version>${project.version}</version>
+      </dependency>
       <dependency>
         <groupId>com.gemstone.gemfire</groupId>
         <artifactId>gemfire</artifactId>
@@ -155,111 +155,113 @@
         <artifactId>geode-core</artifactId>
         <version>${apache-geode.version}</version>
       </dependency>
-			<dependency>
-				<groupId>org.codeprimate</groupId>
-				<artifactId>cp-elements</artifactId>
-				<version>${cp-elements.version}</version>
-			</dependency>
+      <dependency>
+        <groupId>org.codeprimate</groupId>
+        <artifactId>cp-elements</artifactId>
+        <version>${cp-elements.version}</version>
+      </dependency>
       <dependency>
         <groupId>org.hsqldb</groupId>
         <artifactId>hsqldb</artifactId>
         <version>${hsqldb.version}</version>
         <scope>runtime</scope>
       </dependency>
-			<dependency>
-				<groupId>org.springframework.data</groupId>
-				<artifactId>spring-data-gemfire</artifactId>
-				<version>${spring-data-gemfire.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.data</groupId>
-				<artifactId>spring-data-geode</artifactId>
-				<version>${spring-data-geode.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.shell</groupId>
-				<artifactId>spring-shell</artifactId>
-				<version>${spring-shell.version}</version>
-				<scope>runtime</scope>
-			</dependency>
-			<dependency>
-				<groupId>edu.umd.cs.mtc</groupId>
-				<artifactId>multithreadedtc</artifactId>
-				<version>${multithreadedtc.version}</version>
-				<scope>test</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
+      <dependency>
+        <groupId>org.springframework.data</groupId>
+        <artifactId>spring-data-gemfire</artifactId>
+        <version>${spring-data-gemfire.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.data</groupId>
+        <artifactId>spring-data-geode</artifactId>
+        <version>${spring-data-geode.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.shell</groupId>
+        <artifactId>spring-shell</artifactId>
+        <version>${spring-shell.version}</version>
+        <scope>runtime</scope>
+      </dependency>
+      <dependency>
+        <groupId>edu.umd.cs.mtc</groupId>
+        <artifactId>multithreadedtc</artifactId>
+        <version>${multithreadedtc.version}</version>
+        <scope>test</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.assertj</groupId>
-			<artifactId>assertj-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.codeprimate</groupId>
-			<artifactId>cp-elements</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-simple</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jcl-over-slf4j</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jul-to-slf4j</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>log4j-over-slf4j</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>edu.umd.cs.mtc</groupId>
-			<artifactId>multithreadedtc</artifactId>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+  <dependencies>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codeprimate</groupId>
+      <artifactId>cp-elements</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jul-to-slf4j</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>log4j-over-slf4j</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>edu.umd.cs.mtc</groupId>
+      <artifactId>multithreadedtc</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>${maven-compiler-plugin.version}</version>
-				<configuration>
-					<compilerArgs>
-						<arg>-Xlint:unchecked</arg>
-						<!-- <classpath>${java.home}/lib/tools.jar</classpath> -->
-					</compilerArgs>
-					<source>${java.version}</source>
-					<target>${java.version}</target>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>${maven-surefire-plugin.version}</version>
-				<configuration>
-					<argLine>-Dorg.slf4j.simpleLogger.defaultLogLevel=error -Dgemfire.log-level=warning</argLine>
-					<includes>
-						<include>**/*Test.java</include>
-						<include>**/*Tests.java</include>
-					</includes>
-					<reuseForks>false</reuseForks>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${maven-compiler-plugin.version}</version>
+        <configuration>
+          <compilerArgs>
+            <arg>-Xlint:unchecked</arg>
+            <!-- <classpath>${java.home}/lib/tools.jar</classpath> -->
+          </compilerArgs>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${maven-surefire-plugin.version}</version>
+        <configuration>
+          <argLine>
+            -Dgemfire.log-level=warning
+          </argLine>
+          <includes>
+            <include>**/*Test.java</include>
+            <include>**/*Tests.java</include>
+          </includes>
+          <reuseForks>false</reuseForks>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>
