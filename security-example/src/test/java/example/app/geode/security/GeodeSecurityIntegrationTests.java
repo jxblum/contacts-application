@@ -46,10 +46,12 @@ import org.apache.geode.cache.GemFireCache;
 import org.apache.geode.cache.Region;
 import org.apache.geode.cache.client.ClientRegionShortcut;
 import org.apache.geode.cache.client.ServerOperationException;
+import org.apache.geode.internal.security.shiro.GeodePermissionResolver;
 import org.apache.geode.security.AuthenticationFailedException;
 import org.apache.geode.security.NotAuthorizedException;
 import org.apache.geode.security.ResourcePermission;
 import org.apache.shiro.realm.Realm;
+import org.apache.shiro.realm.text.PropertiesRealm;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.util.PropertiesBuilder;
 import org.slf4j.Logger;
@@ -87,7 +89,13 @@ import example.app.shiro.realm.SecurityRepositoryAuthorizingRealm;
  * as well as Apache Shiro in a Spring context to secure Apache Geode.
  *
  * @author John Blum
+ * @see org.junit.FixMethodOrder
  * @see org.junit.Test
+ * @see org.springframework.test.annotation.DirtiesContext
+ * @see org.springframework.test.context.ActiveProfiles
+ * @see org.springframework.test.context.ContextConfiguration
+ * @see org.springframework.test.context.junit4.SpringRunner
+ * @see example.app.geode.security.GeodeSecurityIntegrationTests.GeodeClientConfiguration
  * @see example.app.geode.tests.integration.AbstractGeodeIntegrationTests
  * @see <a href="http://shiro.apache.org/">Apache Shiro</a>
  * @see <a href="https://cwiki.apache.org/confluence/display/GEODE/Geode+Integrated+Security">Geode Integrated Security</a>
@@ -239,7 +247,7 @@ public class GeodeSecurityIntegrationTests extends AbstractGeodeIntegrationTests
     maxTimeBetweenPings = GEODE_CACHE_SERVER_MAX_TIME_BETWEEN_PINGS, port = GEODE_CACHE_SERVER_PORT)
   @EnableManager(start = true)
   @Import({ GeodeIntegratedSecurityConfiguration.class, ApacheShiroIniConfiguration.class,
-    ApacheShiroSpringConfiguration.class })
+    ApacheShiroCustomRealmSpringConfiguration.class, ApacheShiroProvidedRealmSpringConfiguration.class })
   @Profile("apache-geode-server")
   public static class GeodeServerConfiguration {
 
@@ -308,8 +316,8 @@ public class GeodeSecurityIntegrationTests extends AbstractGeodeIntegrationTests
 
   @Configuration
   @EnableSecurity
-  @Profile("shiro-security-spring-configuration")
-  static class ApacheShiroSpringConfiguration {
+  @Profile("shiro-security-custom-realm-spring-configuration")
+  static class ApacheShiroCustomRealmSpringConfiguration {
 
     @Bean
     SecurityRepository<User> securityRepository() {
@@ -319,6 +327,20 @@ public class GeodeSecurityIntegrationTests extends AbstractGeodeIntegrationTests
     @Bean
     Realm geodeRealm(SecurityRepository<User> securityRepository) {
       return new SecurityRepositoryAuthorizingRealm<>(securityRepository);
+    }
+  }
+
+  @Configuration
+  @EnableSecurity
+  @Profile("shiro-security-provided-realm-spring-configuration")
+  static class ApacheShiroProvidedRealmSpringConfiguration {
+
+    @Bean
+    PropertiesRealm shiroRealm() {
+      PropertiesRealm propertiesRealm = new PropertiesRealm();
+      propertiesRealm.setResourcePath("classpath:geode-security-shiro.properties");
+      propertiesRealm.setPermissionResolver(new GeodePermissionResolver());
+      return propertiesRealm;
     }
   }
 }
