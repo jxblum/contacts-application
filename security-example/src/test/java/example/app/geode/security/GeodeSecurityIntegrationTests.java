@@ -14,7 +14,7 @@
  * permissions and limitations under the License.
  */
 
-package example.app.security;
+package example.app.geode.security;
 
 import static example.app.geode.security.model.User.newUser;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -74,14 +74,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import example.app.core.util.CollectionUtils;
 import example.app.geode.cache.loader.EchoCacheLoader;
-import example.app.geode.security.Constants;
-import example.app.geode.security.SecurityManagerAdapter;
+import example.app.geode.security.GeodeSecurityIntegrationTests.GeodeClientConfiguration;
 import example.app.geode.security.model.User;
 import example.app.geode.security.repository.SecurityRepository;
 import example.app.geode.security.repository.support.XmlSecurityRepository;
 import example.app.geode.security.support.AuthInitializeSupport;
 import example.app.geode.tests.integration.AbstractGeodeIntegrationTests;
-import example.app.security.GeodeSecurityIntegrationTests.GeodeClientConfiguration;
 import example.app.shiro.realm.SecurityRepositoryAuthorizingRealm;
 
 /**
@@ -175,7 +173,7 @@ public class GeodeSecurityIntegrationTests extends AbstractGeodeIntegrationTests
   @ClientCacheApplication(name = "GeodeSecurityIntegrationTestsClient", logLevel = "config",
     pingInterval = GEODE_CLIENT_CACHE_PING_INTERVAL, readTimeout = GEODE_CLIENT_CACHE_READ_TIMEOUT,
     servers = { @ClientCacheApplication.Server(port = GEODE_CACHE_SERVER_PORT)})
-  @EnableAuth(clientAuthenticationInitializer = "example.app.security.GeodeSecurityIntegrationTests$TestAuthInitialize.create")
+  @EnableAuth(clientAuthenticationInitializer = "example.app.geode.security.GeodeSecurityIntegrationTests$TestAuthInitialize.create")
   @Profile("apache-geode-client")
   static class GeodeClientConfiguration {
 
@@ -274,7 +272,7 @@ public class GeodeSecurityIntegrationTests extends AbstractGeodeIntegrationTests
   @Configuration
   //@EnableSecurity(securityManagerClass = SimpleSecurityManager.class)
   @EnableSecurity(securityManagerClassName = "example.app.geode.security.provider.SimpleSecurityManager")
-  //@EnableSecurity(securityManagerClassName = "example.app.security.GeodeSecurityIntegrationTests$NonSecureSecurityManager")
+  //@EnableSecurity(securityManagerClassName = "example.app.geode.security.GeodeSecurityIntegrationTests$NonSecureSecurityManager")
   @Profile("geode-security-system-property-configuration")
   static class GeodeIntegratedSecurityConfiguration {
   }
