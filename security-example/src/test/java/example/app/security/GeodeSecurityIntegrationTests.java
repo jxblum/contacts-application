@@ -25,6 +25,8 @@ import static org.hamcrest.Matchers.is;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -47,16 +49,13 @@ import org.apache.geode.cache.client.ServerOperationException;
 import org.apache.geode.security.AuthenticationFailedException;
 import org.apache.geode.security.NotAuthorizedException;
 import org.apache.geode.security.ResourcePermission;
-import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.realm.Realm;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.util.PropertiesBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -67,20 +66,23 @@ import org.springframework.data.gemfire.config.annotation.CacheServerApplication
 import org.springframework.data.gemfire.config.annotation.ClientCacheApplication;
 import org.springframework.data.gemfire.config.annotation.EnableAuth;
 import org.springframework.data.gemfire.config.annotation.EnableManager;
+import org.springframework.data.gemfire.config.annotation.EnableSecurity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import example.app.core.bean.factory.config.BeanPostProcessorSupport;
+import example.app.core.util.CollectionUtils;
 import example.app.geode.cache.loader.EchoCacheLoader;
 import example.app.geode.security.Constants;
 import example.app.geode.security.SecurityManagerAdapter;
 import example.app.geode.security.model.User;
-import example.app.geode.security.provider.SimpleSecurityManager;
+import example.app.geode.security.repository.SecurityRepository;
+import example.app.geode.security.repository.support.XmlSecurityRepository;
 import example.app.geode.security.support.AuthInitializeSupport;
 import example.app.geode.tests.integration.AbstractGeodeIntegrationTests;
 import example.app.security.GeodeSecurityIntegrationTests.GeodeClientConfiguration;
+import example.app.shiro.realm.SecurityRepositoryAuthorizingRealm;
 
 /**
  * Integration tests testing the configuration and use of Apache Geode's Integrated Security feature (framework)
@@ -101,7 +103,11 @@ import example.app.security.GeodeSecurityIntegrationTests.GeodeClientConfigurati
 @SuppressWarnings("unused")
 public class GeodeSecurityIntegrationTests extends AbstractGeodeIntegrationTests {
 
+  protected static final int GEODE_CACHE_SERVER_MAX_TIME_BETWEEN_PINGS = 60000;
   protected static final int GEODE_CACHE_SERVER_PORT = 40404;
+  protected static final int GEODE_CLIENT_CACHE_READ_TIMEOUT = 600000;
+
+  protected static final long GEODE_CLIENT_CACHE_PING_INTERVAL = 30000L;
 
   protected static final AtomicInteger RUN_COUNT = new AtomicInteger(0);
 
@@ -112,15 +118,26 @@ public class GeodeSecurityIntegrationTests extends AbstractGeodeIntegrationTests
 
   @BeforeClass
   public static void geodeServerSetup() throws IOException {
-    geodeServer = run(geodeServerDirectoryPathname(), GeodeServerConfiguration.class,
-      "-Dspring.profiles.active=apache-geode-server,apache-geode-security");
+    List<String> arguments = new ArrayList<>();
 
-    waitForServerToStart(GEODE_CACHE_SERVER_HOST, GEODE_CACHE_SERVER_PORT);
+    arguments.add(String.format("-Dgemfire.log-level=%s", logLevel()));
+
+    arguments.add(String.format("-Dspring.profiles.active=apache-geode-server,%s",
+      System.getProperty("security-example-profile", "apache-geode-security")));
+
+    geodeServer = run(geodeServerDirectoryPathname(), GeodeServerConfiguration.class,
+      arguments.toArray(new String[arguments.size()]));
+
+    waitForServerToStart(geodeServer, GEODE_CACHE_SERVER_HOST, GEODE_CACHE_SERVER_PORT);
   }
 
   static String geodeServerDirectoryPathname() {
     return String.format("%1$s-server-%2$s", GeodeSecurityIntegrationTests.class.getSimpleName(),
       LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-hh-mm-ss")));
+  }
+
+  static String logLevel() {
+    return System.getProperty("gemfire.log.level", DEFAULT_GEMFIRE_LOG_LEVEL);
   }
 
   @AfterClass
@@ -156,6 +173,7 @@ public class GeodeSecurityIntegrationTests extends AbstractGeodeIntegrationTests
   }
 
   @ClientCacheApplication(name = "GeodeSecurityIntegrationTestsClient", logLevel = "config",
+    pingInterval = GEODE_CLIENT_CACHE_PING_INTERVAL, readTimeout = GEODE_CLIENT_CACHE_READ_TIMEOUT,
     servers = { @ClientCacheApplication.Server(port = GEODE_CACHE_SERVER_PORT)})
   @EnableAuth(clientAuthenticationInitializer = "example.app.security.GeodeSecurityIntegrationTests$TestAuthInitialize.create")
   @Profile("apache-geode-client")
@@ -182,7 +200,7 @@ public class GeodeSecurityIntegrationTests extends AbstractGeodeIntegrationTests
 
     /* (non-Javadoc) */
     public static TestAuthInitialize create() {
-      return new TestAuthInitialize(RUN_COUNT.incrementAndGet() <= 1 ? SCIENTIST : ANALYST);
+      return new TestAuthInitialize(RUN_COUNT.incrementAndGet() < 2 ? SCIENTIST : ANALYST);
     }
 
     /* (non-Javadoc) */
@@ -196,9 +214,11 @@ public class GeodeSecurityIntegrationTests extends AbstractGeodeIntegrationTests
      */
     @Override
     public Properties getCredentials(Properties securityProperties) {
+      User user = getUser();
+
       return new PropertiesBuilder()
-        .set(Constants.SECURITY_USERNAME_PROPERTY, getUser().getName())
-        .set(Constants.SECURITY_PASSWORD_PROPERTY, getUser().getCredentials())
+        .set(Constants.SECURITY_USERNAME_PROPERTY, user.getName())
+        .set(Constants.SECURITY_PASSWORD_PROPERTY, user.getCredentials())
         .build();
     }
 
@@ -212,21 +232,25 @@ public class GeodeSecurityIntegrationTests extends AbstractGeodeIntegrationTests
      */
     @Override
     public String toString() {
-      return String.format("%1$s:%2$s", getUser().getName(), getUser().getCredentials());
+      User user = getUser();
+      return String.format("%1$s:%2$s", user.getName(), user.getCredentials());
     }
   }
 
-  @SpringBootApplication
-  @CacheServerApplication(name = "GeodeSecurityIntegrationTestsServer", logLevel = "warning",
-    port = GEODE_CACHE_SERVER_PORT)
+  @CacheServerApplication(name = "GeodeSecurityIntegrationTestsServer", logLevel = "config",
+    maxTimeBetweenPings = GEODE_CACHE_SERVER_MAX_TIME_BETWEEN_PINGS, port = GEODE_CACHE_SERVER_PORT)
   @EnableManager(start = true)
-  @Import({ GeodeServerSecurityConfiguration.class, ApacheShiroSecurityConfiguration.class })
+  @Import({ GeodeIntegratedSecurityConfiguration.class, ApacheShiroIniConfiguration.class,
+    ApacheShiroSpringConfiguration.class })
   @Profile("apache-geode-server")
   public static class GeodeServerConfiguration {
 
     public static void main(String[] args) {
       SpringApplication.run(GeodeServerConfiguration.class, args);
     }
+
+    @Autowired
+    private GemFireCache gemfireCache;
 
     @Bean("Echo")
     LocalRegionFactoryBean<String, String> echoRegion(GemFireCache gemfireCache) {
@@ -239,41 +263,20 @@ public class GeodeSecurityIntegrationTests extends AbstractGeodeIntegrationTests
 
       return echoRegion;
     }
+
+    @PostConstruct
+    public void postProcess() {
+      System.err.printf("Geode Distributed System Properties [%s]%n",
+        CollectionUtils.toString(gemfireCache.getDistributedSystem().getProperties()));
+    }
   }
 
   @Configuration
-  @Profile("apache-geode-security")
-  static class GeodeServerSecurityConfiguration {
-
-    @Bean
-    BeanPostProcessor enableGeodeSecurity() {
-      return new BeanPostProcessorSupport() {
-
-        @Override
-        public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
-          if (bean instanceof Properties && "gemfireProperties".equals(beanName)) {
-            Properties gemfireProperties = (Properties) bean;
-
-            gemfireProperties.setProperty("log-level", logLevel());
-            gemfireProperties.setProperty("security-manager", simpleSecurityManagerClassName());
-          }
-
-          return bean;
-        }
-      };
-    }
-
-    String logLevel() {
-      return System.getProperty("gemfire.log.level", DEFAULT_GEMFIRE_LOG_LEVEL);
-    }
-
-    String nonSecureSecurityManagerClassName() {
-      return NonSecureSecurityManager.class.getName();
-    }
-
-    String simpleSecurityManagerClassName() {
-      return SimpleSecurityManager.class.getName();
-    }
+  //@EnableSecurity(securityManagerClass = SimpleSecurityManager.class)
+  @EnableSecurity(securityManagerClassName = "example.app.geode.security.provider.SimpleSecurityManager")
+  //@EnableSecurity(securityManagerClassName = "example.app.security.GeodeSecurityIntegrationTests$NonSecureSecurityManager")
+  @Profile("geode-security-system-property-configuration")
+  static class GeodeIntegratedSecurityConfiguration {
   }
 
   /* (non-Javadoc) */
@@ -300,22 +303,24 @@ public class GeodeSecurityIntegrationTests extends AbstractGeodeIntegrationTests
   }
 
   @Configuration
-  @Profile("apache-shiro-security")
-  static class ApacheShiroSecurityConfiguration {
+  @EnableSecurity(shiroIniResourcePath = "geode-security-shiro.ini")
+  @Profile("shiro-security-ini-configuration")
+  static class ApacheShiroIniConfiguration {
+  }
+
+  @Configuration
+  @EnableSecurity
+  @Profile("shiro-security-spring-configuration")
+  static class ApacheShiroSpringConfiguration {
 
     @Bean
-    Realm geodeRealm() {
-      return null;
+    SecurityRepository<User> securityRepository() {
+      return new XmlSecurityRepository();
     }
 
     @Bean
-    org.apache.shiro.mgt.SecurityManager geodeSecurityManager() {
-      return null;
-    }
-
-    @PostConstruct
-    void postProcess(org.apache.shiro.mgt.SecurityManager securityManager) {
-      SecurityUtils.setSecurityManager(securityManager);
+    Realm geodeRealm(SecurityRepository<User> securityRepository) {
+      return new SecurityRepositoryAuthorizingRealm<>(securityRepository);
     }
   }
 }
