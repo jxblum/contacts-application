@@ -159,8 +159,8 @@ public class SimpleSecurityManager extends SecurityManagerAdapter {
    */
   @Override
   public boolean authorize(Object principal, ResourcePermission permission) {
-    logDebug("Principal [{}] is requesting access to a Resource with the required permission [{}]",
-      principal, permission);
+    logDebug("Principal [{}] is requesting access to a Resource {} with the required Permission [{}]",
+      principal, permission.getResource(), permission);
 
     return isAuthorized(principal, permission);
   }
