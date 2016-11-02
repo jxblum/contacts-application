@@ -25,7 +25,7 @@ import org.cp.elements.lang.ObjectUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import example.app.geode.security.SecurityManagerAdapter;
+import example.app.geode.security.SecurityManagerSupport;
 import example.app.geode.security.model.Role;
 import example.app.geode.security.model.User;
 import example.app.geode.security.repository.SecurityRepository;
@@ -36,7 +36,7 @@ import example.app.geode.security.repository.support.XmlSecurityRepository;
  * used to secure Apache Geode.
  *
  * @author John Blum
- * @see example.app.geode.security.SecurityManagerAdapter
+ * @see SecurityManagerSupport
  * @see example.app.geode.security.model.Role
  * @see example.app.geode.security.model.User
  * @see example.app.geode.security.repository.SecurityRepository
@@ -47,7 +47,7 @@ import example.app.geode.security.repository.support.XmlSecurityRepository;
  */
 @Service
 @SuppressWarnings("unused")
-public class SimpleSecurityManager extends SecurityManagerAdapter {
+public class SimpleSecurityManager extends SecurityManagerSupport {
 
   private final SecurityRepository<User> securityRepository;
 

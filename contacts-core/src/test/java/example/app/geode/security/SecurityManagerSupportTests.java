@@ -33,19 +33,19 @@ import org.apache.geode.security.ResourcePermission.Operation;
 import org.apache.geode.security.ResourcePermission.Resource;
 
 /**
- * Unit tests for {@link SecurityManagerAdapter}.
+ * Unit tests for {@link SecurityManagerSupport}.
  *
  * @author John Blum
  * @see java.security.Principal
  * @see org.junit.Test
  * @see org.mockito.Mockito
  * @see org.apache.geode.security.ResourcePermission
- * @see example.app.geode.security.SecurityManagerAdapter
+ * @see SecurityManagerSupport
  * @since 1.0.0
  */
-public class SecurityManagerAdapterTests {
+public class SecurityManagerSupportTests {
 
-  private SecurityManagerAdapter securityManager = new SecurityManagerAdapter() {};
+  private SecurityManagerSupport securityManager = new SecurityManagerSupport() {};
 
   protected ResourcePermission newResourcePermission(Resource resource, Operation operation) {
     return newResourcePermission(resource, operation, null);
@@ -85,7 +85,7 @@ public class SecurityManagerAdapterTests {
   public void getPasswordIsSuccessful() {
     Properties securityProperties = new Properties();
 
-    securityProperties.setProperty(SecurityManagerAdapter.SECURITY_PASSWORD_PROPERTY, "password");
+    securityProperties.setProperty(Constants.SECURITY_PASSWORD_PROPERTY, "password");
 
     assertThat(securityManager.getPassword(securityProperties)).isEqualToIgnoringCase("password");
   }
@@ -94,7 +94,7 @@ public class SecurityManagerAdapterTests {
   public void getUsernameIsSuccessful() {
     Properties securityProperties = new Properties();
 
-    securityProperties.setProperty(SecurityManagerAdapter.SECURITY_USERNAME_PROPERTY, "user");
+    securityProperties.setProperty(Constants.SECURITY_USERNAME_PROPERTY, "user");
 
     assertThat(securityManager.getUsername(securityProperties)).isEqualTo("user");
   }

@@ -47,6 +47,7 @@ import org.apache.geode.security.ResourcePermission;
 import org.apache.geode.security.ResourcePermission.Operation;
 import org.apache.geode.security.ResourcePermission.Resource;
 
+import example.app.geode.security.Constants;
 import example.app.geode.security.model.User;
 import example.app.geode.security.repository.SecurityRepository;
 import example.app.geode.security.repository.support.XmlSecurityRepository;
@@ -120,8 +121,8 @@ public class SimpleSecurityManagerTests {
 
     Properties securityProperties = new Properties();
 
-    securityProperties.setProperty(SimpleSecurityManager.SECURITY_USERNAME_PROPERTY, jonDoe.getName());
-    securityProperties.setProperty(SimpleSecurityManager.SECURITY_PASSWORD_PROPERTY, jonDoe.getCredentials());
+    securityProperties.setProperty(Constants.SECURITY_USERNAME_PROPERTY, jonDoe.getName());
+    securityProperties.setProperty(Constants.SECURITY_PASSWORD_PROPERTY, jonDoe.getCredentials());
 
     when(mockSecurityRepository.findBy(eq("jonDoe"))).thenReturn(jonDoe);
 
@@ -136,8 +137,8 @@ public class SimpleSecurityManagerTests {
   public void authenticateThrowsAuthenticationFailedException() {
     Properties securityProperties = new Properties();
 
-    securityProperties.setProperty(SimpleSecurityManager.SECURITY_USERNAME_PROPERTY, "hacker");
-    securityProperties.setProperty(SimpleSecurityManager.SECURITY_PASSWORD_PROPERTY, "letMeIn!");
+    securityProperties.setProperty(Constants.SECURITY_USERNAME_PROPERTY, "hacker");
+    securityProperties.setProperty(Constants.SECURITY_PASSWORD_PROPERTY, "letMeIn!");
 
     when(mockSecurityRepository.findBy(anyString())).thenReturn(null);
 

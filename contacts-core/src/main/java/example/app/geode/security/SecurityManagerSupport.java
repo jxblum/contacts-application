@@ -25,7 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The {@link SecurityManagerAdapter} class is an Apache Geode {@link SecurityManager} interface adapter providing
+ * The {@link SecurityManagerSupport} class is an Apache Geode {@link SecurityManager} interface adapter providing
  * default implementations of the {@link SecurityManager} interface operations.
  *
  * @author John Blum
@@ -35,10 +35,7 @@ import org.slf4j.LoggerFactory;
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public abstract class SecurityManagerAdapter implements org.apache.geode.security.SecurityManager {
-
-  public static final String SECURITY_PASSWORD_PROPERTY = Constants.SECURITY_PASSWORD_PROPERTY;
-  public static final String SECURITY_USERNAME_PROPERTY = Constants.SECURITY_USERNAME_PROPERTY;
+public abstract class SecurityManagerSupport implements org.apache.geode.security.SecurityManager {
 
   protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -49,12 +46,12 @@ public abstract class SecurityManagerAdapter implements org.apache.geode.securit
 
   /* (non-Javadoc)*/
   protected String getPassword(Properties securityProperties) {
-    return getPropertyValue(securityProperties, SECURITY_PASSWORD_PROPERTY);
+    return getPropertyValue(securityProperties, Constants.SECURITY_PASSWORD_PROPERTY);
   }
 
   /* (non-Javadoc)*/
   protected String getUsername(Properties securityProperties) {
-    return getPropertyValue(securityProperties, SECURITY_USERNAME_PROPERTY);
+    return getPropertyValue(securityProperties, Constants.SECURITY_USERNAME_PROPERTY);
   }
 
   /* (non-Javadoc)*/
