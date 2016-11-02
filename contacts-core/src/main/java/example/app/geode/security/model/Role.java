@@ -25,9 +25,8 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.apache.geode.security.ResourcePermission;
+import org.cp.elements.lang.Identifiable;
 import org.springframework.util.Assert;
-
-import example.app.model.support.Identifiable;
 
 /**
  * The {@link Role} class is an Abstract Data Type (ADT) modeling a role of a user (e.g. Admin).
@@ -36,8 +35,8 @@ import example.app.model.support.Identifiable;
  * @see java.io.Serializable
  * @see java.lang.Comparable
  * @see java.lang.Iterable
- * @see example.app.model.support.Identifiable
  * @see org.apache.geode.security.ResourcePermission
+ * @see org.cp.elements.lang.Identifiable
  * @since 1.0.0
  */
 @SuppressWarnings("unused")

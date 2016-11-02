@@ -26,9 +26,8 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.apache.geode.security.ResourcePermission;
+import org.cp.elements.lang.Identifiable;
 import org.springframework.util.Assert;
-
-import example.app.model.support.Identifiable;
 
 /**
  * The {@link User} class is an Abstract Data Type (ADT) modeling a user of a system.
@@ -39,7 +38,8 @@ import example.app.model.support.Identifiable;
  * @see java.lang.Cloneable
  * @see java.lang.Iterable
  * @see java.security.Principal
- * @see example.app.model.support.Identifiable
+ * @see org.apache.geode.security.ResourcePermission
+ * @see org.cp.elements.lang.Identifiable
  * @see example.app.geode.security.model.Role
  * @since 1.0.0
  */
