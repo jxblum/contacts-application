@@ -24,6 +24,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -47,6 +49,7 @@ import org.slf4j.LoggerFactory;
  * Apache Geode Integration Tests.
  *
  * @author John Blum
+ * @see java.io.File
  * @see java.lang.Process
  * @see org.apache.geode.cache.client.ClientCache
  * @since 1.0.0
@@ -71,6 +74,7 @@ public abstract class AbstractGeodeIntegrationTests {
   protected static final Set<String> JAVA_LAUNCHER_OPTIONS = new HashSet<>();
 
   protected static final String DEFAULT_LABEL = "";
+  protected static final String DEFAULT_GEMFIRE_LOG_LEVEL = "config";
 
   static {
     JAVA_LAUNCHER_OPTIONS.addAll(Arrays.asList(
@@ -92,6 +96,17 @@ public abstract class AbstractGeodeIntegrationTests {
   }
 
   /* (non-Javadoc) */
+  protected static String asApplicationName(Class<?> type) {
+    return type.getSimpleName();
+  }
+
+  /* (non-Javadoc) */
+  protected static String asDirectoryName(Class<?> type) {
+    return String.format("%1$s-%2$s", asApplicationName(type).toLowerCase(),
+      LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-hh-mm-ss")));
+  }
+
+  /* (non-Javadoc) */
   protected static File createDirectory(String pathname) {
     File directory = new File(WORKING_DIRECTORY, pathname);
 
@@ -103,8 +118,13 @@ public abstract class AbstractGeodeIntegrationTests {
   }
 
   /* (non-Javadoc) */
+  protected static String logLevel() {
+    return System.getProperty("gemfire.log.level", DEFAULT_GEMFIRE_LOG_LEVEL);
+  }
+
+  /* (non-Javadoc) */
   protected static Process run(Class type, String... args) throws IOException {
-    return run(WORKING_DIRECTORY, type, args);
+    return run(asDirectoryName(type), type, args);
   }
 
   /* (non-Javadoc) */
