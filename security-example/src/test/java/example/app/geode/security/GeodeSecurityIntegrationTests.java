@@ -16,14 +16,12 @@
 
 package example.app.geode.security;
 
-import static example.app.geode.security.model.User.newUser;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 
 import java.io.IOException;
-import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.PostConstruct;
@@ -43,13 +41,9 @@ import org.apache.geode.cache.Region;
 import org.apache.geode.cache.client.ClientRegionShortcut;
 import org.apache.geode.cache.client.ServerOperationException;
 import org.apache.geode.internal.security.shiro.GeodePermissionResolver;
-import org.apache.geode.security.AuthenticationFailedException;
 import org.apache.geode.security.NotAuthorizedException;
-import org.apache.geode.security.ResourcePermission;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.realm.text.PropertiesRealm;
-import org.cp.elements.lang.Assert;
-import org.cp.elements.util.PropertiesBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,7 +70,6 @@ import example.app.geode.security.GeodeSecurityIntegrationTests.GeodeClientConfi
 import example.app.geode.security.model.User;
 import example.app.geode.security.repository.SecurityRepository;
 import example.app.geode.security.repository.support.XmlSecurityRepository;
-import example.app.geode.security.support.AuthInitializeSupport;
 import example.app.geode.tests.integration.AbstractGeodeIntegrationTests;
 import example.app.shiro.realm.SecurityRepositoryAuthorizingRealm;
 
@@ -111,7 +104,7 @@ public class GeodeSecurityIntegrationTests extends AbstractGeodeIntegrationTests
 
   protected static final long CLIENT_CACHE_PING_INTERVAL = 30000L;
 
-  protected static final AtomicInteger RUN_COUNT = new AtomicInteger(0);
+  protected static final AtomicInteger TEST_CASE_COUNT = new AtomicInteger(0);
 
   protected static final String CACHE_SERVER_HOST = "localhost";
 
@@ -159,56 +152,10 @@ public class GeodeSecurityIntegrationTests extends AbstractGeodeIntegrationTests
     echo.put("two", "four");
   }
 
-  public static class GeodeClientAuthInitialize extends AuthInitializeSupport {
-
-    protected static final User ANALYST = newUser("analyst").with("p@55w0rd");
-    protected static final User SCIENTIST = newUser("scientist").with("w0rk!ng4u");
-
-    private final User user;
-
-    /* (non-Javadoc) */
-    public static GeodeClientAuthInitialize create() {
-      return new GeodeClientAuthInitialize(RUN_COUNT.incrementAndGet() < 2 ? SCIENTIST : ANALYST);
-    }
-
-    /* (non-Javadoc) */
-    public GeodeClientAuthInitialize(User user) {
-      Assert.notNull(user, "User cannot be null");
-      this.user = user;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    @Override
-    public Properties getCredentials(Properties securityProperties) {
-      User user = getUser();
-
-      return new PropertiesBuilder()
-        .set(Constants.SECURITY_USERNAME_PROPERTY, user.getName())
-        .set(Constants.SECURITY_PASSWORD_PROPERTY, user.getCredentials())
-        .build();
-    }
-
-    /* (non-Javadoc) */
-    protected User getUser() {
-      return this.user;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    @Override
-    public String toString() {
-      User user = getUser();
-      return String.format("%1$s:%2$s", user.getName(), user.getCredentials());
-    }
-  }
-
   @ClientCacheApplication(name = "GeodeSecurityIntegrationTestsClient", logLevel = "config",
     pingInterval = CLIENT_CACHE_PING_INTERVAL, readTimeout = CLIENT_CACHE_READ_TIMEOUT,
     servers = { @ClientCacheApplication.Server(port = CACHE_SERVER_PORT) })
-  @EnableAuth(clientAuthenticationInitializer = "example.app.geode.security.GeodeSecurityIntegrationTests$GeodeClientAuthInitialize.create")
+  @EnableAuth(clientAuthenticationInitializer = "example.app.geode.security.GeodeClientAuthInitialize.create")
   @Profile("apache-geode-client")
   static class GeodeClientConfiguration {
 
@@ -228,7 +175,7 @@ public class GeodeSecurityIntegrationTests extends AbstractGeodeIntegrationTests
     maxTimeBetweenPings = CACHE_SERVER_MAX_TIME_BETWEEN_PINGS, port = CACHE_SERVER_PORT)
   @EnableManager(start = true)
   @Import({ GeodeIntegratedSecurityConfiguration.class, ApacheShiroIniConfiguration.class,
-    ApacheShiroCustomRealmSpringConfiguration.class, ApacheShiroProvidedRealmSpringConfiguration.class })
+    ApacheShiroCustomRealmConfiguration.class, ApacheShiroProvidedRealmConfiguration.class })
   @Profile("apache-geode-server")
   public static class GeodeServerConfiguration {
 
@@ -260,45 +207,22 @@ public class GeodeSecurityIntegrationTests extends AbstractGeodeIntegrationTests
 
   @Configuration
   //@EnableSecurity(securityManagerClass = SimpleSecurityManager.class)
+  //@EnableSecurity(securityManagerClassName = "example.app.geode.security.provider.NonSecureSecurityManager")
   @EnableSecurity(securityManagerClassName = "example.app.geode.security.provider.SimpleSecurityManager")
-  //@EnableSecurity(securityManagerClassName = "example.app.geode.security.GeodeSecurityIntegrationTests$NonSecureSecurityManager")
-  @Profile("geode-security-system-property-configuration")
+  @Profile("geode-security-manager-configuration")
   static class GeodeIntegratedSecurityConfiguration {
   }
 
-  /* (non-Javadoc) */
-  public static class NonSecureSecurityManager extends SecurityManagerAdapter {
-
-    private static final User SUPER_USER = newUser("superuser");
-
-    /**
-     * @inheritDoc
-     */
-    @Override
-    public Object authenticate(Properties securityProperties) throws AuthenticationFailedException {
-      return SUPER_USER;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    @Override
-    public boolean authorize(Object principal, ResourcePermission permission) {
-      logger.debug("Principal {} requires Permission {}", principal, permission);
-      return super.authorize(principal, permission);
-    }
-  }
-
   @Configuration
-  @EnableSecurity(shiroIniResourcePath = "geode-security-shiro.ini")
-  @Profile("shiro-security-ini-configuration")
+  @EnableSecurity(shiroIniResourcePath = "shiro.ini")
+  @Profile("shiro-ini-configuration")
   static class ApacheShiroIniConfiguration {
   }
 
   @Configuration
   @EnableSecurity
-  @Profile("shiro-security-custom-realm-spring-configuration")
-  static class ApacheShiroCustomRealmSpringConfiguration {
+  @Profile("shiro-custom-realm-configuration")
+  static class ApacheShiroCustomRealmConfiguration {
 
     @Bean
     SecurityRepository<User> securityRepository() {
@@ -313,13 +237,13 @@ public class GeodeSecurityIntegrationTests extends AbstractGeodeIntegrationTests
 
   @Configuration
   @EnableSecurity
-  @Profile("shiro-security-provided-realm-spring-configuration")
-  static class ApacheShiroProvidedRealmSpringConfiguration {
+  @Profile("shiro-provided-realm-configuration")
+  static class ApacheShiroProvidedRealmConfiguration {
 
     @Bean
     PropertiesRealm shiroRealm() {
       PropertiesRealm propertiesRealm = new PropertiesRealm();
-      propertiesRealm.setResourcePath("classpath:geode-security-shiro.properties");
+      propertiesRealm.setResourcePath("classpath:shiro.properties");
       propertiesRealm.setPermissionResolver(new GeodePermissionResolver());
       return propertiesRealm;
     }
