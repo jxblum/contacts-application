@@ -23,10 +23,6 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -109,45 +105,30 @@ import example.app.shiro.realm.SecurityRepositoryAuthorizingRealm;
 @SuppressWarnings("unused")
 public class GeodeSecurityIntegrationTests extends AbstractGeodeIntegrationTests {
 
-  protected static final int GEODE_CACHE_SERVER_MAX_TIME_BETWEEN_PINGS = 60000;
-  protected static final int GEODE_CACHE_SERVER_PORT = 40404;
-  protected static final int GEODE_CLIENT_CACHE_READ_TIMEOUT = 600000;
+  protected static final int CACHE_SERVER_MAX_TIME_BETWEEN_PINGS = 60000;
+  protected static final int CACHE_SERVER_PORT = 40404;
+  protected static final int CLIENT_CACHE_READ_TIMEOUT = 600000;
 
-  protected static final long GEODE_CLIENT_CACHE_PING_INTERVAL = 30000L;
+  protected static final long CLIENT_CACHE_PING_INTERVAL = 30000L;
 
   protected static final AtomicInteger RUN_COUNT = new AtomicInteger(0);
 
-  protected static final String DEFAULT_GEMFIRE_LOG_LEVEL = "config";
-  protected static final String GEODE_CACHE_SERVER_HOST = "localhost";
+  protected static final String CACHE_SERVER_HOST = "localhost";
 
   private static Process geodeServer;
 
   @BeforeClass
-  public static void geodeServerSetup() throws IOException {
-    List<String> arguments = new ArrayList<>();
+  public static void runGeodeServer() throws IOException {
+    geodeServer = run(GeodeServerConfiguration.class,
+      String.format("-Dgemfire.log-level=%s", logLevel()),
+      String.format("-Dspring.profiles.active=apache-geode-server,%s",
+        System.getProperty("security-example-profile", "apache-geode-security")));
 
-    arguments.add(String.format("-Dgemfire.log-level=%s", logLevel()));
-
-    arguments.add(String.format("-Dspring.profiles.active=apache-geode-server,%s",
-      System.getProperty("security-example-profile", "apache-geode-security")));
-
-    geodeServer = run(geodeServerDirectoryPathname(), GeodeServerConfiguration.class,
-      arguments.toArray(new String[arguments.size()]));
-
-    waitForServerToStart(geodeServer, GEODE_CACHE_SERVER_HOST, GEODE_CACHE_SERVER_PORT);
-  }
-
-  static String geodeServerDirectoryPathname() {
-    return String.format("%1$s-server-%2$s", GeodeSecurityIntegrationTests.class.getSimpleName(),
-      LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-hh-mm-ss")));
-  }
-
-  static String logLevel() {
-    return System.getProperty("gemfire.log.level", DEFAULT_GEMFIRE_LOG_LEVEL);
+    waitForServerToStart(geodeServer, CACHE_SERVER_HOST, CACHE_SERVER_PORT);
   }
 
   @AfterClass
-  public static void geodeServerShutdown() throws IOException {
+  public static void stopGeodeServer() throws IOException {
     stop(geodeServer);
   }
 
@@ -168,7 +149,7 @@ public class GeodeSecurityIntegrationTests extends AbstractGeodeIntegrationTests
   }
 
   @Test
-  public void notAuthorizedUser() {
+  public void unauthorizedUser() {
     assertThat(echo.get("one")).isEqualTo("one");
 
     exception.expect(ServerOperationException.class);
@@ -178,26 +159,7 @@ public class GeodeSecurityIntegrationTests extends AbstractGeodeIntegrationTests
     echo.put("two", "four");
   }
 
-  @ClientCacheApplication(name = "GeodeSecurityIntegrationTestsClient", logLevel = "config",
-    pingInterval = GEODE_CLIENT_CACHE_PING_INTERVAL, readTimeout = GEODE_CLIENT_CACHE_READ_TIMEOUT,
-    servers = { @ClientCacheApplication.Server(port = GEODE_CACHE_SERVER_PORT)})
-  @EnableAuth(clientAuthenticationInitializer = "example.app.geode.security.GeodeSecurityIntegrationTests$TestAuthInitialize.create")
-  @Profile("apache-geode-client")
-  static class GeodeClientConfiguration {
-
-    @Bean("Echo")
-    ClientRegionFactoryBean<String, String> echoRegion(GemFireCache gemfireCache) {
-      ClientRegionFactoryBean<String, String> echoRegion = new ClientRegionFactoryBean<>();
-
-      echoRegion.setCache(gemfireCache);
-      echoRegion.setClose(false);
-      echoRegion.setShortcut(ClientRegionShortcut.PROXY);
-
-      return echoRegion;
-    }
-  }
-
-  public static class TestAuthInitialize extends AuthInitializeSupport {
+  public static class GeodeClientAuthInitialize extends AuthInitializeSupport {
 
     protected static final User ANALYST = newUser("analyst").with("p@55w0rd");
     protected static final User SCIENTIST = newUser("scientist").with("w0rk!ng4u");
@@ -205,12 +167,12 @@ public class GeodeSecurityIntegrationTests extends AbstractGeodeIntegrationTests
     private final User user;
 
     /* (non-Javadoc) */
-    public static TestAuthInitialize create() {
-      return new TestAuthInitialize(RUN_COUNT.incrementAndGet() < 2 ? SCIENTIST : ANALYST);
+    public static GeodeClientAuthInitialize create() {
+      return new GeodeClientAuthInitialize(RUN_COUNT.incrementAndGet() < 2 ? SCIENTIST : ANALYST);
     }
 
     /* (non-Javadoc) */
-    public TestAuthInitialize(User user) {
+    public GeodeClientAuthInitialize(User user) {
       Assert.notNull(user, "User cannot be null");
       this.user = user;
     }
@@ -243,8 +205,27 @@ public class GeodeSecurityIntegrationTests extends AbstractGeodeIntegrationTests
     }
   }
 
+  @ClientCacheApplication(name = "GeodeSecurityIntegrationTestsClient", logLevel = "config",
+    pingInterval = CLIENT_CACHE_PING_INTERVAL, readTimeout = CLIENT_CACHE_READ_TIMEOUT,
+    servers = { @ClientCacheApplication.Server(port = CACHE_SERVER_PORT) })
+  @EnableAuth(clientAuthenticationInitializer = "example.app.geode.security.GeodeSecurityIntegrationTests$GeodeClientAuthInitialize.create")
+  @Profile("apache-geode-client")
+  static class GeodeClientConfiguration {
+
+    @Bean("Echo")
+    ClientRegionFactoryBean<String, String> echoRegion(GemFireCache gemfireCache) {
+      ClientRegionFactoryBean<String, String> echoRegion = new ClientRegionFactoryBean<>();
+
+      echoRegion.setCache(gemfireCache);
+      echoRegion.setClose(false);
+      echoRegion.setShortcut(ClientRegionShortcut.PROXY);
+
+      return echoRegion;
+    }
+  }
+
   @CacheServerApplication(name = "GeodeSecurityIntegrationTestsServer", logLevel = "config",
-    maxTimeBetweenPings = GEODE_CACHE_SERVER_MAX_TIME_BETWEEN_PINGS, port = GEODE_CACHE_SERVER_PORT)
+    maxTimeBetweenPings = CACHE_SERVER_MAX_TIME_BETWEEN_PINGS, port = CACHE_SERVER_PORT)
   @EnableManager(start = true)
   @Import({ GeodeIntegratedSecurityConfiguration.class, ApacheShiroIniConfiguration.class,
     ApacheShiroCustomRealmSpringConfiguration.class, ApacheShiroProvidedRealmSpringConfiguration.class })
