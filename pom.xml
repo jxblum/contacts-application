@@ -86,7 +86,10 @@
   </scm>
 
   <properties>
+    <apache-geode.version>1.1.0-incubating-SNAPSHOT</apache-geode.version>
+<!--
     <apache-geode.version>1.0.0-incubating</apache-geode.version>
+-->
     <cp-elements.version>1.0.0.M2</cp-elements.version>
     <hsqldb.version>2.3.4</hsqldb.version>
     <java.version>1.8</java.version>
@@ -96,7 +99,10 @@
     <pivotal-gemfire.version>8.2.1</pivotal-gemfire.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <spring-data-gemfire.version>1.9.0.M1</spring-data-gemfire.version>
+    <spring-data-geode.version>1.1.0.INCUBATING-SNAPSHOT</spring-data-geode.version>
+<!--
     <spring-data-geode.version>1.0.0.INCUBATING-RELEASE</spring-data-geode.version>
+-->
     <spring-shell.version>1.1.0.RELEASE</spring-shell.version>
   </properties>
 
