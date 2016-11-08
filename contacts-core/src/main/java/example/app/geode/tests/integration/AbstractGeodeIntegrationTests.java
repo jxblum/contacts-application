@@ -51,6 +51,7 @@ import org.slf4j.LoggerFactory;
  * @author John Blum
  * @see java.io.File
  * @see java.lang.Process
+ * @see java.net.Socket
  * @see org.apache.geode.cache.client.ClientCache
  * @since 1.0.0
  */
@@ -64,10 +65,10 @@ public abstract class AbstractGeodeIntegrationTests {
   protected static final long DEFAULT_WAIT_TIME_DURATION = TimeUnit.SECONDS.toMillis(20);
   protected static final long DEFAULT_WAIT_TIME_INTERVAL = 500L; // milliseconds
 
-  protected static final File JAVA_HOME = new File(System.getProperty("java.home"));
-  protected static final File JAVA_EXE = new File(new File(JAVA_HOME, "bin"), "java");
-  protected static final File USER_HOME = new File(System.getProperty("user.home"));
-  protected static final File WORKING_DIRECTORY = new File(System.getProperty("user.dir"));
+  protected static final File JAVA_HOME = newFile(System.getProperty("java.home"));
+  protected static final File JAVA_EXE = newFile(newFile(JAVA_HOME, "bin"), "java");
+  protected static final File USER_HOME = newFile(System.getProperty("user.home"));
+  protected static final File WORKING_DIRECTORY = newFile(System.getProperty("user.dir"));
 
   protected static final Logger logger = LoggerFactory.getLogger(AbstractGeodeIntegrationTests.class);
 
@@ -120,6 +121,16 @@ public abstract class AbstractGeodeIntegrationTests {
   /* (non-Javadoc) */
   protected static String logLevel() {
     return System.getProperty("gemfire.log.level", DEFAULT_GEMFIRE_LOG_LEVEL);
+  }
+
+  /* (non-Javadoc) */
+  protected static File newFile(String pathname) {
+    return new File(pathname);
+  }
+
+  /* (non-Javadoc) */
+  protected static File newFile(File parent, String pathname) {
+    return new File(parent, pathname);
   }
 
   /* (non-Javadoc) */
