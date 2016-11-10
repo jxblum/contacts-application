@@ -20,7 +20,7 @@ import java.util.Properties;
 
 import org.apache.geode.security.AuthenticationFailedException;
 import org.apache.geode.security.ResourcePermission;
-import org.apache.shiro.util.Assert;
+import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ObjectUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;

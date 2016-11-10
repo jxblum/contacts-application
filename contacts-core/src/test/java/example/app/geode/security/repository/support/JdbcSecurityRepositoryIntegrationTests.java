@@ -20,7 +20,7 @@ import javax.sql.DataSource;
 
 import org.junit.runner.RunWith;
 
-import org.apache.shiro.util.Assert;
+import org.cp.elements.lang.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
