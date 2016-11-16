@@ -96,7 +96,7 @@
     <maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
     <maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
     <multithreadedtc.version>1.01</multithreadedtc.version>
-    <pivotal-gemfire.version>8.2.1</pivotal-gemfire.version>
+    <pivotal-gemfire.version>8.2.2</pivotal-gemfire.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <spring-data-gemfire.version>1.9.0.M1</spring-data-gemfire.version>
 <!--
@@ -122,16 +122,23 @@
       <name>Spring libs-snapshot Maven Repository</name>
       <url>https://repo.spring.io/libs-snapshot</url>
     </repository>
+<!--
     <repository>
-      <id>gemstone-release</id>
+      <id>gemstone-gemfire-release</id>
       <name>GemStone RELEASE Maven Repository</name>
       <url>http://dist.gemstone.com/maven/release</url>
-      <!-- <url>http://dist.gemstone.com.s3.amazonaws.com/maven/release</url> -->
+      &lt;!&ndash; <url>http://dist.gemstone.com.s3.amazonaws.com/maven/release</url> &ndash;&gt;
       <snapshots>
         <enabled>true</enabled>
         <updatePolicy>always</updatePolicy>
       </snapshots>
     </repository>
+    <repository>
+      <id>pivotal-gemfire-release</id>
+      <name>Pivotal GemFire Release Repository</name>
+      <url>https://commercial-repo.pivotal.io/data3/gemfire-release-repo/gemfire</url>
+    </repository>
+-->
   </repositories>
 
   <pluginRepositories>
