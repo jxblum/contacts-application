@@ -177,7 +177,7 @@ public class GeodeSecurityIntegrationTests extends AbstractGeodeIntegrationTests
   @ClientCacheApplication(name = "GeodeSecurityIntegrationTestsClient", logLevel = GEODE_LOG_LEVEL,
     pingInterval = CLIENT_CACHE_PING_INTERVAL, readTimeout = CLIENT_CACHE_READ_TIMEOUT,
     servers = { @ClientCacheApplication.Server(port = CACHE_SERVER_PORT) })
-  @EnableAuth(clientAuthenticationInitializer = "example.app.geode.security.GeodeClientAuthInitialize.create")
+  @EnableSecurity(clientAuthenticationInitializer = "example.app.geode.security.GeodeClientAuthInitialize.create")
   @Profile("apache-geode-client")
   static class GeodeClientConfiguration {
 
