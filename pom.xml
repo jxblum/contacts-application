@@ -8,7 +8,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>1.4.2.RELEASE</version>
+    <version>2.0.0.M1</version>
   </parent>
 
   <groupId>example.apps</groupId>
@@ -86,24 +86,18 @@
   </scm>
 
   <properties>
-<!--
-    <apache-geode.version>1.1.0-incubating-SNAPSHOT</apache-geode.version>
--->
-    <apache-geode.version>1.0.0-incubating</apache-geode.version>
-    <cp-elements.version>1.0.0.M2</cp-elements.version>
+    <apache-geode.version>1.2.0-SNAPSHOT</apache-geode.version>
+    <cp-elements.version>1.0.0.M3</cp-elements.version>
     <hsqldb.version>2.3.4</hsqldb.version>
     <java.version>1.8</java.version>
     <maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
     <maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
     <multithreadedtc.version>1.01</multithreadedtc.version>
-    <pivotal-gemfire.version>8.2.2</pivotal-gemfire.version>
+    <pivotal-gemfire.version>9.0.4</pivotal-gemfire.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <spring-data-gemfire.version>1.9.0.M1</spring-data-gemfire.version>
-<!--
-    <spring-data-geode.version>1.1.0.INCUBATING-SNAPSHOT</spring-data-geode.version>
--->
-    <spring-data-geode.version>1.0.0.INCUBATING-RELEASE</spring-data-geode.version>
-    <spring-shell.version>1.1.0.RELEASE</spring-shell.version>
+    <spring-data-gemfire.version>2.0.0.M3</spring-data-gemfire.version>
+    <spring-data-geode.version>2.0.0.BUILD-SNAPSHOT</spring-data-geode.version>
+    <spring-shell.version>1.2.0.RELEASE</spring-shell.version>
   </properties>
 
   <repositories>
@@ -156,14 +150,44 @@
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>com.gemstone.gemfire</groupId>
-        <artifactId>gemfire</artifactId>
-        <version>${pivotal-gemfire.version}</version>
-      </dependency>
-      <dependency>
         <groupId>org.apache.geode</groupId>
         <artifactId>geode-core</artifactId>
         <version>${apache-geode.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.geode</groupId>
+        <artifactId>geode-cq</artifactId>
+        <version>${apache-geode.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.geode</groupId>
+        <artifactId>geode-lucene</artifactId>
+        <version>${apache-geode.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.geode</groupId>
+        <artifactId>geode-wan</artifactId>
+        <version>${apache-geode.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.pivotal.gemfire</groupId>
+        <artifactId>geode-core</artifactId>
+        <version>${pivotal-gemfire.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.pivotal.gemfire</groupId>
+        <artifactId>geode-cq</artifactId>
+        <version>${pivotal-gemfire.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.pivotal.gemfire</groupId>
+        <artifactId>geode-lucene</artifactId>
+        <version>${pivotal-gemfire.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.pivotal.gemfire</groupId>
+        <artifactId>geode-wan</artifactId>
+        <version>${pivotal-gemfire.version}</version>
       </dependency>
       <dependency>
         <groupId>org.codeprimate</groupId>
