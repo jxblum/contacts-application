@@ -24,11 +24,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 
-import org.junit.After;
+import org.junit.FixMethodOrder;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -48,6 +49,7 @@ import example.app.model.State;
  * @since 1.0.0
  */
 @RunWith(SpringRunner.class)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE,
 	classes = GlobalTransactionApplicationConfiguration.class)
 @SuppressWarnings("all")
@@ -68,32 +70,21 @@ public class ContactsServiceJtaTransactionIntegrationTests {
 	@Autowired
 	private TransactionTemplate transactionTemplate;
 
-	@After
-	public void tearDown() {
-		transactionTemplate.execute((transactionStatus) -> {
+	//@Before
+	public void setup() {
+
+		transactionTemplate.execute(transactionStatus -> {
+
 			gemfireContactRepository.deleteAll();
 			jpaContactRepository.deleteAll();
+
 			return null;
 		});
 	}
 
 	@Test
-	public void transactionWithValidContactCommits() {
-		assertThat(gemfireContactRepository.count()).isEqualTo(0);
-		assertThat(jpaContactRepository.count()).isEqualTo(0);
-
-		Contact jonDoe = newContact(newPerson("Jon", "Doe"), "jonDoe@home.com")
-			.with(newAddress("100 Main St.", "Portland", State.OREGON, "97205"))
-			.with(newPhoneNumber("503", "541", "1234"));
-
-		contactsService.save(jonDoe);
-
-		assertThat(gemfireContactRepository.count()).isEqualTo(1);
-		assertThat(jpaContactRepository.count()).isEqualTo(1);
-	}
-
-	@Test
 	public void transactionWithInvalidContactRollsBack() {
+
 		assertThat(gemfireContactRepository.count()).isEqualTo(0);
 		assertThat(jpaContactRepository.count()).isEqualTo(0);
 
@@ -110,7 +101,7 @@ public class ContactsServiceJtaTransactionIntegrationTests {
 			exception.expectCause(is(nullValue(Throwable.class)));
 			exception.expectMessage(String.format(
 				"Phone Number [%1$s] in Contact for Person [%2$s] is not valid; '555' is not valid phone number exchange",
-					phoneNumber, jackHandy));
+				phoneNumber, jackHandy));
 
 			contactsService.save(contact);
 		}
@@ -118,5 +109,21 @@ public class ContactsServiceJtaTransactionIntegrationTests {
 			assertThat(jpaContactRepository.count()).isEqualTo(0);
 			assertThat(gemfireContactRepository.count()).isEqualTo(0);
 		}
+	}
+
+	@Test
+	public void transactionWithValidContactCommits() {
+
+		assertThat(gemfireContactRepository.count()).isEqualTo(0);
+		assertThat(jpaContactRepository.count()).isEqualTo(0);
+
+		Contact jonDoe = newContact(newPerson("Jon", "Doe"), "jonDoe@home.com")
+			.with(newAddress("100 Main St.", "Portland", State.OREGON, "97205"))
+			.with(newPhoneNumber("503", "541", "1234"));
+
+		contactsService.save(jonDoe);
+
+		assertThat(gemfireContactRepository.count()).isEqualTo(1);
+		assertThat(jpaContactRepository.count()).isEqualTo(1);
 	}
 }

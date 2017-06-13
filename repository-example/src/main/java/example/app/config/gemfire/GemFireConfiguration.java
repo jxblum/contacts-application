@@ -63,6 +63,7 @@ public class GemFireConfiguration {
 	}
 
 	public Properties gemfireProperties() {
+
 		Properties gemfireProperties = new Properties();
 
 		gemfireProperties.setProperty("name", applicationName());
@@ -74,6 +75,7 @@ public class GemFireConfiguration {
 
 	@Bean
 	public CacheFactoryBean gemfireCache() {
+
 		CacheFactoryBean gemfireCache = new CacheFactoryBean();
 
 		gemfireCache.setClose(true);
@@ -151,6 +153,7 @@ public class GemFireConfiguration {
 
 	@Bean
 	public PartitionAttributesFactoryBean customersRegionPartitionAttributes() {
+
 		PartitionAttributesFactoryBean customersRegionPartitionAttributes = new PartitionAttributesFactoryBean();
 
 		customersRegionPartitionAttributes.setRedundantCopies(1);
@@ -161,6 +164,7 @@ public class GemFireConfiguration {
 	@Bean
 	@DependsOn("Contacts")
 	public IndexFactoryBean emailIndex(GemFireCache gemfireCache) {
+
 		IndexFactoryBean lastNameIndex = new IndexFactoryBean();
 
 		lastNameIndex.setCache(gemfireCache);
@@ -175,6 +179,7 @@ public class GemFireConfiguration {
 	@Bean
 	@DependsOn("Contacts")
 	public IndexFactoryBean lastNameIndex(GemFireCache gemfireCache) {
+
 		IndexFactoryBean lastNameIndex = new IndexFactoryBean();
 
 		lastNameIndex.setCache(gemfireCache);

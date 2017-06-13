@@ -31,9 +31,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.gemfire.LocalRegionFactoryBean;
+import org.springframework.data.gemfire.cache.GemfireCache;
+import org.springframework.data.gemfire.cache.GemfireCacheManager;
 import org.springframework.data.gemfire.config.annotation.PeerCacheApplication;
-import org.springframework.data.gemfire.support.GemfireCache;
-import org.springframework.data.gemfire.support.GemfireCacheManager;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -42,8 +42,8 @@ import example.app.caching.provider.support.AbstractJsr107CachingProviderTests;
 import example.app.caching.provider.support.Calculator;
 
 /**
- * Test suite of test cases testing the contract and functionality of Apache Geode serving
- * as a JSR-107 caching provider in Spring's Cache Abstraction using Spring Boot.
+ * Integration Tests testing the contract and functionality of Apache Geode serving as a JSR-107 caching provider
+ * in Spring's Cache Abstraction using Spring Boot.
  *
  * @author John Blum
  * @see org.junit.Test

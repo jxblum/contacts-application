@@ -35,6 +35,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -46,7 +47,7 @@ import org.junit.runner.RunWith;
 
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import example.app.model.Address;
 import example.app.model.Contact;
@@ -96,7 +97,7 @@ public class CustomerServiceTests {
 	public void getUnitializedContactRepositoryThrowsIllegalStateException() {
 		exception.expect(IllegalStateException.class);
 		exception.expectCause(is(nullValue(Throwable.class)));
-		exception.expectMessage("ContactRepository was not properly initialized");
+		exception.expectMessage("ContactRepository is required");
 
 		new CustomerService(null, mockCustomerRepository).getContactRepository();
 	}
@@ -110,7 +111,7 @@ public class CustomerServiceTests {
 	public void getUnitializedCustomerRepositoryThrowsIllegalStateException() {
 		exception.expect(IllegalStateException.class);
 		exception.expectCause(is(nullValue(Throwable.class)));
-		exception.expectMessage("CustomerRepository was not properly initialized");
+		exception.expectMessage("CustomerRepository is required");
 
 		new CustomerService(mockContactRepository, null).getCustomerRepository();
 	}
@@ -142,10 +143,11 @@ public class CustomerServiceTests {
 	public void setIdForIdentifiedObject() {
 		Identifiable<Long> mockIdentifiable = mock(Identifiable.class);
 
-		when(mockIdentifiable.getId()).thenReturn(1L);
+		when(mockIdentifiable.isNew()).thenReturn(false);
 
 		customerService.setId(mockIdentifiable);
 
+		verify(mockIdentifiable, times(1)).isNew();
 		verify(mockIdentifiable, never()).setId(anyLong());
 	}
 
@@ -204,7 +206,7 @@ public class CustomerServiceTests {
 		assertThat(customerService.createAccountIfNotExists(jonDoe)).isEqualTo(jonathonDoe);
 
 		verify(mockCustomerRepository, times(1)).findByAccountNumber(eq("123"));
-		verify(mockCustomerRepository, never()).findOne(anyLong());
+		verify(mockCustomerRepository, never()).findById(anyLong());
 		verify(mockCustomerRepository, never()).save(any(Customer.class));
 	}
 
@@ -218,7 +220,7 @@ public class CustomerServiceTests {
 		assertThat(customerService.createAccountIfNotExists(jonDoe)).isEqualTo(jonDoe);
 
 		verify(mockCustomerRepository, times(1)).findByAccountNumber(eq("123"));
-		verify(mockCustomerRepository, never()).findOne(anyLong());
+		verify(mockCustomerRepository, never()).findById(anyLong());
 		verify(mockCustomerRepository, times(1)).save(eq(jonDoe));
 	}
 
@@ -228,12 +230,12 @@ public class CustomerServiceTests {
 		Customer jonathonDoe = newCustomer("Jonathon", "Doe").with("123").identifiedBy(1L);
 
 		when(mockCustomerRepository.findByAccountNumber(anyString())).thenReturn(null);
-		when(mockCustomerRepository.findOne(eq(1L))).thenReturn(jonathonDoe);
+		when(mockCustomerRepository.findById(eq(1L))).thenReturn(Optional.of(jonathonDoe));
 
 		assertThat(customerService.createAccountIfNotExists(jonDoe)).isEqualTo(jonathonDoe);
 
 		verify(mockCustomerRepository, times(1)).findByAccountNumber(eq("987"));
-		verify(mockCustomerRepository, times(1)).findOne(eq(1L));
+		verify(mockCustomerRepository, times(1)).findById(eq(1L));
 		verify(mockCustomerRepository, never()).save(any(Customer.class));
 	}
 
@@ -242,7 +244,7 @@ public class CustomerServiceTests {
 		Customer jonDoe = newCustomer("Jon", "Doe").with("123").identifiedBy(1L);
 
 		when(mockCustomerRepository.findByAccountNumber(anyString())).thenReturn(null);
-		when(mockCustomerRepository.findOne(anyLong())).thenReturn(null);
+		when(mockCustomerRepository.findById(anyLong())).thenReturn(Optional.empty());
 		when(mockCustomerRepository.save(eq(jonDoe))).thenReturn(jonDoe);
 
 		assertThat(jonDoe.getAccountNumber()).isEqualTo("123");
@@ -252,7 +254,7 @@ public class CustomerServiceTests {
 		assertThat(jonDoe.getId()).isEqualTo(1L);
 
 		verify(mockCustomerRepository, times(1)).findByAccountNumber(eq("123"));
-		verify(mockCustomerRepository, times(1)).findOne(eq(1L));
+		verify(mockCustomerRepository, times(1)).findById(eq(1L));
 		verify(mockCustomerRepository, times(1)).save(eq(jonDoe));
 	}
 
@@ -260,7 +262,7 @@ public class CustomerServiceTests {
 	public void createAccountIfNotExistsForNonExistingCustomerWithId() {
 		Customer jonDoe = newCustomer("Jon", "Doe").identifiedBy(1L);
 
-		when(mockCustomerRepository.findOne(anyLong())).thenReturn(null);
+		when(mockCustomerRepository.findById(anyLong())).thenReturn(Optional.empty());
 		when(mockCustomerRepository.save(eq(jonDoe))).thenReturn(jonDoe);
 
 		assertThat(jonDoe.getAccountNumber()).isNull();
@@ -270,7 +272,7 @@ public class CustomerServiceTests {
 		assertThat(jonDoe.getId()).isEqualTo(1L);
 
 		verify(mockCustomerRepository, never()).findByAccountNumber(anyString());
-		verify(mockCustomerRepository, times(1)).findOne(eq(1L));
+		verify(mockCustomerRepository, times(1)).findById(eq(1L));
 		verify(mockCustomerRepository, times(1)).save(eq(jonDoe));
 	}
 
@@ -287,7 +289,7 @@ public class CustomerServiceTests {
 		assertThat(jonDoe.getId()).isNotNull();
 
 		verify(mockCustomerRepository, never()).findByAccountNumber(anyString());
-		verify(mockCustomerRepository, never()).findOne(anyLong());
+		verify(mockCustomerRepository, never()).findById(anyLong());
 		verify(mockCustomerRepository, times(1)).save(eq(jonDoe));
 	}
 
@@ -319,8 +321,6 @@ public class CustomerServiceTests {
 	public void findContactInformationForUnidentifiedPersonReturnsNull() {
 		Customer jonDoe = newCustomer("Jon", "Doe");
 
-		when(mockContactRepository.findByPersonId(eq(1L))).thenReturn(null);
-
 		assertThat(jonDoe.isNew()).isTrue();
 		assertThat(customerService.findContactInformation(jonDoe)).isNull();
 
@@ -331,7 +331,7 @@ public class CustomerServiceTests {
 	public void findContactInformationWithNull() {
 		exception.expect(IllegalArgumentException.class);
 		exception.expectCause(is(nullValue(Throwable.class)));
-		exception.expectMessage("Customer cannot be null");
+		exception.expectMessage("Customer is required");
 
 		customerService.findContactInformation(null);
 	}
@@ -385,7 +385,7 @@ public class CustomerServiceTests {
 		when(mockContactRepository.findByPersonId(anyLong())).thenReturn(null);
 
 		when(mockContactRepository.save(any(Contact.class))).then(
-			(InvocationOnMock invocationOnMock) -> invocationOnMock.getArgumentAt(0, Contact.class));
+			(InvocationOnMock invocationOnMock) -> invocationOnMock.getArgument(0));
 
 		Contact contact = customerService.addContactInformation(jonDoe, expectedAddress);
 
@@ -426,7 +426,7 @@ public class CustomerServiceTests {
 		when(mockContactRepository.findByPersonId(anyLong())).thenReturn(null);
 
 		when(mockContactRepository.save(any(Contact.class))).then(
-			(InvocationOnMock invocationOnMock) -> invocationOnMock.getArgumentAt(0, Contact.class));
+			(InvocationOnMock invocationOnMock) -> invocationOnMock.getArgument(0));
 
 		Contact contact = customerService.addContactInformation(jonDoe, "jonDoe@work.com");
 
@@ -469,7 +469,7 @@ public class CustomerServiceTests {
 		when(mockContactRepository.findByPersonId(anyLong())).thenReturn(null);
 
 		when(mockContactRepository.save(any(Contact.class))).then(
-			(InvocationOnMock invocationOnMock) -> invocationOnMock.getArgumentAt(0, Contact.class));
+			(InvocationOnMock invocationOnMock) -> invocationOnMock.getArgument(0));
 
 		Contact contact = customerService.addContactInformation(jonDoe, expectedPhoneNumber);
 
@@ -503,7 +503,7 @@ public class CustomerServiceTests {
 	public void invalidEmailThrowsIllegalArgumentException() {
 		exception.expect(IllegalArgumentException.class);
 		exception.expectCause(is(nullValue(Throwable.class)));
-		exception.expectMessage("email [joeDirt@bar.biz] is invalid");
+		exception.expectMessage("Email [joeDirt@bar.biz] is not valid");
 
 		customerService.validate("joeDirt@bar.biz");
 	}

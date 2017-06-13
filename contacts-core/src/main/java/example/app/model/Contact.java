@@ -30,7 +30,7 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.gemfire.mapping.Region;
+import org.springframework.data.gemfire.mapping.annotation.Region;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -38,14 +38,14 @@ import org.springframework.util.StringUtils;
 import example.app.model.support.Identifiable;
 
 /**
- * The Contact class is an Abstract Data Type (ADT) modeling contact information for an individual person,
- * such as address, phone number and email address.
+ * The {@link Contact} class is an Abstract Data Type (ADT) modeling contact information for an individual person,
+ * such as address, email address and phone number.
  *
  * @author John Blum
  * @see java.io.Serializable
  * @see javax.persistence.Entity
  * @see javax.persistence.Table
- * @see org.springframework.data.gemfire.mapping.Region
+ * @see org.springframework.data.gemfire.mapping.annotation.Region
  * @see example.app.model.Address
  * @see example.app.model.Person
  * @see example.app.model.PhoneNumber
@@ -72,6 +72,7 @@ public class Contact implements Identifiable<Long>, Serializable {
 	private String email;
 
 	public static Contact newContact(Person person, Address address) {
+
 		Assert.notNull(person, "Person is required");
 		Assert.notNull(address, "Address is required");
 
@@ -84,6 +85,7 @@ public class Contact implements Identifiable<Long>, Serializable {
 	}
 
 	public static Contact newContact(Person person, String email) {
+
 		Assert.notNull(person, "Person is required");
 		Assert.hasText(email, "Email is required");
 
@@ -96,6 +98,7 @@ public class Contact implements Identifiable<Long>, Serializable {
 	}
 
 	public static Contact newContact(Person person, PhoneNumber phoneNumber) {
+
 		Assert.notNull(person, "Person is required");
 		Assert.notNull(phoneNumber, "PhoneNumber is required");
 
@@ -108,6 +111,7 @@ public class Contact implements Identifiable<Long>, Serializable {
 	}
 
 	public static Contact newContact(Person person, Address address, PhoneNumber phoneNumber) {
+
 		Assert.notNull(person, "Person is required");
 		Assert.notNull(address, "Address is required");
 		Assert.notNull(phoneNumber, "PhoneNumber is required");
@@ -122,6 +126,7 @@ public class Contact implements Identifiable<Long>, Serializable {
 	}
 
 	public static Contact newContact(Person person, String email, PhoneNumber phoneNumber) {
+
 		Assert.notNull(person, "Person is required");
 		Assert.hasText(email, "Email is required");
 		Assert.notNull(phoneNumber, "PhoneNumber is required");
@@ -136,6 +141,7 @@ public class Contact implements Identifiable<Long>, Serializable {
 	}
 
 	public static Contact newContact(Person person, Address address, String email, PhoneNumber phoneNumber) {
+
 		Assert.notNull(person, "Person is required");
 		Assert.notNull(address, "Address is required");
 		Assert.hasText(email, "Email is required");
@@ -214,7 +220,8 @@ public class Contact implements Identifiable<Long>, Serializable {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == this) {
+
+		if (this == obj) {
 			return true;
 		}
 
@@ -232,16 +239,20 @@ public class Contact implements Identifiable<Long>, Serializable {
 
 	@Override
 	public int hashCode() {
+
 		int hashValue = 17;
+
 		hashValue = 37 * hashValue + ObjectUtils.nullSafeHashCode(this.getPerson());
 		hashValue = 37 * hashValue + ObjectUtils.nullSafeHashCode(this.getAddress());
 		hashValue = 37 * hashValue + ObjectUtils.nullSafeHashCode(this.getEmail());
 		hashValue = 37 * hashValue + ObjectUtils.nullSafeHashCode(this.getPhoneNumber());
+
 		return hashValue;
 	}
 
 	@Override
 	public String toString() {
+
 		return String.format(
 			"{ @type = %1$s, id = %2$d, person = %3$s, address = %4$s, phoneNumber = %5$s, email = %6$s }",
 				getClass().getName(), getId(), getPerson(), getAddress(), getPhoneNumber(), getEmail());

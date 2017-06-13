@@ -79,7 +79,7 @@ public class ContactRepositoryIntegrationTests {
 		assertThat(contactRepository.count()).isEqualTo(1);
 		assertThat(expectedContact.getId()).isNotNull();
 
-		Contact actualContact = contactRepository.findOne(expectedContact.getId());
+		Contact actualContact = contactRepository.findById(expectedContact.getId()).orElse(null);
 
 		assertThat(actualContact).isNotNull();
 		assertThat(actualContact).isNotSameAs(expectedContact);

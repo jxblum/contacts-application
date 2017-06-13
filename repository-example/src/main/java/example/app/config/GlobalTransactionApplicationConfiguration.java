@@ -75,7 +75,7 @@ public class GlobalTransactionApplicationConfiguration {
 	}
 
 	@Bean
-	public GemFireDependsOnBeanFactoryPostProcessor gemFireDependsOnBeanFactoryPostProcessor() {
+	public GemFireDependsOnBeanFactoryPostProcessor gemfireDependsOnBeanFactoryPostProcessor() {
 		return new GemFireDependsOnBeanFactoryPostProcessor().add("NamingContextBuilder");
 	}
 
@@ -90,7 +90,7 @@ public class GlobalTransactionApplicationConfiguration {
 	}
 
 	@PostConstruct
-	public void postProcess(GemFireCache gemFireCache) {
-		gemFireCache.setCopyOnRead(true);
+	public void postProcess(GemFireCache gemfireCache) {
+		gemfireCache.setCopyOnRead(true);
 	}
 }

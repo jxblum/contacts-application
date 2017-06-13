@@ -83,6 +83,7 @@ public class ContactRepositoryIntegrationTests {
 
 	@Test
 	public void saveFindAndDeleteIsSuccessful() {
+
 		Contact savedJonDoe = newContact(newPerson("Jon", "Doe"), "jonDoe@home.com")
 			.with(newAddress("100 Main St.", "Portland", State.OREGON, "12345"))
 			.with(newPhoneNumber("503", "555", "1234"))
@@ -90,7 +91,7 @@ public class ContactRepositoryIntegrationTests {
 
 		contactRepository.save(savedJonDoe);
 
-		Contact loadedJonDoe = contactRepository.findOne(savedJonDoe.getId());
+		Contact loadedJonDoe = contactRepository.findById(savedJonDoe.getId()).orElse(null);
 
 		assertThat(loadedJonDoe).isEqualTo(savedJonDoe);
 

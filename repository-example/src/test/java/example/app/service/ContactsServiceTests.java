@@ -38,7 +38,7 @@ import org.junit.runner.RunWith;
 
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import example.app.model.Contact;
 import example.app.model.Person;
@@ -107,10 +107,10 @@ public class ContactsServiceTests {
 		Contact contact = newContact(jonDoe, "jonDoe@work.com");
 
 		when(mockGemfireContactRepository.save(any(Contact.class))).then(
-			(InvocationOnMock invocationOnMock) -> invocationOnMock.getArgumentAt(0, Contact.class));
+			(InvocationOnMock invocationOnMock) -> invocationOnMock.getArgument(0));
 
 		when(mockJpaContactRepository.save(any(Contact.class))).then(
-			(InvocationOnMock invocationOnMock) -> invocationOnMock.getArgumentAt(0, Contact.class));
+			(InvocationOnMock invocationOnMock) -> invocationOnMock.getArgument(0));
 
 		assertThat(contactsService.save(contact)).isEqualTo(contact);
 

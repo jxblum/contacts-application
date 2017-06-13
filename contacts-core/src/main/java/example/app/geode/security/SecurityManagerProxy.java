@@ -22,7 +22,7 @@ import org.apache.geode.security.AuthenticationFailedException;
 import org.apache.geode.security.ResourcePermission;
 import org.cp.elements.lang.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.gemfire.LazyWiringDeclarableSupport;
+import org.springframework.data.gemfire.support.LazyWiringDeclarableSupport;
 
 /**
  * The {@link SecurityManagerProxy} class is a Proxy delegating to an underlying Apache Geode
@@ -32,7 +32,7 @@ import org.springframework.data.gemfire.LazyWiringDeclarableSupport;
  *
  * @author John Blum
  * @see org.apache.geode.security.SecurityManager
- * @see org.springframework.data.gemfire.LazyWiringDeclarableSupport
+ * @see org.springframework.data.gemfire.support.LazyWiringDeclarableSupport
  * @since 1.0.0
  */
 @SuppressWarnings("unused")

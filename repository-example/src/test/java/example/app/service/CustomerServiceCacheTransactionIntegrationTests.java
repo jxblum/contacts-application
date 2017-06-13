@@ -88,8 +88,8 @@ public class CustomerServiceCacheTransactionIntegrationTests {
 		assertThat(contact.getEmail()).isEqualTo("jonDoe@work.com");
 		assertThat(contact.getPerson().getId()).isNotNull();
 		assertThat(((Customer) contact.getPerson()).getAccountNumber()).isNotNull();
-		assertThat(contactRepository.exists(contact.getId())).isTrue();
-		assertThat(customerRepository.exists(contact.getPerson().getId())).isTrue();
+		assertThat(contactRepository.existsById(contact.getId())).isTrue();
+		assertThat(customerRepository.existsById(contact.getPerson().getId())).isTrue();
 
 		Contact updatedContact = customerService.addContactInformation(jonDoe, newPhoneNumber("503", "541", "1234"));
 
@@ -98,8 +98,8 @@ public class CustomerServiceCacheTransactionIntegrationTests {
 		assertThat(updatedContact.getPerson()).isEqualTo(jonDoe);
 		assertThat(updatedContact.getEmail()).isEqualTo("jonDoe@work.com");
 		assertThat(updatedContact.getPhoneNumber()).isEqualTo(newPhoneNumber("503", "541", "1234"));
-		assertThat(contactRepository.exists(updatedContact.getId())).isTrue();
-		assertThat(customerRepository.exists(updatedContact.getPerson().getId())).isTrue();
+		assertThat(contactRepository.existsById(updatedContact.getId())).isTrue();
+		assertThat(customerRepository.existsById(updatedContact.getPerson().getId())).isTrue();
 	}
 
 	@Test
@@ -114,7 +114,7 @@ public class CustomerServiceCacheTransactionIntegrationTests {
 		try {
 			exception.expect(IllegalArgumentException.class);
 			exception.expectCause(is(nullValue(Throwable.class)));
-			exception.expectMessage("email [jd@home.biz] is invalid");
+			exception.expectMessage("Email [jd@home.biz] is not valid");
 
 			customerService.addContactInformation(joeDirt, "jd@home.biz");
 		}

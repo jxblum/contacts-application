@@ -32,15 +32,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.gemfire.EvictionAttributesFactoryBean;
-import org.springframework.data.gemfire.EvictionPolicyType;
-import org.springframework.data.gemfire.ExpirationAttributesFactoryBean;
 import org.springframework.data.gemfire.PartitionedRegionFactoryBean;
 import org.springframework.data.gemfire.RegionAttributesFactoryBean;
+import org.springframework.data.gemfire.eviction.EvictionAttributesFactoryBean;
+import org.springframework.data.gemfire.eviction.EvictionPolicyType;
+import org.springframework.data.gemfire.expiration.ExpirationAttributesFactoryBean;
 
 /**
- * The ExampleApplicationConfiguration class is a Spring {@link Configuration @Configuration} class that configures
- * and initializes an example Apache Geode cache {@link Region}.
+ * The {@link ExampleApplicationConfiguration} class is a Spring {@link Configuration @Configuration} class
+ * that configures and initializes an example Apache Geode cache {@link Region}.
  *
  * @author John Blum
  * @see org.springframework.context.annotation.Bean

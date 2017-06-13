@@ -36,20 +36,20 @@ import javax.persistence.Transient;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.gemfire.mapping.Region;
+import org.springframework.data.gemfire.mapping.annotation.Region;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 
 import example.app.model.support.Identifiable;
 
 /**
- * The Person class is an abstract data type (ADT) modeling a person.
+ * The {@link Person} class is an Abstract Data Type (ADT) modeling a person.
  *
  * @author John Blum
  * @see java.io.Serializable
  * @see javax.persistence.Entity
  * @see javax.persistence.Table
- * @see org.springframework.data.gemfire.mapping.Region
+ * @see org.springframework.data.gemfire.mapping.annotation.Region
  * @see example.app.model.support.Identifiable
  * @since 1.0.0
  */

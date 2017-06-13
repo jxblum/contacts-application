@@ -20,17 +20,17 @@ import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.MappedSuperclass;
 
-import org.springframework.data.gemfire.mapping.Region;
+import org.springframework.data.gemfire.mapping.annotation.Region;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 /**
- * The Customer class is an abstract data type (ADT) that models a customer.
+ * The {@link Customer} class is an Abstract Data Type (ADT) that models a customer.
  *
  * @author John Blum
  * @see example.app.model.Person
- * @see org.springframework.data.gemfire.mapping.Region
+ * @see org.springframework.data.gemfire.mapping.annotation.Region
  * @since 1.0.0
  */
 @MappedSuperclass

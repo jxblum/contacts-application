@@ -67,9 +67,9 @@ public class GoogleMapsApiGeocodingRepositoryIntegrationTests {
   }
 
   @Test
-  public void gecodeAddressIsSuccessful() {
+  public void geocodeAddressIsSuccessful() {
     Address address = Address.newAddress("1600 Amphitheatre Parkway", "Mountain View", State.CALIFORNIA, "94043");
-    Point latitudeLongitude = fixedPoint(newPoint(37.422366d, -122.084406d));
+    Point latitudeLongitude = fixedPoint(newPoint(37.422366d, -122.086006d));
 
     assertThat(fixedPoint(geocodingService.geocode(address))).isEqualTo(latitudeLongitude);
   }

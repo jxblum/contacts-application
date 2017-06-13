@@ -18,6 +18,7 @@ package example.app.service;
 
 import static example.app.model.Contact.newContact;
 
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.regex.Pattern;
@@ -36,13 +37,17 @@ import example.app.repo.gemfire.ContactRepository;
 import example.app.repo.gemfire.CustomerRepository;
 
 /**
- * The CustomerService class is a Spring {@link Service @Service} class used to manage customer interactions
+ * The {@link CustomerService} class is a Spring {@link Service @Service} class used to manage customer interactions
  * and relationships.
  *
  * @author John Blum
  * @see org.springframework.stereotype.Service
  * @see org.springframework.transaction.annotation.Transactional
+ * @see example.app.model.Address
+ * @see example.app.model.Contact
  * @see example.app.model.Customer
+ * @see example.app.model.PhoneNumber
+ * @see example.app.model.support.Identifiable
  * @see example.app.repo.gemfire.ContactRepository
  * @see example.app.repo.gemfire.CustomerRepository
  * @since 1.0.0
@@ -65,12 +70,12 @@ public class CustomerService {
 	}
 
 	protected ContactRepository getContactRepository() {
-		Assert.state(contactRepository != null, "ContactRepository was not properly initialized");
+		Assert.state(contactRepository != null, "ContactRepository is required");
 		return contactRepository;
 	}
 
 	protected CustomerRepository getCustomerRepository() {
-		Assert.state(customerRepository != null, "CustomerRepository was not properly initialized");
+		Assert.state(customerRepository != null, "CustomerRepository is required");
 		return customerRepository;
 	}
 
@@ -83,15 +88,17 @@ public class CustomerService {
 	}
 
 	protected <T extends Identifiable<Long>> T setId(T identifiable) {
-		if (identifiable.isNew()) {
-			identifiable.setId(newId());
-		}
+
+		Optional.ofNullable(identifiable)
+			.filter(Identifiable::isNew)
+			.ifPresent(it -> it.setId(newId()));
 
 		return identifiable;
 	}
 
 	@Transactional
 	public Customer createAccount(Customer customer) {
+
 		Assert.state(!customer.hasAccount(),  String.format("Customer [%s] already has an account", customer));
 
 		return getCustomerRepository().save(setId(customer.with(newAccountNumber())));
@@ -99,11 +106,15 @@ public class CustomerService {
 
 	@Transactional
 	public Customer createAccountIfNotExists(Customer customer) {
-		Customer existingCustomer = (customer.hasAccount()
-			? getCustomerRepository().findByAccountNumber(customer.getAccountNumber()) : null);
 
-		existingCustomer = (existingCustomer != null ? existingCustomer
-			: (customer.isNotNew() ? getCustomerRepository().findOne(customer.getId()) : null));
+		Customer existingCustomer = Optional.of(customer)
+			.filter(Customer::hasAccount)
+			.map(it -> getCustomerRepository().findByAccountNumber(it.getAccountNumber()))
+			.orElseGet(() ->
+				Optional.of(customer)
+					.filter(Customer::isNotNew)
+					.map(it -> getCustomerRepository().findById(it.getId()).orElse(null))
+					.orElse(null));
 
 		if (existingCustomer == null || !customer.hasAccount()) {
 			customer.setAccountNumber(null);
@@ -115,35 +126,43 @@ public class CustomerService {
 
 	@Transactional(readOnly = true)
 	public Contact findContactInformation(Customer customer) {
-		Assert.notNull(customer, "Customer cannot be null");
 
-		return (customer.isNotNew() ? getContactRepository().findByPersonId(customer.getId()) : null);
+		Assert.notNull(customer, "Customer is required");
+
+		return Optional.of(customer)
+			.filter(Customer::isNotNew)
+			.map(it -> getContactRepository().findByPersonId(customer.getId()))
+			.orElse(null);
 	}
 
 	protected Contact saveContactInformation(Customer customer, Function<Contact, Contact> customerContactFunction) {
+
 		return getContactRepository().save(customerContactFunction.apply(findContactInformation(
 			createAccountIfNotExists(customer))));
 	}
 
 	@Transactional
 	public Contact addContactInformation(Customer customer, Address address) {
+
 		return saveContactInformation(customer, (Contact customerContact) ->
-			customerContact != null ? customerContact.with(validate(address))
-				: newContact(customer, validate(address)).identifiedBy(newId()));
+			Optional.ofNullable(customerContact).map(it -> it.with(validate(address)))
+				.orElseGet(() -> newContact(customer, validate(address)).identifiedBy(newId())));
 	}
 
 	@Transactional
 	public Contact addContactInformation(Customer customer, String email) {
+
 		return saveContactInformation(customer, (Contact customerContact) ->
-			customerContact != null ? customerContact.with(validate(email))
-				: newContact(customer, validate(email)).identifiedBy(newId()));
+			Optional.ofNullable(customerContact).map(it -> it.with(validate(email)))
+				.orElseGet(() -> newContact(customer, validate(email)).identifiedBy(newId())));
 	}
 
 	@Transactional
 	public Contact addContactInformation(Customer customer, PhoneNumber phoneNumber) {
+
 		return saveContactInformation(customer, (Contact customerContact) ->
-			customerContact != null ? customerContact.with(validate(phoneNumber))
-				: newContact(customer, validate(phoneNumber)).identifiedBy(newId()));
+			Optional.ofNullable(customerContact).map(it -> it.with(validate(phoneNumber)))
+				.orElseGet(() -> newContact(customer, validate(phoneNumber)).identifiedBy(newId())));
 	}
 
 	protected Address validate(Address address) {
@@ -151,11 +170,14 @@ public class CustomerService {
 	}
 
 	protected String validate(String email) {
-		Assert.isTrue(EMAIL_PATTERN.matcher(email).find(), String.format("email [%s] is invalid", email));
+
+		Assert.isTrue(EMAIL_PATTERN.matcher(email).find(), String.format("Email [%s] is not valid", email));
+
 		return email;
 	}
 
 	protected PhoneNumber validate(PhoneNumber phoneNumber) {
+
 		Assert.isTrue(!"555".equals(phoneNumber.getPrefix()), String.format(
 			"'555' is not a valid phone number [%s] exchange", phoneNumber));
 

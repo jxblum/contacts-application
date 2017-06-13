@@ -20,7 +20,7 @@ import org.apache.geode.cache.Cache;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.gemfire.GemfireTransactionManager;
+import org.springframework.data.gemfire.transaction.GemfireTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -30,7 +30,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * @author John Blum
  * @see org.springframework.context.annotation.Bean
  * @see org.springframework.context.annotation.Configuration
- * @see org.springframework.data.gemfire.GemfireTransactionManager
+ * @see org.springframework.data.gemfire.transaction.GemfireTransactionManager
  * @see org.springframework.transaction.annotation.EnableTransactionManagement
  * @see org.springframework.transaction.PlatformTransactionManager
  * @see example.app.config.ApplicationConfiguration
