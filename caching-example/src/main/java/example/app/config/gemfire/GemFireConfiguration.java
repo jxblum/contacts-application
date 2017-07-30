@@ -35,13 +35,13 @@ import example.app.model.Address;
  * @see org.springframework.data.gemfire.config.annotation.PeerCacheApplication
  * @since 1.0.0
  */
-@Configuration
 @PeerCacheApplication(name = "CachingExampleApplication")
 @SuppressWarnings("unused")
 public class GemFireConfiguration {
 
   @Bean(name = "AddressToLatitudeLongitude")
   public LocalRegionFactoryBean<Address, Point> addressToLatitudeLongitudeRegion(Cache gemfireCache) {
+
     LocalRegionFactoryBean<Address, Point> addressToLatitudeLongitudeRegion = new LocalRegionFactoryBean<>();
 
     addressToLatitudeLongitudeRegion.setCache(gemfireCache);
@@ -53,6 +53,7 @@ public class GemFireConfiguration {
 
   @Bean(name = "LatitudeLongitudeToAddress")
   public LocalRegionFactoryBean<Address, Point> latitudeLongitudeToAddressRegion(Cache gemfireCache) {
+
     LocalRegionFactoryBean<Address, Point> addressToLatitudeLongitudeRegion = new LocalRegionFactoryBean<>();
 
     addressToLatitudeLongitudeRegion.setCache(gemfireCache);

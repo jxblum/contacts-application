@@ -60,6 +60,7 @@ public class GoogleMapsApiGeocodingRepository extends GeocodingRepositoryAdapter
   }
 
   protected Address toAddress(AddressComponent[] addressComponents) {
+
     String street = findAddressComponent(addressComponents, AddressComponentType.STREET_NUMBER)
       .concat(" ").concat(findAddressComponent(addressComponents, AddressComponentType.ROUTE));
 
@@ -77,7 +78,7 @@ public class GoogleMapsApiGeocodingRepository extends GeocodingRepositoryAdapter
       AddressComponentType... componentTypes) {
 
     for (AddressComponent addressComponent : addressComponents) {
-      if (Arrays.asList(addressComponent.types).stream().anyMatch(
+      if (Arrays.stream(addressComponent.types).anyMatch(
           (element) -> Arrays.asList(componentTypes).contains(element))) {
 
         return addressComponent.longName;
@@ -103,9 +104,11 @@ public class GoogleMapsApiGeocodingRepository extends GeocodingRepositoryAdapter
 
   @Override
   public Point geocode(Address address) {
+
     String stringAddress = toString(address);
 
     try {
+
       GeoApiContext context = newGeoApiContext();
 
       GeocodingResult[] results = GeocodingApi.geocode(context, stringAddress).await();
@@ -126,7 +129,9 @@ public class GoogleMapsApiGeocodingRepository extends GeocodingRepositoryAdapter
 
   @Override
   public Address reverseGeocode(Point location) {
+
     try {
+
       GeoApiContext context = newGeoApiContext();
 
       GeocodingResult[] results = GeocodingApi.reverseGeocode(context, toLatitudeLongitude(location)).await();

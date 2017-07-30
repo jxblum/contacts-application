@@ -68,6 +68,7 @@ public class GoogleMapsApiGeocodingRepositoryIntegrationTests {
 
   @Test
   public void geocodeAddressIsSuccessful() {
+
     Address address = Address.newAddress("1600 Amphitheatre Parkway", "Mountain View", State.CALIFORNIA, "94043");
     Point latitudeLongitude = fixedPoint(newPoint(37.422366d, -122.086006d));
 
@@ -76,6 +77,7 @@ public class GoogleMapsApiGeocodingRepositoryIntegrationTests {
 
   @Test
   public void reverseGeocodeLatitudeLongitudeIsSuccessful() {
+
     Address address = Address.newAddress("1600 Amphitheatre Parkway", "Mountain View", State.CALIFORNIA, "94043");
     Point latitudeLongitude = newPoint(37.422344d, -122.0844266d);
 

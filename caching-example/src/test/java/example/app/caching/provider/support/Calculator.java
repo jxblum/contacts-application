@@ -40,6 +40,7 @@ public class Calculator extends AbstractCacheableService {
 
   @CacheResult(cacheName = "Factorials")
   public long factorial(long number) {
+
     setCacheMiss();
 
     Assert.isTrue(number >= 0L, String.format("Number [%d] must be greater than equal to 0", number));

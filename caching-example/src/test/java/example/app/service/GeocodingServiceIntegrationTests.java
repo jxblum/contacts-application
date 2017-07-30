@@ -83,6 +83,7 @@ public class GeocodingServiceIntegrationTests {
 
   @Before
   public void setup() {
+
     addressToLatitudeLongitude.clear();
     latitudeLongitudeToAddress.clear();
 
@@ -117,6 +118,7 @@ public class GeocodingServiceIntegrationTests {
     @Bean
     @SuppressWarnings("unused")
     GeocodingRepository geocodingRepository() {
+
       GeocodingRepository mockGeocodingRepository = mock(GeocodingRepository.class);
 
       when(mockGeocodingRepository.geocode(addressOne)).thenReturn(addressOne.getLocation());

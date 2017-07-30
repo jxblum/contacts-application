@@ -16,12 +16,10 @@
 
 package example.app.config;
 
-import org.apache.geode.cache.Cache;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.gemfire.cache.GemfireCacheManager;
+import org.springframework.data.gemfire.cache.config.EnableGemfireCaching;
 
 import example.app.config.gemfire.GemFireConfiguration;
 import example.app.repo.GeocodingRepository;
@@ -46,17 +44,10 @@ import example.app.service.GeocodingService;
  * @since 1.0.0
  */
 @Configuration
-@EnableCaching
+@EnableGemfireCaching
 @Import(GemFireConfiguration.class)
 @SuppressWarnings("unused")
 public class CachingExampleConfiguration {
-
-  @Bean
-  public GemfireCacheManager cacheManager(Cache gemfireCache) {
-    GemfireCacheManager cacheManager = new GemfireCacheManager();
-    cacheManager.setCache(gemfireCache);
-    return cacheManager;
-  }
 
   @Bean
   @SuppressWarnings("unchecked")

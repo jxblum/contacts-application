@@ -17,7 +17,7 @@
   <name>Caching Example</name>
   <description>
     The Caching Example module for the Contacts Application project contains examples of Spring Framework's
-    Cache Abstraction and using Spring Data Geode combined with Apache Geode as the caching provider.
+    Cache Abstraction using Spring Data Geode combined with Apache Geode as the caching provider.
   </description>
   <url>http://docs.spring.io/spring/docs/current/spring-framework-reference/htmlsingle/#cache</url>
 
