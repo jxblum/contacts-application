@@ -38,6 +38,7 @@ public class EchoClientApplicationConfiguration {
 
 	@Bean(name = "Echo")
 	ClientRegionFactoryBean<String, String> echoRegion(GemFireCache gemfireCache) {
+
 		ClientRegionFactoryBean<String, String> echoRegion = new ClientRegionFactoryBean<>();
 
 		echoRegion.setCache(gemfireCache);
