@@ -14,8 +14,10 @@
  * permissions and limitations under the License.
  */
 
-package demo.app.client;
+package attic.app.spring.client;
 
+import static example.app.core.util.MapUtils.newMapEntry;
+import static java.util.Arrays.stream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import javax.annotation.Resource;
@@ -53,18 +55,18 @@ public class DemoGeodeClientApplication implements CommandLineRunner {
 
   @Override
   public void run(String... args) throws Exception {
-    for (String key : args) {
-      String value = echo.get(key);
-      assertThat(key).isEqualTo(value);
-      logger.info("Client says {}; Server says {}", key, value);
-    }
+    stream(args).map(key -> newMapEntry(key, this.echo.get(key))).forEach(entry -> {
+      logger.info("Client says {}; Server says {}", entry.getKey(), entry.getValue());
+      assertThat(entry.getValue()).isEqualTo(entry.getKey());
+    });
   }
 
-  @ClientCacheApplication(name = "DemoEchoClient", locators = { @ClientCacheApplication.Locator(port = 10334)})
+  @ClientCacheApplication(name = "DemoEchoClient", locators = { @ClientCacheApplication.Locator })
   static class GeodeClientConfiguration {
 
     @Bean(name = "Echo")
     ClientRegionFactoryBean<String, String> echoRegion(GemFireCache gemfireCache) {
+
       ClientRegionFactoryBean<String, String> echoRegion = new ClientRegionFactoryBean<>();
 
       echoRegion.setCache(gemfireCache);

@@ -14,7 +14,7 @@
  * permissions and limitations under the License.
  */
 
-package demo.geode;
+package attic.app.geode;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 

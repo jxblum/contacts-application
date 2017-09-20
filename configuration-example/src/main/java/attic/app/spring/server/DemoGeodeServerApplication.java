@@ -14,7 +14,7 @@
  * permissions and limitations under the License.
  */
 
-package demo.app.server;
+package attic.app.spring.server;
 
 import org.apache.geode.cache.GemFireCache;
 import org.springframework.boot.SpringApplication;
@@ -50,6 +50,7 @@ public class DemoGeodeServerApplication {
 
     @Bean(name = "Echo")
     LocalRegionFactoryBean<String, String> echoRegion(GemFireCache gemfireCache) {
+
       LocalRegionFactoryBean<String, String> echoRegion = new LocalRegionFactoryBean<>();
 
       echoRegion.setCache(gemfireCache);
