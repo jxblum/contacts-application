@@ -8,6 +8,7 @@ list members
 describe member --name=AnnotationConfiguredGeodeServerApplication
 list regions
 describe region --name=/Echo
-get --region=/Echo --key=TEST
 get --region=/Echo --key=Hello
+get --region=/Echo --key=TEST
+get --region=/Echo --key=Good-bye
 describe region --name=/Echo
