@@ -71,7 +71,9 @@ public class GeodeClientApplication implements Runnable {
   }
 
   public GeodeClientApplication(List<String> args) {
-    Assert.notNull(args, "Program arguments must not be null");
+
+    Assert.notNull(args, "Program arguments are required");
+
     this.arguments = args;
   }
 
@@ -82,6 +84,7 @@ public class GeodeClientApplication implements Runnable {
 
   @SuppressWarnings("all")
   void run(List<String> arguments) {
+
     ClientCache gemfireCache = null;
 
     try {
@@ -97,8 +100,8 @@ public class GeodeClientApplication implements Runnable {
       assertThat(echo.isEmpty()).isTrue();
       assertThat(echo.size()).isEqualTo(0);
     }
-    catch (Exception e) {
-      e.printStackTrace(System.err);
+    catch (Exception cause) {
+      cause.printStackTrace(System.err);
     }
     finally {
       close(gemfireCache);
@@ -119,6 +122,7 @@ public class GeodeClientApplication implements Runnable {
   }
 
   Properties gemfireProperties() {
+
     Properties gemfireProperties = new Properties();
 
     gemfireProperties.setProperty("name", applicationName());
@@ -136,6 +140,7 @@ public class GeodeClientApplication implements Runnable {
   }
 
   ClientCache gemfireCache(Properties gemfireProperties) {
+
     return new ClientCacheFactory(gemfireProperties)
       .addPoolServer(GEMFIRE_SERVER_HOST, GEMFIRE_SERVER_PORT)
       .create();

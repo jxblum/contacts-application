@@ -110,7 +110,9 @@ public class GeodeServerApplication implements Runnable {
    * @throws IllegalArgumentException if the program arguments are null.
    */
   public GeodeServerApplication(List<String> args) {
-    Assert.notNull(args, "Program argument must be be null");
+
+    Assert.notNull(args, "Program arguments are required");
+
     this.arguments = args;
   }
 
@@ -121,6 +123,7 @@ public class GeodeServerApplication implements Runnable {
   }
 
   protected void run(List<String> arguments) {
+
     Cache gemfireCache = null;
 
     try {
@@ -197,6 +200,7 @@ public class GeodeServerApplication implements Runnable {
   }
 
   Properties gemfireProperties() {
+
     Properties gemfireProperties = new Properties();
 
     gemfireProperties.setProperty("name", applicationName());
@@ -219,6 +223,7 @@ public class GeodeServerApplication implements Runnable {
   }
 
   CacheServer gemfireCacheServer(Cache gemfireCache) throws IOException {
+
     CacheServer gemfireCacheServer = gemfireCache.addCacheServer();
 
     gemfireCacheServer.setBindAddress(DEFAULT_GEMFIRE_CACHE_SERVER_BIND_ADDRESS);
@@ -232,6 +237,7 @@ public class GeodeServerApplication implements Runnable {
   }
 
   Region<String, String> echoRegion(Cache gemfireCache) {
+
     RegionFactory<String, String> echoRegion = gemfireCache.createRegionFactory(RegionShortcut.PARTITION);
 
     echoRegion.setCacheLoader(EchoCacheLoader.getInstance());
