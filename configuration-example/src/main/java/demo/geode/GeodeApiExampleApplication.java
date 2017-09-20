@@ -24,28 +24,31 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The GeodeApiExampleApplication class...
+ * The {@link GeodeApiExampleApplication} class is an example Apache Geode application bootstrapping a Geode Server,
+ * peer cache instance, distributed system (cluster) member using Geode's API.
  *
  * @author John Blum
+ * @see org.apache.geode.cache.CacheFactory
+ * @see org.apache.geode.cache.GemFireCache
  * @since 1.0.0
  */
-public class GeodeApiExampleApplication implements Runnable {
+public final class GeodeApiExampleApplication implements Runnable {
 
-  protected static final String DEFAULT_GEMFIRE_LOG_LEVEL = "config";
+  private static final String DEFAULT_GEMFIRE_LOG_LEVEL = "config";
 
   public static void main(String[] args) {
     newGeodeApiExampleApplication(args).run();
   }
 
-  protected static GeodeApiExampleApplication newGeodeApiExampleApplication(String[] args) {
+  public static GeodeApiExampleApplication newGeodeApiExampleApplication(String[] args) {
     return new GeodeApiExampleApplication(args);
   }
 
-  protected final Logger logger = LoggerFactory.getLogger(getClass());
+  private final Logger logger = LoggerFactory.getLogger(getClass());
 
   private final String[] args;
 
-  protected GeodeApiExampleApplication(String[] args) {
+  private GeodeApiExampleApplication(String[] args) {
     this.args = args;
   }
 
@@ -61,6 +64,7 @@ public class GeodeApiExampleApplication implements Runnable {
 
   @SuppressWarnings({ "unchecked", "unused" })
   protected <T extends GemFireCache> T gemfireCache(String[] args) {
+
     return (T) new CacheFactory()
       .set("name", applicationName())
       .set("mcast-port", "0")
@@ -69,15 +73,15 @@ public class GeodeApiExampleApplication implements Runnable {
       .create();
   }
 
-  protected String applicationName() {
-    return ("GemFirePeerCache" + GeodeApiExampleApplication.class.getSimpleName());
+  private String applicationName() {
+    return GeodeApiExampleApplication.class.getSimpleName();
   }
 
-  protected String logLevel() {
+  private String logLevel() {
     return System.getProperty("gemfire.log-level", DEFAULT_GEMFIRE_LOG_LEVEL);
   }
 
-  protected String waitForUserInput(String message) {
+  private String waitForUserInput(String message) {
     logger.info(message);
     Scanner in = new Scanner(System.in);
     return in.next();
