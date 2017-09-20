@@ -78,6 +78,7 @@ public abstract class CollectionUtils {
 
   /* (non-Javadoc) */
   public static <T> List<T> toList(Iterable<T> iterable) {
+
     if (iterable instanceof Collection) {
       return new ArrayList<>((Collection<T>) iterable);
     }
@@ -94,6 +95,7 @@ public abstract class CollectionUtils {
 
   /* (non-Javadoc) */
   public static <T> Set<T> toSet(Iterable<T> iterable) {
+
     if (iterable instanceof Collection) {
       return new HashSet<>((Collection<T>) iterable);
     }
@@ -110,6 +112,7 @@ public abstract class CollectionUtils {
 
   /* (non-Javadoc) */
   public static String toString(Map<?, ?> map) {
+
     StringBuilder builder = new StringBuilder("{\n");
 
     int count = 0;

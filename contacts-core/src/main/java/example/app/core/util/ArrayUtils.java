@@ -41,9 +41,13 @@ public abstract class ArrayUtils {
   /* (non-Javadoc) */
   @SuppressWarnings("unchecked")
   public static <T> T[] toArray(Iterable<T> iterable) {
+
     List<T> list = toList(iterable);
+
     Object[] array = (Object[]) Array.newInstance(Object.class, list.size());
+
     System.arraycopy(list.toArray(), 0, array, 0, array.length);
+
     return (T[]) array;
   }
 }
