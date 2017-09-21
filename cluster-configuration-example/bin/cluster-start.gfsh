@@ -1,0 +1,8 @@
+#!/bin/gfsh
+
+start locator --name=LocatorOne --log-level=config
+start server --name=ServerOne --log-level=config
+start server --name=ServerTwo --disable-default-server --log-level=config
+start server --name=ServerThree --disable-default-server --log-level=config
+list members
+list regions

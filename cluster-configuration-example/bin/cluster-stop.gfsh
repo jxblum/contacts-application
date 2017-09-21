@@ -1,0 +1,6 @@
+#!/bin/gfsh
+
+stop server --name=ServerThree
+stop server --name=ServerTwo
+stop server --name=ServerOne
+stop locator --name=LocatorOne

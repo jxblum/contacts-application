@@ -1,0 +1,9 @@
+#!/bin/gfsh
+
+set variable --name=CLUSTER_CONFIGURATION_EXAMPLE_HOME --value=/Users/jblum/pivdev/spring-data-examples-workspace/contacts-application-workspace/cluster-configuration-example
+run --file=${CLUSTER_CONFIGURATION_EXAMPLE_HOME}/bin/cluster-start.gfsh
+#start server --name=ServerThree --disable-default-server --log-level=config
+list members
+create region --name=ServerDefinedRegion --type=PARTITION
+list regions
+describe region --name=/ServerDefinedRegion

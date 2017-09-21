@@ -1,0 +1,4 @@
+#!/bin/gfsh
+
+run --file=${CLUSTER_CONFIGURATION_EXAMPLE_HOME}/bin/cluster-stop.gfsh
+run --file=${CLUSTER_CONFIGURATION_EXAMPLE_HOME}/bin/cluster-start.gfsh
