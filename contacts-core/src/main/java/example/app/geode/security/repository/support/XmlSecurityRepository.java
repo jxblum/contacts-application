@@ -31,6 +31,7 @@ import org.jdom2.input.SAXBuilder;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
 import example.app.geode.security.model.Role;
@@ -48,11 +49,13 @@ import example.app.geode.security.repository.CachingSecurityRepository;
  * @see org.springframework.beans.factory.InitializingBean
  * @see org.springframework.core.io.ClassPathResource
  * @see org.springframework.core.io.Resource
+ * @see org.springframework.stereotype.Repository
  * @see example.app.geode.security.model.Role
  * @see example.app.geode.security.model.User
  * @see example.app.geode.security.repository.CachingSecurityRepository
  * @since 1.0.0
  */
+@Repository
 @SuppressWarnings("unused")
 public class XmlSecurityRepository extends CachingSecurityRepository<User> implements InitializingBean {
 
