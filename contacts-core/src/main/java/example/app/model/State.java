@@ -26,6 +26,7 @@ import org.springframework.util.Assert;
  */
 @SuppressWarnings("unused")
 public enum State {
+
 	ALABAMA("AL", "Alabama"),
 	ALASKA("AK", "Alaska"),
 	ARIZONA("AZ", "Arizona"),

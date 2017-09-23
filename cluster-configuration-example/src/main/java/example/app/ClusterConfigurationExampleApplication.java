@@ -26,6 +26,9 @@ import org.apache.geode.cache.Region;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.ComponentScan.Filter;
+import org.springframework.context.annotation.FilterType;
 
 /**
  * The ClusterConfigurationExampleApplication class...
@@ -34,6 +37,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @since 1.0.0
  */
 @SpringBootApplication
+@ComponentScan(excludeFilters = @Filter(type = FilterType.REGEX, pattern = "example\\.app\\.geode\\.security\\..*"))
 @SuppressWarnings("unused")
 public class ClusterConfigurationExampleApplication implements CommandLineRunner {
 
@@ -47,12 +51,16 @@ public class ClusterConfigurationExampleApplication implements CommandLineRunner
   @Override
   public void run(String... args) throws Exception {
 
-    assertThat(this.clientDefinedRegion.put("myKey", "test")).isNull();
-    assertThat(this.clientDefinedRegion.put("myKey", "testing")).isEqualTo("test");
-    assertThat(this.clientDefinedRegion.put("myKey", "tested")).isEqualTo("tested");
-    assertThat(this.clientDefinedRegion.get("myKey")).isEqualTo("tested");
+    assertThat(putThenGet("myKey", "test")).isEqualTo("test");
+    assertThat(putThenGet("myKey", "testing")).isEqualTo("testing");
+    assertThat(putThenGet("myKey", "tested")).isEqualTo("tested");
 
     promptToExit();
+  }
+
+  private String putThenGet(String key, String value) {
+    this.clientDefinedRegion.put(key, value);
+    return this.clientDefinedRegion.get(key);
   }
 
   private void promptToExit() {

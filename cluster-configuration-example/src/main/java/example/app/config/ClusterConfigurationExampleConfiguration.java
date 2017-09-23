@@ -16,10 +16,20 @@
 
 package example.app.config;
 
+import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.gemfire.cache.config.EnableGemfireCaching;
+import org.springframework.data.gemfire.config.annotation.EnableCachingDefinedRegions;
+import org.springframework.data.gemfire.config.annotation.EnableEntityDefinedRegions;
+import org.springframework.data.gemfire.repository.config.EnableGemfireRepositories;
 
 import example.app.config.gemfire.GemFireConfiguration;
+import example.app.model.Contact;
+import example.app.model.Customer;
+import example.app.model.Person;
+import example.app.repo.PersonRepository;
 
 /**
  * The ClusterConfigurationExampleConfiguration class...
@@ -28,7 +38,13 @@ import example.app.config.gemfire.GemFireConfiguration;
  * @since 1.0.0
  */
 @Configuration
+@EnableCachingDefinedRegions
+@EnableEntityDefinedRegions(basePackageClasses = Person.class,
+  excludeFilters = @Filter(type = FilterType.ASSIGNABLE_TYPE, classes = { Contact.class, Customer.class }))
+@EnableGemfireCaching
+@EnableGemfireRepositories(basePackageClasses = PersonRepository.class)
 @Import(GemFireConfiguration.class)
+@SuppressWarnings("unused")
 public class ClusterConfigurationExampleConfiguration {
 
 }

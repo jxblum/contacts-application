@@ -21,6 +21,7 @@ import org.apache.geode.cache.client.ClientRegionShortcut;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.gemfire.client.ClientRegionFactoryBean;
 import org.springframework.data.gemfire.config.annotation.ClientCacheApplication;
+import org.springframework.data.gemfire.config.annotation.ClientCacheApplication.Locator;
 import org.springframework.data.gemfire.config.annotation.EnableClusterConfiguration;
 
 /**
@@ -29,9 +30,9 @@ import org.springframework.data.gemfire.config.annotation.EnableClusterConfigura
  * @author John Blum
  * @since 1.0.0
  */
+@ClientCacheApplication(name = "ClusterConfigurationExampleGemFireClientApplication", locators = { @Locator })
 @EnableClusterConfiguration
-@ClientCacheApplication(name = "ClusterConfigurationExampleGemFireClientApplication",
-  locators = { @ClientCacheApplication.Locator })
+@SuppressWarnings("unused")
 public class GemFireConfiguration {
 
   @Bean("ClientDefinedRegion")
