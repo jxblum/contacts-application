@@ -30,7 +30,7 @@ import example.app.geode.cache.loader.support.CacheLoaderSupport;
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class EchoCacheLoader extends CacheLoaderSupport<String, String> {
+public class EchoCacheLoader extends CacheLoaderSupport<Object, Object> {
 
 	private static final EchoCacheLoader INSTANCE = new EchoCacheLoader();
 
@@ -39,7 +39,7 @@ public class EchoCacheLoader extends CacheLoaderSupport<String, String> {
 	}
 
 	@Override
-	public String load(LoaderHelper<String, String> helper) throws CacheLoaderException {
+	public Object load(LoaderHelper<Object, Object> helper) throws CacheLoaderException {
 		return helper.getKey();
 	}
 }

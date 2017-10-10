@@ -39,9 +39,9 @@ import example.app.geode.cache.loader.EchoCacheLoader;
 public class EchoServerApplicationConfiguration {
 
 	@Bean(name = "Echo")
-	PartitionedRegionFactoryBean<String, String> echoRegion(Cache gemfireCache) {
+	PartitionedRegionFactoryBean<Object, Object> echoRegion(Cache gemfireCache) {
 
-		PartitionedRegionFactoryBean<String, String> echoRegion = new PartitionedRegionFactoryBean<>();
+		PartitionedRegionFactoryBean<Object, Object> echoRegion = new PartitionedRegionFactoryBean<>();
 
 		echoRegion.setCache(gemfireCache);
 		echoRegion.setCacheLoader(EchoCacheLoader.getInstance());

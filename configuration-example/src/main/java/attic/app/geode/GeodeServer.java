@@ -64,12 +64,12 @@ public class GeodeServer {
     cacheServer.setPort(CacheServer.DEFAULT_PORT);
     cacheServer.start();
 
-    RegionFactory<String, String> echoRegionFactory =
+    RegionFactory<Object, Object> echoRegionFactory =
       geodeCache.createRegionFactory(RegionShortcut.PARTITION);
 
     echoRegionFactory.setCacheLoader(EchoCacheLoader.getInstance());
 
-    Region<String, String> echoRegion = echoRegionFactory.create("Echo");
+    Region<Object, Object> echoRegion = echoRegionFactory.create("Echo");
 
     assertThat(echoRegion).isNotNull();
     assertThat(echoRegion).isEmpty();

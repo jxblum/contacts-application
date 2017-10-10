@@ -214,8 +214,9 @@ public class GeodeSecurityIntegrationTests extends AbstractGeodeIntegrationTests
     private GemFireCache gemfireCache;
 
     @Bean("Echo")
-    LocalRegionFactoryBean<String, String> echoRegion(GemFireCache gemfireCache) {
-      LocalRegionFactoryBean<String, String> echoRegion = new LocalRegionFactoryBean<>();
+    LocalRegionFactoryBean<Object, Object> echoRegion(GemFireCache gemfireCache) {
+
+      LocalRegionFactoryBean<Object, Object> echoRegion = new LocalRegionFactoryBean<>();
 
       echoRegion.setCache(gemfireCache);
       echoRegion.setCacheLoader(EchoCacheLoader.getInstance());

@@ -40,7 +40,8 @@ public class EchoCacheLoaderTests {
   @Test
   @SuppressWarnings("unchecked")
   public void loadReturnsKeyAsValue() {
-    LoaderHelper<String, String> mockLoaderHelper = mock(LoaderHelper.class);
+
+    LoaderHelper<Object, Object> mockLoaderHelper = mock(LoaderHelper.class);
 
     when(mockLoaderHelper.getKey()).thenReturn("test");
 

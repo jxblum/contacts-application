@@ -14,50 +14,32 @@
  * permissions and limitations under the License.
  */
 
-package attic.app.spring.server;
+package attic.app.spring.cluster;
 
-import org.apache.geode.cache.GemFireCache;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
-import org.springframework.data.gemfire.LocalRegionFactoryBean;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.gemfire.config.annotation.CacheServerApplication;
 import org.springframework.data.gemfire.config.annotation.EnableLocator;
 import org.springframework.data.gemfire.config.annotation.EnableManager;
 
-import example.app.geode.cache.loader.EchoCacheLoader;
-
 /**
- * The {@link DemoGeodeServerApplication} class...
+ * The DemoClusteredGeodeServerApplication class...
  *
  * @author John Blum
  * @since 1.0.0
  */
 @SpringBootApplication
-@Import(DemoGeodeServerApplication.Configuration.class)
-@SuppressWarnings("unused")
-public class DemoGeodeServerApplication {
+@CacheServerApplication(locators = "localhost[10334]")
+public class DemoClusteredGeodeServerApplication {
 
   public static void main(String[] args) {
-    SpringApplication.run(DemoGeodeServerApplication.class, args);
+    SpringApplication.run(DemoClusteredGeodeServerApplication.class);
   }
 
-  @CacheServerApplication(name = "DemoEchoServer")
   @EnableLocator
   @EnableManager
-  static class Configuration {
-
-    @Bean(name = "Echo")
-    LocalRegionFactoryBean<Object, Object> echoRegion(GemFireCache gemfireCache) {
-
-      LocalRegionFactoryBean<Object, Object> echoRegion = new LocalRegionFactoryBean<>();
-
-      echoRegion.setCache(gemfireCache);
-      echoRegion.setCacheLoader(EchoCacheLoader.getInstance());
-      echoRegion.setClose(false);
-
-      return echoRegion;
-    }
+  @Profile("embedded-locator")
+  static class EmbeddedLocatorConfiguration {
   }
 }

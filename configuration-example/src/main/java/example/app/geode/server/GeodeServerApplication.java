@@ -236,13 +236,11 @@ public class GeodeServerApplication implements Runnable {
     return gemfireCacheServer;
   }
 
-  Region<String, String> echoRegion(Cache gemfireCache) {
+  Region<Object, Object> echoRegion(Cache gemfireCache) {
 
-    RegionFactory<String, String> echoRegion = gemfireCache.createRegionFactory(RegionShortcut.PARTITION);
+    RegionFactory<Object, Object> echoRegion = gemfireCache.createRegionFactory(RegionShortcut.PARTITION);
 
     echoRegion.setCacheLoader(EchoCacheLoader.getInstance());
-    echoRegion.setKeyConstraint(String.class);
-    echoRegion.setValueConstraint(String.class);
 
     return echoRegion.create("Echo");
   }
