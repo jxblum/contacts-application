@@ -57,6 +57,7 @@
 
   <properties>
     <hazelcast.version>3.7.2</hazelcast.version>
+    <spring-data-geode.version>2.1.0.BUILD-SNAPSHOT</spring-data-geode.version>
   </properties>
 
   <dependencies>
