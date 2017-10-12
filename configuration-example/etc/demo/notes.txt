@@ -1,5 +1,5 @@
 # Spring Data Geode Cache Server Run Profile Configuration - VM Options
 
--server -ea -Dspring.data.gemfire.cache.name=ServerOne -Dspring.data.gemfire.cache.server.port=40404 -Dspring.profiles.active=embedded-services
+-server -ea -Dspring.data.gemfire.cache.name=ServerOne -Dspring.data.gemfire.cache.server.port=40404
 -server -ea -Dspring.data.gemfire.cache.name=ServerTwo -Dspring.data.gemfire.cache.server.port=41414
 -server -ea -Dspring.data.gemfire.cache.name=ServerThree -Dspring.data.gemfire.cache.server.port=42424
