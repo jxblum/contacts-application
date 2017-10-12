@@ -20,44 +20,41 @@ import org.apache.geode.cache.GemFireCache;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
-import org.springframework.data.gemfire.LocalRegionFactoryBean;
+import org.springframework.context.annotation.Profile;
+import org.springframework.data.gemfire.PartitionedRegionFactoryBean;
 import org.springframework.data.gemfire.config.annotation.CacheServerApplication;
 import org.springframework.data.gemfire.config.annotation.EnableLocator;
 import org.springframework.data.gemfire.config.annotation.EnableManager;
 
-import example.app.geode.cache.loader.EchoCacheLoader;
-
 /**
- * The {@link DemoGeodeServerApplication} class...
+ * The ServerApplication class...
  *
  * @author John Blum
  * @since 1.0.0
  */
 @SpringBootApplication
-@Import(DemoGeodeServerApplication.Configuration.class)
-@SuppressWarnings("unused")
+@CacheServerApplication(locators = "localhost[10334]")
 public class DemoGeodeServerApplication {
 
   public static void main(String[] args) {
     SpringApplication.run(DemoGeodeServerApplication.class, args);
   }
 
-  @CacheServerApplication(name = "DemoEchoServer")
   @EnableLocator
   @EnableManager
-  static class Configuration {
+  @Profile("embedded-services")
+  static class ServerConfiguration {
+  }
 
-    @Bean(name = "Echo")
-    LocalRegionFactoryBean<Object, Object> echoRegion(GemFireCache gemfireCache) {
+  @Bean("Echo")
+  public PartitionedRegionFactoryBean<Object, Object> partitionRegion(GemFireCache gemfireCache) {
 
-      LocalRegionFactoryBean<Object, Object> echoRegion = new LocalRegionFactoryBean<>();
+    PartitionedRegionFactoryBean<Object, Object> partitionRegion = new PartitionedRegionFactoryBean<>();
 
-      echoRegion.setCache(gemfireCache);
-      echoRegion.setCacheLoader(EchoCacheLoader.getInstance());
-      echoRegion.setClose(false);
+    partitionRegion.setCache(gemfireCache);
+    partitionRegion.setClose(false);
+    partitionRegion.setPersistent(false);
 
-      return echoRegion;
-    }
+    return partitionRegion;
   }
 }

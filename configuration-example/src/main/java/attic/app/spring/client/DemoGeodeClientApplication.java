@@ -16,64 +16,78 @@
 
 package attic.app.spring.client;
 
-import static example.app.core.util.MapUtils.newMapEntry;
-import static java.util.Arrays.stream;
-import static org.assertj.core.api.Assertions.assertThat;
-
 import javax.annotation.Resource;
 
 import org.apache.geode.cache.GemFireCache;
 import org.apache.geode.cache.Region;
 import org.apache.geode.cache.client.ClientRegionShortcut;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.gemfire.cache.config.EnableGemfireCaching;
 import org.springframework.data.gemfire.client.ClientRegionFactoryBean;
 import org.springframework.data.gemfire.config.annotation.ClientCacheApplication;
+import org.springframework.data.gemfire.config.annotation.EnableCachingDefinedRegions;
+import org.springframework.data.gemfire.config.annotation.EnableClusterConfiguration;
+import org.springframework.data.gemfire.config.annotation.EnableEntityDefinedRegions;
+import org.springframework.data.gemfire.repository.config.EnableGemfireRepositories;
+
+import attic.app.spring.client.service.CustomerService;
+import example.app.core.lang.RunnableUtils;
+import example.app.geode.cache.loader.EchoCacheLoader;
+import example.app.model.Customer;
 
 /**
- * The {@link DemoGeodeClientApplication} class...
+ * The ClientApplication class...
  *
  * @author John Blum
  * @since 1.0.0
  */
 @SpringBootApplication
-@SuppressWarnings("unused")
-public class DemoGeodeClientApplication implements CommandLineRunner {
+@ClientCacheApplication
+@EnableGemfireCaching
+@EnableCachingDefinedRegions
+@EnableGemfireRepositories
+@EnableEntityDefinedRegions(basePackageClasses = Customer.class)
+@EnableClusterConfiguration(useHttp = true)
+public class DemoGeodeClientApplication {
 
   public static void main(String[] args) {
     SpringApplication.run(DemoGeodeClientApplication.class, args);
   }
 
-  protected final Logger logger = LoggerFactory.getLogger(getClass());
-
   @Resource(name = "Echo")
-  private Region<String, String> echo;
+  private Region<?, ?>  echo;
 
-  @Override
-  public void run(String... args) throws Exception {
-    stream(args).map(key -> newMapEntry(key, this.echo.get(key))).forEach(entry -> {
-      logger.info("Client says {}; Server says {}", entry.getKey(), entry.getValue());
-      assertThat(entry.getValue()).isEqualTo(entry.getKey());
-    });
+  @Bean
+  ApplicationRunner run(CustomerService customerService) {
+
+    return args -> {
+
+      System.err.printf("%s%n", echo.get("HELLO"));
+
+      RunnableUtils.timedRun(() -> {
+
+        Customer jonDoe = Customer.newCustomer("Jon", "Doe").with("12345");
+
+        System.err.printf("%s%n", customerService.findBy(jonDoe));
+        System.err.printf("%s%n", customerService.findBy(jonDoe));
+
+      }).ifPresent(time -> System.err.printf("%d ms%n", time));
+    };
   }
 
-  @ClientCacheApplication(name = "DemoEchoClient", locators = { @ClientCacheApplication.Locator })
-  static class GeodeClientConfiguration {
+  @Bean("Echo")
+  public ClientRegionFactoryBean<Object, Object> clientRegion(GemFireCache gemfireCache) {
 
-    @Bean(name = "Echo")
-    ClientRegionFactoryBean<String, String> echoRegion(GemFireCache gemfireCache) {
+    ClientRegionFactoryBean<Object, Object> clientRegion = new ClientRegionFactoryBean<>();
 
-      ClientRegionFactoryBean<String, String> echoRegion = new ClientRegionFactoryBean<>();
+    clientRegion.setCache(gemfireCache);
+    clientRegion.setCacheLoader(EchoCacheLoader.getInstance());
+    clientRegion.setClose(false);
+    clientRegion.setShortcut(ClientRegionShortcut.PROXY);
 
-      echoRegion.setCache(gemfireCache);
-      echoRegion.setClose(false);
-      echoRegion.setShortcut(ClientRegionShortcut.PROXY);
-
-      return echoRegion;
-    }
+    return clientRegion;
   }
 }
