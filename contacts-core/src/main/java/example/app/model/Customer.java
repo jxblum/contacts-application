@@ -42,6 +42,7 @@ public class Customer extends Person {
 	private String accountNumber;
 
 	public static Customer newCustomer(String firstName, String lastName) {
+
 		Assert.hasText(firstName, "firstName is required");
 		Assert.hasText(lastName, "lastName is required");
 
@@ -68,6 +69,7 @@ public class Customer extends Person {
 
 	@Override
 	public boolean equals(Object obj) {
+
 		if (!super.equals(obj)) {
 			return false;
 		}
@@ -84,8 +86,11 @@ public class Customer extends Person {
 
 	@Override
 	public int hashCode() {
+
 		int hashValue = super.hashCode();
+
 		hashValue = 37 * hashValue + ObjectUtils.nullSafeHashCode(getAccountNumber());
+
 		return hashValue;
 	}
 
