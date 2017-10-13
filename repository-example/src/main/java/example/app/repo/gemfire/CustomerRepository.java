@@ -18,6 +18,7 @@ package example.app.repo.gemfire;
 
 import org.springframework.data.gemfire.repository.GemfireRepository;
 import org.springframework.data.gemfire.repository.query.annotation.Trace;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import example.app.model.Customer;
@@ -33,7 +34,7 @@ import example.app.model.Customer;
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public interface CustomerRepository extends GemfireRepository<Customer, Long>, CustomerRepositoryExtension {
+public interface CustomerRepository extends CrudRepository<Customer, Long>, CustomerRepositoryExtension {
 
 	@Trace
 	Customer findByAccountNumber(@Param("accountNumber") String accountNumber);
