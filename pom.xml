@@ -21,6 +21,7 @@
     <module>caching-example</module>
     <module>cluster-configuration-example</module>
     <module>configuration-example</module>
+    <module>continuous-query-example</module>
     <module>repository-example</module>
     <module>security-example</module>
     <module>simple-caching-example</module>
