@@ -16,11 +16,14 @@
 
 package example.app.geode.cache.client;
 
+import java.util.Optional;
+
+import javax.annotation.PostConstruct;
+
 import org.cp.elements.lang.Renderer;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
 import org.springframework.data.gemfire.config.annotation.ClientCacheApplication;
 import org.springframework.data.gemfire.config.annotation.ClientCacheApplication.Locator;
 import org.springframework.data.gemfire.config.annotation.EnableContinuousQueries;
@@ -28,8 +31,6 @@ import org.springframework.data.gemfire.config.annotation.EnableEntityDefinedReg
 import org.springframework.data.gemfire.repository.config.EnableGemfireRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-import example.app.geode.cache.client.bots.ChatBot;
-import example.app.geode.cache.client.bots.provider.FamousQuotesChatBot;
 import example.app.geode.cache.client.model.Chat;
 import example.app.geode.cache.client.repo.ChatRepository;
 import example.app.geode.cache.client.service.ChatService;
@@ -54,29 +55,24 @@ public class ChatBotClientApplication {
     SpringApplication.run(ChatBotClientApplication.class, args);
   }
 
-  @Value("${example.app.chat.bot.id:Client 0}")
-  private Object clientId;
+  @Autowired
+  private ChatService chatService;
 
-  @Bean
-  public ChatBot chatBot() {
-    return new FamousQuotesChatBot();
-  }
+  @PostConstruct
+  public void postConstruct() {
 
-  @Bean
-  public ChatService chatService(ChatBot chatBot, ChatRepository chatRepository) {
-
-    ChatBotService chatService = new ChatBotService(chatBot, chatRepository);
-
-    chatService.receive(this::log);
-
-    return chatService;
+    Optional.of(this.chatService)
+      .filter(it -> it instanceof ChatBotService)
+      .map(it -> (ChatBotService) it)
+      .ifPresent(chatBotService -> chatBotService.receive(this::log));
   }
 
   private void log(Chat chat) {
 
-    Renderer<Chat> chatRender = it -> String.format("%1$s: %2$s", it.getPerson(), it.getMessage());
+    Renderer<Chat> chatRender = it -> String.format("[%1$s] %2$s: %3$s",
+      it.getChatBotId(), it.getPerson(), it.getMessage());
 
-    log("%1$s - %2$s", this.clientId, chat.render(chatRender));
+    log(chatRender.render(chat));
   }
 
   private void log(String message, Object... args) {
