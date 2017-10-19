@@ -16,27 +16,27 @@
 
 package example.app.geode.cache.client;
 
-import org.apache.geode.cache.GemFireCache;
-import org.apache.geode.cache.client.ClientRegionShortcut;
-import org.cp.elements.lang.Constants;
-import org.cp.elements.lang.Identifiable;
+import org.cp.elements.lang.Renderer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.DependsOn;
-import org.springframework.data.gemfire.GemfireTemplate;
-import org.springframework.data.gemfire.client.ClientRegionFactoryBean;
 import org.springframework.data.gemfire.config.annotation.ClientCacheApplication;
 import org.springframework.data.gemfire.config.annotation.ClientCacheApplication.Locator;
 import org.springframework.data.gemfire.config.annotation.EnableContinuousQueries;
+import org.springframework.data.gemfire.config.annotation.EnableEntityDefinedRegions;
+import org.springframework.data.gemfire.repository.config.EnableGemfireRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.SchedulingConfigurer;
 
-import example.app.geode.cache.client.service.ChatBotService;
+import example.app.geode.cache.client.bots.ChatBot;
+import example.app.geode.cache.client.bots.provider.FamousQuotesChatBot;
+import example.app.geode.cache.client.model.Chat;
+import example.app.geode.cache.client.repo.ChatRepository;
+import example.app.geode.cache.client.service.ChatService;
+import example.app.geode.cache.client.service.provider.ChatBotService;
 
 /**
- * The ChatBotClientApplication class...
+ * The {@link ChatBotClientApplication} class...
  *
  * @author John Blum
  * @since 1.0.0
@@ -44,50 +44,43 @@ import example.app.geode.cache.client.service.ChatBotService;
 @SpringBootApplication
 @ClientCacheApplication(name = "ChatBotClient", locators = @Locator, subscriptionEnabled = true)
 @EnableContinuousQueries(poolName = "DEFAULT")
+@EnableEntityDefinedRegions(basePackageClasses = Chat.class)
+@EnableGemfireRepositories(basePackageClasses = ChatRepository.class)
 @EnableScheduling
 @SuppressWarnings("unused")
-public class ChatBotClientApplication implements Identifiable<String> {
+public class ChatBotClientApplication {
 
   public static void main(String[] args) {
     SpringApplication.run(ChatBotClientApplication.class, args);
   }
 
   @Value("${example.app.chat.bot.id:Client 0}")
-  private String chatBotAppId;
+  private Object clientId;
 
-  @Override
-  public String getId() {
-    return this.chatBotAppId;
-  }
-
-  @Override
-  public final void setId(String id) {
-    throw new UnsupportedOperationException(Constants.OPERATION_NOT_SUPPORTED);
-  }
-
-  @Bean("Chats")
-  public ClientRegionFactoryBean<Integer, String> chatRegion(GemFireCache gemfireCache) {
-
-    ClientRegionFactoryBean<Integer, String> chatRegion = new ClientRegionFactoryBean<>();
-
-    chatRegion.setCache(gemfireCache);
-    chatRegion.setClose(false);
-    chatRegion.setShortcut(ClientRegionShortcut.PROXY);
-
-    return chatRegion;
+  @Bean
+  public ChatBot chatBot() {
+    return new FamousQuotesChatBot();
   }
 
   @Bean
-  @DependsOn("Chats")
-  public GemfireTemplate chatTemplate(GemFireCache gemfireCache) {
-    return new GemfireTemplate(gemfireCache.getRegion("/Chats"));
+  public ChatService chatService(ChatBot chatBot, ChatRepository chatRepository) {
+
+    ChatBotService chatService = new ChatBotService(chatBot, chatRepository);
+
+    chatService.receive(this::log);
+
+    return chatService;
   }
 
-  @Bean
-  public SchedulingConfigurer scheduleFixedRateChatBot(ChatBotService chatBotService,
-      @Value("${example.app.chat.bot.schedule.interval:5000}") int interval) {
+  private void log(Chat chat) {
 
-    return scheduledTaskRegistrar ->
-      scheduledTaskRegistrar.addFixedRateTask(() -> chatBotService.sendChat(getId()), interval);
+    Renderer<Chat> chatRender = it -> String.format("%1$s: %2$s", it.getPerson(), it.getMessage());
+
+    log("%1$s - %2$s", this.clientId, chat.render(chatRender));
+  }
+
+  private void log(String message, Object... args) {
+    System.out.printf("%s%n", String.format(message, args));
+    System.out.flush();
   }
 }

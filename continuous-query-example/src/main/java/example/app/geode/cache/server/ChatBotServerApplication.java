@@ -31,15 +31,20 @@ import org.springframework.data.gemfire.config.annotation.EnableLocator;
 import org.springframework.data.gemfire.config.annotation.EnableManager;
 
 /**
- * The ChatBotServerApplication class...
+ * The {@link ChatBotServerApplication} class...
  *
  * @author John Blum
+ * @see org.springframework.boot.SpringApplication
+ * @see org.springframework.boot.autoconfigure.SpringBootApplication
+ * @see org.springframework.data.gemfire.config.annotation.CacheServerApplication
+ * @see org.springframework.data.gemfire.config.annotation.EnableLocator
+ * @see org.springframework.data.gemfire.config.annotation.EnableManager
  * @since 1.0.0
  */
 @SpringBootApplication
+@CacheServerApplication(name = "ChatBotServer")
 @EnableLocator
 @EnableManager
-@CacheServerApplication(name = "ChatBotServer")
 @SuppressWarnings("unused")
 public class ChatBotServerApplication {
 
@@ -47,9 +52,9 @@ public class ChatBotServerApplication {
     SpringApplication.run(ChatBotServerApplication.class, args);
   }
 
-  @Bean("Chats")
+  @Bean("Chat")
   public PartitionedRegionFactoryBean<Integer, String> chatRegion(GemFireCache gemfireCache,
-      @Qualifier("ChatsRegionAttributes") RegionAttributes<Integer, String> chatRegionAttributes) {
+      @Qualifier("ChatRegionAttributes") RegionAttributes<Integer, String> chatRegionAttributes) {
 
     PartitionedRegionFactoryBean<Integer, String> chatRegion = new PartitionedRegionFactoryBean<>();
 
@@ -61,8 +66,8 @@ public class ChatBotServerApplication {
     return chatRegion;
   }
 
-  @Bean("ChatsRegionAttributes")
-  public RegionAttributesFactoryBean chatsRegionAttributes() {
+  @Bean("ChatRegionAttributes")
+  public RegionAttributesFactoryBean chatRegionAttributes() {
 
     RegionAttributesFactoryBean chatRegionAttributes = new RegionAttributesFactoryBean();
 
