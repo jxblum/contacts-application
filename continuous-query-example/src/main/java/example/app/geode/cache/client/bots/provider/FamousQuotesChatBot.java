@@ -24,6 +24,10 @@ import static org.cp.elements.util.CollectionUtils.asSet;
 import java.util.List;
 import java.util.Random;
 
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import example.app.geode.cache.client.bots.ChatBot;
 import example.app.geode.cache.client.model.Chat;
 import example.app.model.Person;
@@ -34,6 +38,8 @@ import example.app.model.Person;
  * @author John Blum
  * @since 1.0.0
  */
+@Service("FamousQuotesChatBot")
+@Qualifier("FamousQuotes")
 public class FamousQuotesChatBot implements ChatBot {
 
   private static final Iterable<Person> people = asSet(
@@ -159,10 +165,14 @@ public class FamousQuotesChatBot implements ChatBot {
       .orElseThrow(() -> newIllegalStateException("Unable to find Person with name [%s]", name));
   }
 
+  @SuppressWarnings("unused")
+  @Value("${example.app.chat.bot.id:ChatBot 0}")
+  private Object chatBotId;
+
   private Random randomIndexGenerator = new Random(System.currentTimeMillis());
 
   @Override
   public Chat chat() {
-    return chats.get(randomIndexGenerator.nextInt(chats.size()));
+    return chats.get(this.randomIndexGenerator.nextInt(chats.size())).from(this.chatBotId);
   }
 }
