@@ -48,14 +48,14 @@ import example.app.model.Person;
  */
 @Region("Chat")
 @SuppressWarnings("unused")
-public class Chat<ID extends Comparable<ID>> implements Comparable<Chat>, Identifiable<ID>, Serializable {
+public class Chat implements Comparable<Chat>, Identifiable<Long>, Serializable {
 
   private static final long serialVersionUID = -2605298490928082336L;
 
   private LocalDateTime timestamp;
 
   @Id
-  private ID id;
+  private Long id;
 
   private Object chatBotId;
 
@@ -87,13 +87,14 @@ public class Chat<ID extends Comparable<ID>> implements Comparable<Chat>, Identi
   }
 
   @Override
-  public ID getId() {
+  public Long getId() {
     return this.id;
   }
 
   @Override
-  public void setId(ID id) {
+  public void setId(Long id) {
     this.id = id;
+    this.person.setId(id);
   }
 
   public Person getPerson() {

@@ -98,7 +98,7 @@ public class FamousQuotesChatBot implements ChatBot {
   );
 
   @SuppressWarnings("unchecked")
-  private static final List<Chat<?>> chats = asList(
+  private static final List<Chat> chats = asList(
     Chat.newChat(findPerson("Aristotle (Greek)"), "Quality is not an act, it is a habit."),
     Chat.newChat(findPerson("Arthur Ashe"), "Start where you are. Use what you have. Do what you can."),
     Chat.newChat(findPerson("Benjamin Franklin"), "Well done is better than well said."),
