@@ -39,6 +39,7 @@ import javax.persistence.Transient;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import org.cp.elements.lang.Identifiable;
+import org.cp.elements.util.ComparatorResultBuilder;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.gemfire.mapping.annotation.Region;
 import org.springframework.util.Assert;
@@ -63,7 +64,7 @@ import org.springframework.util.ObjectUtils;
 @Region("People")
 @JsonIgnoreProperties(value = { "new", "notNew" }, ignoreUnknown = true)
 @SuppressWarnings("unused")
-public class Person implements Identifiable<Long>, Serializable {
+public class Person implements Comparable<Person>, Identifiable<Long>, Serializable {
 
 	private static final long serialVersionUID = -7204456214709927355L;
 
@@ -175,6 +176,17 @@ public class Person implements Identifiable<Long>, Serializable {
 	@Transient
 	public String getName() {
 		return (String.format("%1$s %2$s", getFirstName(), getLastName())).trim();
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public int compareTo(Person person) {
+
+		return ComparatorResultBuilder.<Comparable>create()
+			.doCompare(this.getLastName(), person.getLastName())
+			.doCompare(this.getFirstName(), person.getFirstName())
+			.doCompare(this.getBirthDate(), person.getBirthDate())
+			.build();
 	}
 
 	@Override

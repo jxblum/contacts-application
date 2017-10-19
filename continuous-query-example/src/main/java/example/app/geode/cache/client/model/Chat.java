@@ -27,6 +27,7 @@ import org.cp.elements.lang.Identifiable;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.Renderer;
 import org.cp.elements.lang.StringUtils;
+import org.cp.elements.util.ComparatorResultBuilder;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.gemfire.mapping.annotation.Region;
 
@@ -47,7 +48,7 @@ import example.app.model.Person;
  */
 @Region("Chat")
 @SuppressWarnings("unused")
-public class Chat<ID extends Comparable<ID>> implements Identifiable<ID>, Serializable {
+public class Chat<ID extends Comparable<ID>> implements Comparable<Chat>, Identifiable<ID>, Serializable {
 
   private final LocalDateTime timestamp;
 
@@ -103,6 +104,16 @@ public class Chat<ID extends Comparable<ID>> implements Identifiable<ID>, Serial
 
   public LocalDateTime getTimestamp() {
     return this.timestamp;
+  }
+
+  @Override
+  @SuppressWarnings("unchecked")
+  public int compareTo(Chat chat) {
+
+    return ComparatorResultBuilder.<Comparable>create()
+      .doCompare(this.getPerson(), chat.getPerson())
+      .doCompare(this.getMessage(), chat.getMessage())
+      .build();
   }
 
   @Override
