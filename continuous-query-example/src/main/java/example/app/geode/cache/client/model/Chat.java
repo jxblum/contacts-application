@@ -52,7 +52,7 @@ public class Chat<ID extends Comparable<ID>> implements Comparable<Chat>, Identi
 
   private static final long serialVersionUID = -2605298490928082336L;
 
-  private final LocalDateTime timestamp;
+  private LocalDateTime timestamp;
 
   @Id
   private ID id;
@@ -76,7 +76,7 @@ public class Chat<ID extends Comparable<ID>> implements Comparable<Chat>, Identi
     this.person = Optional.ofNullable(person)
       .orElseThrow(() -> newIllegalArgumentException("Person is required"));
 
-    this.timestamp = Optional.ofNullable(timestamp).orElse(LocalDateTime.now());
+    this.timestamp = Optional.ofNullable(timestamp).orElseGet(LocalDateTime::now);
 
     this.message = Optional.ofNullable(message).filter(StringUtils::hasText)
       .orElseThrow(() -> newIllegalArgumentException("Message is required"));
@@ -163,6 +163,11 @@ public class Chat<ID extends Comparable<ID>> implements Comparable<Chat>, Identi
     return Optional.ofNullable(date)
       .map(it -> it.format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss")))
       .orElse(null);
+  }
+
+  public Chat at(LocalDateTime timestamp) {
+    this.timestamp = Optional.ofNullable(timestamp).orElseGet(LocalDateTime::now);
+    return this;
   }
 
   public Chat from(Object chatBotId) {
