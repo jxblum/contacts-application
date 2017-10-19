@@ -28,7 +28,6 @@ import org.apache.geode.internal.concurrent.ConcurrentHashSet;
 import org.cp.elements.lang.Identifiable;
 import org.cp.elements.lang.IdentifierSequence;
 import org.cp.elements.lang.support.SimpleIdentifierSequence;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.gemfire.listener.annotation.ContinuousQuery;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -44,7 +43,7 @@ import example.app.geode.cache.client.service.ChatService;
  * @author John Blum
  * @since 1.0.0
  */
-@Service
+@Service("ChatBotService")
 @SuppressWarnings("all")
 public class ChatBotService implements ChatService {
 
@@ -59,7 +58,6 @@ public class ChatBotService implements ChatService {
 
   private final IdentifierSequence<Long> identifierSequence;
 
-  @Autowired
   public ChatBotService(ChatBot chatBot, ChatRepository chatRepository) {
 
     this.chatBot = Optional.ofNullable(chatBot).filter(Objects::nonNull)
