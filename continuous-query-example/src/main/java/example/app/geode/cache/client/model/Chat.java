@@ -54,6 +54,8 @@ public class Chat<ID extends Comparable<ID>> implements Identifiable<ID>, Serial
   @Id
   private ID id;
 
+  private Object chatBotId;
+
   private final Person person;
 
   private final String message;
@@ -75,6 +77,10 @@ public class Chat<ID extends Comparable<ID>> implements Identifiable<ID>, Serial
 
     this.message = Optional.ofNullable(message).filter(StringUtils::hasText)
       .orElseThrow(() -> newIllegalArgumentException("Message is required"));
+  }
+
+  public Object getChatBotId() {
+    return this.chatBotId;
   }
 
   @Override
@@ -135,8 +141,8 @@ public class Chat<ID extends Comparable<ID>> implements Identifiable<ID>, Serial
 
   @Override
   public String toString() {
-    return String.format("{ timestamp = %1$s, person = %2$s, message = %3$s }",
-      toString(getTimestamp()), getPerson(), getMessage());
+    return String.format("{ timestamp = %1$s, person = %2$s, message = %3$s, chatBotId = %4$s }",
+      toString(getTimestamp()), getPerson(), getMessage(), getChatBotId());
   }
 
   protected String toString(LocalDateTime date) {
@@ -144,5 +150,10 @@ public class Chat<ID extends Comparable<ID>> implements Identifiable<ID>, Serial
     return Optional.ofNullable(date)
       .map(it -> it.format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss")))
       .orElse(null);
+  }
+
+  public Chat from(Object chatBotId) {
+    this.chatBotId = chatBotId;
+    return this;
   }
 }
