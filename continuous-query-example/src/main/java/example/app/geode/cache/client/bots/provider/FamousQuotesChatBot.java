@@ -161,18 +161,18 @@ public class FamousQuotesChatBot implements ChatBot {
     Chat.newChat(findPerson("Winston Churchill"), "I may be drunk, Miss, but in the morning I will be sober and you will still be ugly.")
   );
 
-  public static Chat findChat(Person person) {
-    return stream(findChats(person).spliterator(), false).findFirst().orElse(null);
-  }
-
-  public static Iterable<Chat> findChats(Person person) {
-    return chats.stream().filter(chat -> chat.getPerson().equals(person)).collect(Collectors.toSet());
-  }
-
-  public static Person findPerson(String name) {
+  protected static Person findPerson(String name) {
 
     return stream(people.spliterator(), false).filter(person -> person.getName().equals(name)).findFirst()
       .orElseThrow(() -> newIllegalStateException("Unable to find Person with name [%s]", name));
+  }
+
+  public Iterable<Chat> findAll(Person person) {
+    return chats.stream().filter(chat -> chat.getPerson().equals(person)).collect(Collectors.toSet());
+  }
+
+  public Chat findOne(Person person) {
+    return stream(findAll(person).spliterator(), false).findFirst().orElse(null);
   }
 
   @SuppressWarnings("unused")

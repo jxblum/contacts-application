@@ -17,6 +17,7 @@
 package example.app.geode.cache.client.bots;
 
 import example.app.geode.cache.client.model.Chat;
+import example.app.model.Person;
 
 /**
  * The {@link ChatBot} interface defines a contract for {@link Chat} bots.
@@ -34,5 +35,26 @@ public interface ChatBot {
    * @see example.app.geode.cache.client.model.Chat
    */
   Chat chat();
+
+  /**
+   * Finds all {@link Chat Chats} for the given {@link Person}.
+   *
+   * @param person {@link Person} to retrieve all {@link Chat Chats} for.
+   * @return all {@link Chat Chats} for the given {@link Person}.
+   * @see example.app.geode.cache.client.model.Chat
+   * @see example.app.model.Person
+   * @see java.lang.Iterable
+   */
+  Iterable<Chat> findAll(Person person);
+
+  /**
+   * Finds a single, random {@link Chat} for the given {@link Person}.
+   *
+   * @param person {@link Person} to retrieve a {@link Chat} for.
+   * @return a single, random {@link Chat} for the given {@link Person}.
+   * @see example.app.geode.cache.client.model.Chat
+   * @see example.app.model.Person
+   */
+  Chat findOne(Person person);
 
 }
