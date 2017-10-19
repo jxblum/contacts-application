@@ -23,6 +23,7 @@ import static org.cp.elements.util.CollectionUtils.asSet;
 
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,6 +41,7 @@ import example.app.model.Person;
  */
 @Service("FamousQuotesChatBot")
 @Qualifier("FamousQuotes")
+@SuppressWarnings("unused")
 public class FamousQuotesChatBot implements ChatBot {
 
   private static final Iterable<Person> people = asSet(
@@ -159,7 +161,15 @@ public class FamousQuotesChatBot implements ChatBot {
     Chat.newChat(findPerson("Winston Churchill"), "I may be drunk, Miss, but in the morning I will be sober and you will still be ugly.")
   );
 
-  protected static Person findPerson(String name) {
+  public static Chat findChat(Person person) {
+    return stream(findChats(person).spliterator(), false).findFirst().orElse(null);
+  }
+
+  public static Iterable<Chat> findChats(Person person) {
+    return chats.stream().filter(chat -> chat.getPerson().equals(person)).collect(Collectors.toSet());
+  }
+
+  public static Person findPerson(String name) {
 
     return stream(people.spliterator(), false).filter(person -> person.getName().equals(name)).findFirst()
       .orElseThrow(() -> newIllegalStateException("Unable to find Person with name [%s]", name));
