@@ -50,6 +50,8 @@ import example.app.model.Person;
 @SuppressWarnings("unused")
 public class Chat<ID extends Comparable<ID>> implements Comparable<Chat>, Identifiable<ID>, Serializable {
 
+  private static final long serialVersionUID = -2605298490928082336L;
+
   private final LocalDateTime timestamp;
 
   @Id
