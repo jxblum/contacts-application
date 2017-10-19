@@ -24,6 +24,7 @@ package example.app.model;
  */
 @SuppressWarnings("unused")
 public enum Gender {
+
 	FEMALE,
 	MALE
 

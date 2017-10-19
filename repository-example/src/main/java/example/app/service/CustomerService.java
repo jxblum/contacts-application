@@ -23,6 +23,7 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
+import org.cp.elements.lang.Identifiable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +33,6 @@ import example.app.model.Address;
 import example.app.model.Contact;
 import example.app.model.Customer;
 import example.app.model.PhoneNumber;
-import example.app.model.support.Identifiable;
 import example.app.repo.gemfire.ContactRepository;
 import example.app.repo.gemfire.CustomerRepository;
 
@@ -41,13 +41,13 @@ import example.app.repo.gemfire.CustomerRepository;
  * and relationships.
  *
  * @author John Blum
+ * @see org.cp.elements.lang.Identifiable
  * @see org.springframework.stereotype.Service
  * @see org.springframework.transaction.annotation.Transactional
  * @see example.app.model.Address
  * @see example.app.model.Contact
  * @see example.app.model.Customer
  * @see example.app.model.PhoneNumber
- * @see example.app.model.support.Identifiable
  * @see example.app.repo.gemfire.ContactRepository
  * @see example.app.repo.gemfire.CustomerRepository
  * @since 1.0.0

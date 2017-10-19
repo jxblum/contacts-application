@@ -16,10 +16,13 @@
 
 package example.app.model;
 
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalStateException;
+
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
@@ -35,12 +38,11 @@ import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import org.cp.elements.lang.Identifiable;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.gemfire.mapping.annotation.Region;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
-
-import example.app.model.support.Identifiable;
 
 /**
  * The {@link Person} class is an Abstract Data Type (ADT) modeling a person.
@@ -49,8 +51,8 @@ import example.app.model.support.Identifiable;
  * @see java.io.Serializable
  * @see javax.persistence.Entity
  * @see javax.persistence.Table
+ * @see org.cp.elements.lang.Identifiable
  * @see org.springframework.data.gemfire.mapping.annotation.Region
- * @see example.app.model.support.Identifiable
  * @since 1.0.0
  */
 @Entity
@@ -76,6 +78,7 @@ public class Person implements Identifiable<Long>, Serializable {
 	private String lastName;
 
 	public static Person newPerson(String firstName, String lastName) {
+
 		Assert.hasText(firstName, "firstName is required");
 		Assert.hasText(lastName, "lastName is required");
 
@@ -85,6 +88,18 @@ public class Person implements Identifiable<Long>, Serializable {
 		person.setLastName(lastName);
 
 		return person;
+	}
+
+	public static Person newPerson(Person person) {
+
+		Person copy = new Person();
+
+		copy.setBirthDate(person.getBirthDate());
+		copy.setFirstName(person.getFirstName());
+		copy.setGender(person.getGender());
+		copy.setLastName(person.getLastName());
+
+		return copy;
 	}
 
 	public void setId(Long id) {
@@ -101,9 +116,12 @@ public class Person implements Identifiable<Long>, Serializable {
 	@Transient
 	@SuppressWarnings("all")
 	public int getAge() {
-		LocalDate birthDate = getBirthDate();
-		Assert.state(birthDate != null, String.format("birth date of person [%s] is unknown", getName()));
+
+		LocalDate birthDate = Optional.ofNullable(getBirthDate())
+			.orElseThrow(() -> newIllegalStateException("birth date of person [%s] is unknown", getName()));
+
 		Period period = Period.between(birthDate, LocalDate.now());
+
 		return period.getYears();
 	}
 
@@ -113,6 +131,7 @@ public class Person implements Identifiable<Long>, Serializable {
 	}
 
 	public void setBirthDate(LocalDate birthDate) {
+
 		if (birthDate != null && birthDate.isAfter(LocalDate.now())) {
 			throw new IllegalArgumentException(String.format("[%s] cannot be born after today [%s]",
 				getName(), toString(LocalDate.now())));
@@ -123,7 +142,7 @@ public class Person implements Identifiable<Long>, Serializable {
 
 	@Column(name = "birth_date")
 	public LocalDate getBirthDate() {
-		return birthDate;
+		return this.birthDate;
 	}
 
 	public void setFirstName(String firstName) {
@@ -132,7 +151,7 @@ public class Person implements Identifiable<Long>, Serializable {
 
 	@Column(name = "first_name")
 	public String getFirstName() {
-		return firstName;
+		return this.firstName;
 	}
 
 	public void setGender(Gender gender) {
@@ -141,7 +160,7 @@ public class Person implements Identifiable<Long>, Serializable {
 
 	@Enumerated(EnumType.STRING)
 	public Gender getGender() {
-		return gender;
+		return this.gender;
 	}
 
 	public void setLastName(String lastName) {
@@ -150,17 +169,18 @@ public class Person implements Identifiable<Long>, Serializable {
 
 	@Column(name = "last_name")
 	public String getLastName() {
-		return lastName;
+		return this.lastName;
 	}
 
 	@Transient
 	public String getName() {
-		return String.format("%1$s %2$s", getFirstName(), getLastName());
+		return (String.format("%1$s %2$s", getFirstName(), getLastName())).trim();
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == this) {
+
+		if (this == obj) {
 			return true;
 		}
 
@@ -177,10 +197,13 @@ public class Person implements Identifiable<Long>, Serializable {
 
 	@Override
 	public int hashCode() {
+
 		int hashValue = 17;
+
 		hashValue = 37 * hashValue + ObjectUtils.nullSafeHashCode(getBirthDate());
 		hashValue = 37 * hashValue + ObjectUtils.nullSafeHashCode(getFirstName());
 		hashValue = 37 * hashValue + ObjectUtils.nullSafeHashCode(getLastName());
+
 		return hashValue;
 	}
 
@@ -192,7 +215,10 @@ public class Person implements Identifiable<Long>, Serializable {
 	}
 
 	protected String toString(LocalDate date) {
-		return (date != null ? date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) : null);
+
+		return Optional.ofNullable(date)
+			.map(it -> it.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+			.orElse(null);
 	}
 
 	@SuppressWarnings("unchecked")

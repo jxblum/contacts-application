@@ -49,12 +49,13 @@ import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import org.cp.elements.lang.Identifiable;
+
 import example.app.model.Address;
 import example.app.model.Contact;
 import example.app.model.Customer;
 import example.app.model.PhoneNumber;
 import example.app.model.State;
-import example.app.model.support.Identifiable;
 import example.app.repo.gemfire.ContactRepository;
 import example.app.repo.gemfire.CustomerRepository;
 
@@ -95,6 +96,7 @@ public class CustomerServiceTests {
 
 	@Test
 	public void getUnitializedContactRepositoryThrowsIllegalStateException() {
+
 		exception.expect(IllegalStateException.class);
 		exception.expectCause(is(nullValue(Throwable.class)));
 		exception.expectMessage("ContactRepository is required");
@@ -109,6 +111,7 @@ public class CustomerServiceTests {
 
 	@Test
 	public void getUnitializedCustomerRepositoryThrowsIllegalStateException() {
+
 		exception.expect(IllegalStateException.class);
 		exception.expectCause(is(nullValue(Throwable.class)));
 		exception.expectMessage("CustomerRepository is required");
@@ -118,6 +121,7 @@ public class CustomerServiceTests {
 
 	@Test
 	public void newAccountNumberIsNotNullAndUnique() {
+
 		Set<String> accountNumbers = new HashSet<>(COUNT);
 
 		for (int count = 0; count < COUNT; count++) {
@@ -129,6 +133,7 @@ public class CustomerServiceTests {
 
 	@Test
 	public void newIdIsNotNullAndUnique() {
+
 		Set<Long> identifiers = new HashSet<>(COUNT);
 
 		for (int count = 0; count < COUNT; count++) {
@@ -141,6 +146,7 @@ public class CustomerServiceTests {
 	@Test
 	@SuppressWarnings("unchecked")
 	public void setIdForIdentifiedObject() {
+
 		Identifiable<Long> mockIdentifiable = mock(Identifiable.class);
 
 		when(mockIdentifiable.isNew()).thenReturn(false);
@@ -154,6 +160,7 @@ public class CustomerServiceTests {
 	@Test
 	@SuppressWarnings("unchecked")
 	public void setIdForUnidentifiedObject() {
+
 		Identifiable<Long> mockIdentifiable = mock(Identifiable.class);
 
 		when(mockIdentifiable.isNew()).thenReturn(true);
@@ -165,6 +172,7 @@ public class CustomerServiceTests {
 
 	@Test
 	public void createAccountForNewCustomer() {
+
 		Customer jonDoe = newCustomer("Jon", "Doe");
 
 		assertThat(jonDoe).isNotNull();
@@ -182,6 +190,7 @@ public class CustomerServiceTests {
 
 	@Test
 	public void createAccountForExistingCustomer() {
+
 		Customer jonDoe = newCustomer("Jon", "Doe").with("123").identifiedBy(1L);
 
 		try {
@@ -198,6 +207,7 @@ public class CustomerServiceTests {
 
 	@Test
 	public void createAccountIfNotExistsForExistingCustomerWithAccountNumber() {
+
 		Customer jonDoe = newCustomer("Jon", "Doe").with("123");
 		Customer jonathonDoe = newCustomer("Jonathon", "Doe").with("123");
 
@@ -212,6 +222,7 @@ public class CustomerServiceTests {
 
 	@Test
 	public void createAccountIfNotExistsForNonExistingCustomerWithAccountNumber() {
+
 		Customer jonDoe = newCustomer("Jon", "Doe").with("123");
 
 		when(mockCustomerRepository.findByAccountNumber(eq("123"))).thenReturn(null);
@@ -226,6 +237,7 @@ public class CustomerServiceTests {
 
 	@Test
 	public void createAccountIfNotExistsForExistingCustomerWithAccountNumberAndId() {
+
 		Customer jonDoe = newCustomer("Jon", "Doe").with("987").identifiedBy(1L);
 		Customer jonathonDoe = newCustomer("Jonathon", "Doe").with("123").identifiedBy(1L);
 
@@ -241,6 +253,7 @@ public class CustomerServiceTests {
 
 	@Test
 	public void createAccountIfNotExistsForNonExistingCustomerWithAccountNumberAndId() {
+
 		Customer jonDoe = newCustomer("Jon", "Doe").with("123").identifiedBy(1L);
 
 		when(mockCustomerRepository.findByAccountNumber(anyString())).thenReturn(null);
@@ -260,6 +273,7 @@ public class CustomerServiceTests {
 
 	@Test
 	public void createAccountIfNotExistsForNonExistingCustomerWithId() {
+
 		Customer jonDoe = newCustomer("Jon", "Doe").identifiedBy(1L);
 
 		when(mockCustomerRepository.findById(anyLong())).thenReturn(Optional.empty());
@@ -278,6 +292,7 @@ public class CustomerServiceTests {
 
 	@Test
 	public void createAccountIfNotExistsForNonExistingCustomer() {
+
 		Customer jonDoe = newCustomer("Jon", "Doe");
 
 		when(mockCustomerRepository.save(eq(jonDoe))).thenReturn(jonDoe);
@@ -295,6 +310,7 @@ public class CustomerServiceTests {
 
 	@Test
 	public void findContactInformationForIdentifiedPersonReturnsPerson() {
+
 		Customer jonDoe = newCustomer("Jon", "Doe").identifiedBy(1L);
 		Contact expectedContact = newContact(jonDoe, "jonDoe@work.com");
 
@@ -307,6 +323,7 @@ public class CustomerServiceTests {
 
 	@Test
 	public void findContactInformationForIdentifiedPersonReturnsNull() {
+
 		Customer jonDoe = newCustomer("Jon", "Doe").identifiedBy(1L);
 
 		when(mockContactRepository.findByPersonId(eq(1L))).thenReturn(null);
@@ -319,6 +336,7 @@ public class CustomerServiceTests {
 
 	@Test
 	public void findContactInformationForUnidentifiedPersonReturnsNull() {
+
 		Customer jonDoe = newCustomer("Jon", "Doe");
 
 		assertThat(jonDoe.isNew()).isTrue();
@@ -329,6 +347,7 @@ public class CustomerServiceTests {
 
 	@Test
 	public void findContactInformationWithNull() {
+
 		exception.expect(IllegalArgumentException.class);
 		exception.expectCause(is(nullValue(Throwable.class)));
 		exception.expectMessage("Customer is required");
@@ -339,6 +358,7 @@ public class CustomerServiceTests {
 	@Test
 	@SuppressWarnings("unchecked")
 	public void saveContactInformationCallsContactRepositorySave() {
+
 		Customer jonDoe = newCustomer("Jon", "Doe").with("123").identifiedBy(1L);
 		Contact jonDoeContact = newContact(jonDoe, "jonDoe@work.com");
 
@@ -359,6 +379,7 @@ public class CustomerServiceTests {
 
 	@Test
 	public void addAddressToCustomerWithExistingContact() {
+
 		Customer jonDoe = newCustomer("Jon", "Doe").with("123").identifiedBy(1L);
 		Contact jonDoeContact = newContact(jonDoe, "jonDoe@work.com");
 		Address expectedAddress = newAddress("100 Main St.", "Portland", State.OREGON, "97205");
@@ -378,6 +399,7 @@ public class CustomerServiceTests {
 
 	@Test
 	public void addAddressToCustomerCreatesNewContact() {
+
 		Customer jonDoe = newCustomer("Jon", "Doe").with("123").identifiedBy(1L);
 		Address expectedAddress = newAddress("100 Main St.", "Portland", State.OREGON, "97205");
 
@@ -402,6 +424,7 @@ public class CustomerServiceTests {
 
 	@Test
 	public void addEmailToCustomerWithExistingContact() {
+
 		Customer jonDoe = newCustomer("Jon", "Doe").with("123").identifiedBy(1L);
 		Contact jonDoeContact = newContact(jonDoe, newPhoneNumber("503", "541", "1234"));
 
@@ -420,6 +443,7 @@ public class CustomerServiceTests {
 
 	@Test
 	public void addEmailToCustomerCreatesNewContact() {
+
 		Customer jonDoe = newCustomer("Jon", "Doe").with("123").identifiedBy(1L);
 
 		when(mockCustomerRepository.findByAccountNumber(eq("123"))).thenReturn(jonDoe);
@@ -443,6 +467,7 @@ public class CustomerServiceTests {
 
 	@Test
 	public void addPhoneNumberToCustomerWithExistingContact() {
+
 		Customer jonDoe = newCustomer("Jon", "Doe").with("123").identifiedBy(1L);
 		Contact jonDoeContact = newContact(jonDoe, "jonDoe@work.com");
 		PhoneNumber expectedPhoneNumber = newPhoneNumber("503", "541", "1234");
@@ -462,6 +487,7 @@ public class CustomerServiceTests {
 
 	@Test
 	public void addPhoneNumberToCustomerCreatesNewContact() {
+
 		Customer jonDoe = newCustomer("Jon", "Doe").with("123").identifiedBy(1L);
 		PhoneNumber expectedPhoneNumber = newPhoneNumber("503", "541", "1234");
 
@@ -486,6 +512,7 @@ public class CustomerServiceTests {
 
 	@Test
 	public void addressValidationIsCorrect() {
+
 		Address address = newAddress("100 Main St.", "Portland", State.OREGON, "97205");
 
 		assertThat(customerService.validate(address)).isEqualTo(address);
@@ -501,6 +528,7 @@ public class CustomerServiceTests {
 
 	@Test
 	public void invalidEmailThrowsIllegalArgumentException() {
+
 		exception.expect(IllegalArgumentException.class);
 		exception.expectCause(is(nullValue(Throwable.class)));
 		exception.expectMessage("Email [joeDirt@bar.biz] is not valid");
@@ -510,6 +538,7 @@ public class CustomerServiceTests {
 
 	@Test
 	public void phoneNumberValidationIsCorrect() {
+
 		PhoneNumber phoneNumber = newPhoneNumber("503", "541", "1234");
 
 		assertThat(customerService.validate(phoneNumber)).isEqualTo(phoneNumber);
@@ -517,6 +546,7 @@ public class CustomerServiceTests {
 
 	@Test
 	public void invalidPhoneNumberThrowsIllegalArgumentException() {
+
 		exception.expect(IllegalArgumentException.class);
 		exception.expectCause(is(nullValue(Throwable.class)));
 		exception.expectMessage("'555' is not a valid phone number [(503) 555-1234 [Type = HOME]] exchange");

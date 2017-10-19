@@ -26,20 +26,19 @@ import javax.persistence.GeneratedValue;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import org.cp.elements.lang.Identifiable;
 import org.springframework.data.annotation.Id;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
-import example.app.model.support.Identifiable;
-
 /**
- * The PhoneNumber class is an abstract data type (ADT) modeling a US phone number.
+ * The {@link PhoneNumber} class is an Abstract Data Type (ADT) modeling a US phone number.
  *
  * @author John Blum
  * @see java.io.Serializable
  * @see javax.persistence.Entity
- * @see example.app.model.support.Identifiable
+ * @see org.cp.elements.lang.Identifiable
  * @see <a href="https://en.wikipedia.org/wiki/Telephone_numbering_plan">Telephone Numbering Plan</a>
  * @since 1.0.0
  */
@@ -170,6 +169,7 @@ public class PhoneNumber implements Identifiable<Long>, Serializable {
 	}
 
 	public enum Type {
+
 		BUSINESS,
 		IP,
 		HOME,

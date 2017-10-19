@@ -29,13 +29,12 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import org.cp.elements.lang.Identifiable;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.gemfire.mapping.annotation.Region;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
-
-import example.app.model.support.Identifiable;
 
 /**
  * The {@link Contact} class is an Abstract Data Type (ADT) modeling contact information for an individual person,
@@ -45,11 +44,11 @@ import example.app.model.support.Identifiable;
  * @see java.io.Serializable
  * @see javax.persistence.Entity
  * @see javax.persistence.Table
+ * @see org.cp.elements.lang.Identifiable
  * @see org.springframework.data.gemfire.mapping.annotation.Region
  * @see example.app.model.Address
  * @see example.app.model.Person
  * @see example.app.model.PhoneNumber
- * @see example.app.model.support.Identifiable
  * @since 1.0.0
  */
 @Entity

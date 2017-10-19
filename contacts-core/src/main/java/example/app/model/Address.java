@@ -26,21 +26,20 @@ import javax.persistence.GeneratedValue;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import org.cp.elements.lang.Identifiable;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.geo.Point;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 
-import example.app.model.support.Identifiable;
-
 /**
- * The Address class is an abstract data type (ADT) that models a US address location.
+ * The {@link Address} class is an Abstract Data Type (ADT) that models a US address location.
  *
  * @author John Blum
  * @see java.io.Serializable
  * @see javax.persistence.Entity
+ * @see org.cp.elements.lang.Identifiable
  * @see org.springframework.data.geo.Point
- * @see example.app.model.support.Identifiable
  * @since 1.0.0
  */
 @Entity
@@ -201,6 +200,7 @@ public class Address implements Identifiable<Long>, Serializable {
 	 * The Type enum is an enumeration of different {@link Address} types.
 	 */
 	public enum Type {
+
 		BUSINESS,
 		HOME,
 		OFFICE,
