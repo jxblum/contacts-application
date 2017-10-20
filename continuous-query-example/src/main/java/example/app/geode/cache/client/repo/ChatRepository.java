@@ -19,16 +19,20 @@ package example.app.geode.cache.client.repo;
 import org.springframework.data.repository.CrudRepository;
 
 import example.app.geode.cache.client.model.Chat;
+import example.app.model.Person;
 
 /**
  * The {@link ChatRepository} class is a Data Access Object (DAO) implemented as a Spring Data {@link CrudRepository}
  * to perform basic CRUD and querying data access operations.
  *
  * @author John Blum
+ * @see java.lang.Long
  * @see org.springframework.data.repository.CrudRepository
  * @see example.app.geode.cache.client.model.Chat
  * @since 1.0.0
  */
 public interface ChatRepository extends CrudRepository<Chat, Long> {
+
+  Iterable<Chat> findByPerson(Person person);
 
 }
