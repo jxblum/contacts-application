@@ -24,6 +24,7 @@ import org.cp.elements.lang.Renderer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.gemfire.cache.config.EnableGemfireCaching;
 import org.springframework.data.gemfire.config.annotation.ClientCacheApplication;
 import org.springframework.data.gemfire.config.annotation.ClientCacheApplication.Locator;
 import org.springframework.data.gemfire.config.annotation.EnableContinuousQueries;
@@ -46,6 +47,7 @@ import example.app.geode.cache.client.service.provider.ChatBotService;
 @ClientCacheApplication(name = "ChatBotClient", locators = @Locator, subscriptionEnabled = true)
 @EnableContinuousQueries(poolName = "DEFAULT")
 @EnableEntityDefinedRegions(basePackageClasses = Chat.class)
+@EnableGemfireCaching
 @EnableGemfireRepositories(basePackageClasses = ChatRepository.class)
 @EnableScheduling
 @SuppressWarnings("unused")
@@ -70,7 +72,7 @@ public class ChatBotClientApplication {
   private void log(Chat chat) {
 
     Renderer<Chat> chatRender = it -> String.format("[%1$s] %2$s: %3$s",
-      it.getChatBotId(), it.getPerson(), it.getMessage());
+      it.getProcessId(), it.getPerson(), it.getMessage());
 
     log(chatRender.render(chat));
   }
