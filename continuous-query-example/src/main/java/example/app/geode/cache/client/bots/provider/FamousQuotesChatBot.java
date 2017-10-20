@@ -167,16 +167,8 @@ public class FamousQuotesChatBot implements ChatBot {
       .orElseThrow(() -> newIllegalStateException("Unable to find Person with name [%s]", name));
   }
 
-  public Iterable<Chat> findAll(Person person) {
-    return chats.stream().filter(chat -> chat.getPerson().equals(person)).collect(Collectors.toSet());
-  }
-
-  public Chat findOne(Person person) {
-    return stream(findAll(person).spliterator(), false).findFirst().orElse(null);
-  }
-
   @SuppressWarnings("unused")
-  @Value("${example.app.chat.bot.id:ChatBot 0}")
+  @Value("${example.app.chat.bot.id:ChatBotClient-0}")
   private Object chatBotId;
 
   private Random randomIndexGenerator = new Random(System.currentTimeMillis());
@@ -184,5 +176,13 @@ public class FamousQuotesChatBot implements ChatBot {
   @Override
   public Chat chat() {
     return chats.get(this.randomIndexGenerator.nextInt(chats.size())).using(this.chatBotId);
+  }
+
+  public Iterable<Chat> findAll(Person person) {
+    return chats.stream().filter(chat -> chat.getPerson().equals(person)).collect(Collectors.toSet());
+  }
+
+  public Chat findOne(Person person) {
+    return stream(findAll(person).spliterator(), false).findFirst().orElse(null);
   }
 }

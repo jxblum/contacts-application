@@ -24,8 +24,10 @@ import example.app.model.Person;
  *
  * @author John Blum
  * @see example.app.geode.cache.client.model.Chat
+ * @see example.app.model.Person
  * @since 1.0.0
  */
+@SuppressWarnings("unused")
 public interface ChatBot {
 
   /**
