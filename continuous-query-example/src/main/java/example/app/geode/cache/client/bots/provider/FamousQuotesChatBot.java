@@ -183,6 +183,6 @@ public class FamousQuotesChatBot implements ChatBot {
 
   @Override
   public Chat chat() {
-    return chats.get(this.randomIndexGenerator.nextInt(chats.size())).from(this.chatBotId);
+    return chats.get(this.randomIndexGenerator.nextInt(chats.size())).using(this.chatBotId);
   }
 }

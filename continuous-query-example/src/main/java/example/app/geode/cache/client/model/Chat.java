@@ -59,7 +59,7 @@ public class Chat implements Comparable<Chat>, Identifiable<Long>, Serializable 
   @Id
   private Long id;
 
-  private Object chatBotId;
+  private Object processId;
 
   private final Person person;
 
@@ -84,10 +84,6 @@ public class Chat implements Comparable<Chat>, Identifiable<Long>, Serializable 
       .orElseThrow(() -> newIllegalArgumentException("Message is required"));
   }
 
-  public Object getChatBotId() {
-    return this.chatBotId;
-  }
-
   @Override
   public Long getId() {
     return this.id;
@@ -97,6 +93,10 @@ public class Chat implements Comparable<Chat>, Identifiable<Long>, Serializable 
   public void setId(Long id) {
     this.id = id;
     this.person.setId(id);
+  }
+
+  public Object getProcessId() {
+    return this.processId;
   }
 
   public Person getPerson() {
@@ -157,8 +157,8 @@ public class Chat implements Comparable<Chat>, Identifiable<Long>, Serializable 
 
   @Override
   public String toString() {
-    return String.format("{ timestamp = %1$s, person = %2$s, message = %3$s, chatBotId = %4$s }",
-      toString(getTimestamp()), getPerson(), getMessage(), getChatBotId());
+    return String.format("{ timestamp = %1$s, processId = %2$s, person = %3$s, message = %4$s }",
+      toString(getTimestamp()), getProcessId(), getPerson(), getMessage());
   }
 
   protected String toString(LocalDateTime date) {
@@ -173,8 +173,8 @@ public class Chat implements Comparable<Chat>, Identifiable<Long>, Serializable 
     return this;
   }
 
-  public Chat from(Object chatBotId) {
-    this.chatBotId = chatBotId;
+  public Chat using(Object processId) {
+    this.processId = processId;
     return this;
   }
 }
