@@ -21,6 +21,7 @@ import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentEx
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 
 import org.apache.geode.cache.query.CqEvent;
@@ -28,6 +29,9 @@ import org.apache.geode.internal.concurrent.ConcurrentHashSet;
 import org.cp.elements.lang.Identifiable;
 import org.cp.elements.lang.IdentifierSequence;
 import org.cp.elements.lang.support.SimpleIdentifierSequence;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.data.gemfire.listener.annotation.ContinuousQuery;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -49,18 +53,28 @@ import example.app.model.Person;
 @SuppressWarnings("all")
 public class ChatBotService implements ChatService {
 
+  private final AtomicLong receiveCount = new AtomicLong(0L);
+  private final AtomicLong sendCount = new AtomicLong(0L);
+
   private final ChatBot chatBot;
+
+  @Autowired(required = false)
+  @Qualifier("DespairDotCom")
+  private ChatBot despairChatBot;
 
   private final ChatRepository chatRepository;
 
-  private Set<Consumer<Chat>> chatConsumers = new ConcurrentHashSet<>();
-
-  private Consumer<Chat> compositeChatConsumer = chat ->
-    this.chatConsumers.stream().forEach(chatConsumer -> chatConsumer.accept(chat));
-
   private final IdentifierSequence<Long> identifierSequence;
 
-  public ChatBotService(ChatBot chatBot, ChatRepository chatRepository) {
+  @Value("${example.app.chat.bot.id:ChatBotClient-0}")
+  private Object chatBotId;
+
+  private final Set<Consumer<Chat>> chatConsumers = new ConcurrentHashSet<>();
+
+  private final Consumer<Chat> compositeChatConsumer = chat ->
+    this.chatConsumers.stream().forEach(chatConsumer -> chatConsumer.accept(chat));
+
+  public ChatBotService(@Qualifier("FamousQuotes") ChatBot chatBot, ChatRepository chatRepository) {
 
     this.chatBot = Optional.ofNullable(chatBot).filter(Objects::nonNull)
       .orElseThrow(() -> newIllegalArgumentException("ChatBot is required"));
@@ -135,18 +149,32 @@ public class ChatBotService implements ChatService {
 
   @Override
   public Chat send(Chat chat) {
-    return getChatRepository().save(this.<Chat>identify(chat));
+    return incrementSendCount(getChatRepository().save(this.<Chat>identify(chat)));
   }
 
   @Override
   @CachePut(cacheNames = "Chat", key = "#result.id")
   public Chat send(Person person, String message) {
-    return identify(Chat.newChat(person, message));
+    return incrementSendCount(identify(Chat.newChat(person, message).using(String.format("Web%s", this.chatBotId))));
+  }
+
+  @Scheduled(initialDelay = 2000L, fixedRateString = "${example.app.chat.bot.schedule.rate:5000}")
+  public void sendDespairQuote() {
+    Optional.ofNullable(this.despairChatBot).ifPresent(chatBot -> send(chatBot.chat()));
   }
 
   @Scheduled(fixedRateString = "${example.app.chat.bot.schedule.rate:5000}")
-  public void sendChat() {
+  public void sendFamousQuote() {
     send(getChatBot().chat());
+  }
+
+  public long sendCount() {
+    return this.sendCount.get();
+  }
+
+  private Chat incrementSendCount(Chat chat) {
+    this.sendCount.incrementAndGet();
+    return chat;
   }
 
   @Override
@@ -156,8 +184,16 @@ public class ChatBotService implements ChatService {
 
   @ContinuousQuery(name = "ChatReceiver", query = "SELECT * FROM /Chat")
   public void receiveChat(CqEvent event) {
+
+    this.receiveCount.incrementAndGet();
+
     Optional.ofNullable(event).map(it -> it.getNewValue())
       .ifPresent(chat -> this.compositeChatConsumer.accept((Chat) chat));
+  }
+
+  @Override
+  public long receiveCount() {
+    return this.receiveCount.get();
   }
 
   @Override

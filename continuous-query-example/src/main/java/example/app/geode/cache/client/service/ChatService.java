@@ -59,6 +59,8 @@ public interface ChatService {
    */
   Chat send(Chat chat);
 
+  long sendCount();
+
   /**
    * Registers the given {@link Consumer} to receive and consumer {@link Chat} messages from other
    * chat client applications and {@link Person users}.
@@ -68,6 +70,8 @@ public interface ChatService {
    * @see java.util.function.Consumer
    */
   void receive(Consumer<Chat> chatConsumer);
+
+  long receiveCount();
 
   /**
    * Finds all {@link Chat Chats} stored in the chat application.
