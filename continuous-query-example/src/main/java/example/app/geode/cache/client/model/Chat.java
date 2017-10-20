@@ -23,6 +23,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import org.cp.elements.lang.Identifiable;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.Renderer;
@@ -38,7 +40,6 @@ import example.app.model.Person;
  * like Facebook Messenger or Slack, etc.
  *
  * @author John Blum
- * @param <ID> Class type of the identifier.
  * @see java.io.Serializable
  * @see java.time.LocalDateTime
  * @see org.cp.elements.lang.Identifiable
@@ -47,6 +48,7 @@ import example.app.model.Person;
  * @since 1.0.0
  */
 @Region("Chat")
+@JsonIgnoreProperties(value = { "new", "notNew" }, ignoreUnknown = true)
 @SuppressWarnings("unused")
 public class Chat implements Comparable<Chat>, Identifiable<Long>, Serializable {
 
