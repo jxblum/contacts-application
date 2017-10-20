@@ -28,6 +28,7 @@ import org.apache.geode.internal.concurrent.ConcurrentHashSet;
 import org.cp.elements.lang.Identifiable;
 import org.cp.elements.lang.IdentifierSequence;
 import org.cp.elements.lang.support.SimpleIdentifierSequence;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.data.gemfire.listener.annotation.ContinuousQuery;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,7 @@ import example.app.geode.cache.client.bots.ChatBot;
 import example.app.geode.cache.client.model.Chat;
 import example.app.geode.cache.client.repo.ChatRepository;
 import example.app.geode.cache.client.service.ChatService;
+import example.app.model.Person;
 
 /**
  * The ChatBotService class...
@@ -131,14 +133,20 @@ public class ChatBotService implements ChatService {
     return new SimpleIdentifierSequence();
   }
 
-  @Scheduled(fixedRateString = "${example.app.chat.bot.schedule.rate:5000}")
-  public void sendChat() {
-    send(getChatBot().chat());
+  @Override
+  public Chat send(Chat chat) {
+    return getChatRepository().save(this.<Chat>identify(chat));
   }
 
   @Override
-  public void send(Chat chat) {
-    getChatRepository().save(this.<Chat>identify(chat));
+  @CachePut(cacheNames = "Chat", key = "#result.id")
+  public Chat send(Person person, String message) {
+    return identify(Chat.newChat(person, message));
+  }
+
+  @Scheduled(fixedRateString = "${example.app.chat.bot.schedule.rate:5000}")
+  public void sendChat() {
+    send(getChatBot().chat());
   }
 
   @Override
@@ -150,5 +158,15 @@ public class ChatBotService implements ChatService {
   public void receiveChat(CqEvent event) {
     Optional.ofNullable(event).map(it -> it.getNewValue())
       .ifPresent(chat -> this.compositeChatConsumer.accept((Chat) chat));
+  }
+
+  @Override
+  public Iterable<Chat> findAll() {
+    return getChatRepository().findAll();
+  }
+
+  @Override
+  public Iterable<Chat> findAll(Person person) {
+    return getChatRepository().findByPerson(person);
   }
 }

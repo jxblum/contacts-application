@@ -17,10 +17,9 @@
 package example.app.geode.cache.client.service;
 
 import java.util.function.Consumer;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 import example.app.geode.cache.client.model.Chat;
+import example.app.model.Person;
 
 /**
  * The {@link ChatService} interface defines a contract for implementing classes to send and receive
@@ -31,20 +30,21 @@ import example.app.geode.cache.client.model.Chat;
  * @see java.util.function.Supplier
  * @see java.util.stream.Stream
  * @see example.app.geode.cache.client.model.Chat
+ * @see example.app.model.Person
  * @since 1.0.0
  */
 public interface ChatService {
 
-  default void send(Stream<Chat> chatStream) {
-    chatStream.forEach(this::send);
+  default Chat send(Person person, String message) {
+    return send(Chat.newChat(person, message));
   }
 
-  default void send(Supplier<Chat> chatSupplier) {
-    send(chatSupplier.get());
-  }
-
-  void send(Chat chat);
+  Chat send(Chat chat);
 
   void receive(Consumer<Chat> chatConsumer);
+
+  Iterable<Chat> findAll();
+
+  Iterable<Chat> findAll(Person person);
 
 }
