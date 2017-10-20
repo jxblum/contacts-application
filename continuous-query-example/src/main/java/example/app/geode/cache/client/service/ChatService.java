@@ -35,16 +35,58 @@ import example.app.model.Person;
  */
 public interface ChatService {
 
+  /**
+   * Sends a {@link Chat} from the given {@link Person} with the provided {@link String message}.
+   *
+   * @param person {@link Person} who sent the {@link Chat}.
+   * @param message {@link String} containing the contents of the {@link Chat}.
+   * @return a new instance of {@link Chat} from the given {@link Person}
+   * containing the provided {@link String message}.
+   * @see example.app.geode.cache.client.model.Chat
+   * @see example.app.model.Person
+   * @see java.lang.String
+   */
   default Chat send(Person person, String message) {
     return send(Chat.newChat(person, message));
   }
 
+  /**
+   * Sends the given {@link Chat}.
+   *
+   * @param chat {@link Chat} to send.
+   * @return the given {@link Chat}.
+   * @see example.app.geode.cache.client.model.Chat
+   */
   Chat send(Chat chat);
 
+  /**
+   * Registers the given {@link Consumer} to receive and consumer {@link Chat} messages from other
+   * chat client applications and {@link Person users}.
+   *
+   * @param chatConsumer {@link Consumer} object used to process and handle the incoming {@link Chat} message.
+   * @see example.app.geode.cache.client.model.Chat
+   * @see java.util.function.Consumer
+   */
   void receive(Consumer<Chat> chatConsumer);
 
+  /**
+   * Finds all {@link Chat Chats} stored in the chat application.
+   *
+   * @return all {@link Chat Chats} stored in the chat application.
+   * @see example.app.geode.cache.client.model.Chat
+   * @see java.lang.Iterable
+   */
   Iterable<Chat> findAll();
 
+  /**
+   * Finds all {@link Chat Chats} for the given {@link Person}.
+   *
+   * @param person {@link Person} to evaluate.
+   * @return all {@link Chat Chats} for the given {@link Person}.
+   * @see example.app.geode.cache.client.model.Chat
+   * @see example.app.model.Person
+   * @see java.lang.Iterable
+   */
   Iterable<Chat> findAll(Person person);
 
 }
