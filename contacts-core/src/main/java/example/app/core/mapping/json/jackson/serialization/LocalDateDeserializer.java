@@ -28,11 +28,13 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
 /**
- * The LocalDateDeserializer class is a Jackson {@link StdDeserializer} implementation that maps JSON data to a
- * Java 8 {@link LocalDate} object.
+ * The {@link LocalDateDeserializer} class is a Jackson {@link StdDeserializer} implementation that maps JSON data
+ * to a Java 8 {@link LocalDate} object.
  *
  * @author John Blum
  * @see java.time.LocalDate
+ * @see com.fasterxml.jackson.core.JsonParser
+ * @see com.fasterxml.jackson.databind.DeserializationContext
  * @see com.fasterxml.jackson.databind.ObjectMapper
  * @see com.fasterxml.jackson.databind.deser.std.StdDeserializer
  * @since 1.0.0
@@ -43,6 +45,7 @@ public class LocalDateDeserializer extends StdDeserializer<LocalDate> {
 	public static final LocalDateDeserializer INSTANCE = new LocalDateDeserializer();
 
 	public static ObjectMapper register(ObjectMapper objectMapper) {
+
 		return objectMapper.registerModule(new SimpleModule(LocalDateDeserializer.class.getSimpleName())
 			.addDeserializer(LocalDate.class, INSTANCE));
 	}
@@ -53,6 +56,7 @@ public class LocalDateDeserializer extends StdDeserializer<LocalDate> {
 
 	@Override
 	public LocalDate deserialize(JsonParser parser, DeserializationContext context) throws IOException {
+
 		JsonNode node = parser.getCodec().readTree(parser);
 
 		int dayOfMonth = node.get("dayOfMonth").asInt();
