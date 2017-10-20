@@ -21,8 +21,9 @@ import org.apache.geode.cache.ExpirationAttributes;
 import org.apache.geode.cache.GemFireCache;
 import org.apache.geode.cache.RegionAttributes;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.SpringApplication;
+import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.gemfire.PartitionedRegionFactoryBean;
 import org.springframework.data.gemfire.RegionAttributesFactoryBean;
@@ -49,7 +50,10 @@ import org.springframework.data.gemfire.config.annotation.EnableManager;
 public class ChatBotServerApplication {
 
   public static void main(String[] args) {
-    SpringApplication.run(ChatBotServerApplication.class, args);
+
+    new SpringApplicationBuilder(ChatBotServerApplication.class)
+      .web(WebApplicationType.NONE)
+      .run(args);
   }
 
   @Bean("Chat")
