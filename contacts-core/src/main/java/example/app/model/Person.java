@@ -62,7 +62,7 @@ import org.springframework.util.ObjectUtils;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Table(name = "People")
 @Region("People")
-@JsonIgnoreProperties(value = { "new", "notNew" }, ignoreUnknown = true)
+@JsonIgnoreProperties(value = { "age", "new", "notNew" }, ignoreUnknown = true)
 @SuppressWarnings("unused")
 public class Person implements Comparable<Person>, Identifiable<Long>, Serializable {
 
