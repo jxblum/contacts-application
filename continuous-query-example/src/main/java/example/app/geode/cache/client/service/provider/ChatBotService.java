@@ -182,6 +182,7 @@ public class ChatBotService implements ChatService {
     Optional.ofNullable(chatConsumer).ifPresent(this.chatConsumers::add);
   }
 
+  //@ContinuousQuery(name = "ChatReceiver", query = "SELECT * FROM /Chat", durable = true)
   @ContinuousQuery(name = "ChatReceiver", query = "SELECT * FROM /Chat")
   public void receiveChat(CqEvent event) {
 

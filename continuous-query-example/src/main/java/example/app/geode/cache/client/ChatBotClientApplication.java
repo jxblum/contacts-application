@@ -20,7 +20,6 @@ import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 
-import org.cp.elements.lang.Renderer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -44,6 +43,7 @@ import example.app.geode.cache.client.service.provider.ChatBotService;
  * @since 1.0.0
  */
 @SpringBootApplication
+//@ClientCacheApplication(name = "ChatBotClient", durableClientId = "abc123", keepAlive = true, locators = @Locator, subscriptionEnabled = true)
 @ClientCacheApplication(name = "ChatBotClient", locators = @Locator, subscriptionEnabled = true)
 @EnableContinuousQueries(poolName = "DEFAULT")
 @EnableEntityDefinedRegions(basePackageClasses = Chat.class)
@@ -51,7 +51,7 @@ import example.app.geode.cache.client.service.provider.ChatBotService;
 @EnableGemfireRepositories(basePackageClasses = ChatRepository.class)
 @EnableScheduling
 @SuppressWarnings("unused")
-public class ChatBotClientApplication {
+public class ChatBotClientApplication extends AbstractChatBotClientApplication {
 
   public static void main(String[] args) {
     SpringApplication.run(ChatBotClientApplication.class, args);
@@ -67,18 +67,5 @@ public class ChatBotClientApplication {
       .filter(it -> it instanceof ChatBotService)
       .map(it -> (ChatBotService) it)
       .ifPresent(chatBotService -> chatBotService.receive(this::log));
-  }
-
-  private void log(Chat chat) {
-
-    Renderer<Chat> chatRender = it -> String.format("[%1$s] %2$s: %3$s",
-      it.getProcessId(), it.getPerson(), it.getMessage());
-
-    log(chatRender.render(chat));
-  }
-
-  private void log(String message, Object... args) {
-    System.out.printf("%s%n", String.format(message, args));
-    System.out.flush();
   }
 }
