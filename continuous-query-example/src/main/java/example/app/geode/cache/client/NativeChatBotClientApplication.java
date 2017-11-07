@@ -21,7 +21,7 @@ import java.util.Properties;
 import java.util.Scanner;
 import java.util.UUID;
 
-import org.apache.geode.cache.Region;
+import org.apache.geode.cache.RegionService;
 import org.apache.geode.cache.client.ClientCache;
 import org.apache.geode.cache.client.ClientCacheFactory;
 import org.apache.geode.cache.client.ClientRegionFactory;
@@ -73,10 +73,13 @@ public class NativeChatBotClientApplication extends AbstractChatBotClientApplica
     run(this.arguments);
   }
 
+  @SuppressWarnings("unused")
   protected void run(String[] args) {
 
     try {
-      registerContinuousQuery(chatRegion(registerShutdownHook(gemfireCache(gemfireProperties()), DURABLE)));
+      postProcess(registerContinuousQuery(chatRegion(registerShutdownHook(
+        gemfireCache(gemfireProperties()), DURABLE))));
+
       promptToExit();
     }
     catch (Exception cause) {
@@ -112,7 +115,7 @@ public class NativeChatBotClientApplication extends AbstractChatBotClientApplica
     return clientCache;
   }
 
-  Region<Long, Chat> chatRegion(ClientCache gemfireCache) {
+  ClientCache chatRegion(ClientCache gemfireCache) {
 
     ClientRegionFactory<Long, Chat> chatRegionFactory =
       gemfireCache.createClientRegionFactory(ClientRegionShortcut.PROXY);
@@ -120,12 +123,14 @@ public class NativeChatBotClientApplication extends AbstractChatBotClientApplica
     chatRegionFactory.setKeyConstraint(Long.class);
     chatRegionFactory.setValueConstraint(Chat.class);
 
-    return chatRegionFactory.create(CHAT_REGION_NAME);
+    chatRegionFactory.create(CHAT_REGION_NAME);
+
+    return gemfireCache;
   }
 
-  Region<Long, Chat> registerContinuousQuery(Region<Long, Chat> chat) throws Exception {
+  ClientCache registerContinuousQuery(ClientCache gemfireCache) throws Exception {
 
-    QueryService queryService = resolveQueryService(chat);
+    QueryService queryService = resolveQueryService(gemfireCache);
 
     CqAttributesFactory cqAttributesFactory = new CqAttributesFactory();
 
@@ -142,14 +147,19 @@ public class NativeChatBotClientApplication extends AbstractChatBotClientApplica
 
     query.execute();
 
-    return chat;
+    return gemfireCache;
   }
 
-  QueryService resolveQueryService(Region<?, ?> region) {
+  QueryService resolveQueryService(RegionService regionService) {
 
     return Optional.ofNullable(PoolManager.find(POOL_NAME))
       .map(Pool::getQueryService)
-      .orElseGet(() -> region.getRegionService().getQueryService());
+      .orElseGet(regionService::getQueryService);
+  }
+
+  ClientCache postProcess(ClientCache gemfireCache) {
+    gemfireCache.readyForEvents();
+    return gemfireCache;
   }
 
   void promptToExit() {

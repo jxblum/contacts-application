@@ -43,7 +43,8 @@ import example.app.geode.cache.client.service.provider.ChatBotService;
  * @since 1.0.0
  */
 @SpringBootApplication
-//@ClientCacheApplication(name = "ChatBotClient", durableClientId = "abc123", keepAlive = true, locators = @Locator, subscriptionEnabled = true)
+//@ClientCacheApplication(name = "ChatBotClient", durableClientId = "abc123", locators = @Locator,
+//  readyForEvents = true, subscriptionEnabled = true)
 @ClientCacheApplication(name = "ChatBotClient", locators = @Locator, subscriptionEnabled = true)
 @EnableContinuousQueries(poolName = "DEFAULT")
 @EnableEntityDefinedRegions(basePackageClasses = Chat.class)
