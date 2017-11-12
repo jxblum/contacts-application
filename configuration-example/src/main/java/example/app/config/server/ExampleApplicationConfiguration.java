@@ -72,13 +72,14 @@ public class ExampleApplicationConfiguration {
 	@Bean
 	@SuppressWarnings("unchecked")
 	RegionAttributesFactoryBean exampleRegionAttributes(EvictionAttributes exampleEvictionAttributes,
-		ExpirationAttributes exampleExpirationAttributes) {
+			ExpirationAttributes exampleExpirationAttributes) {
 
 		RegionAttributesFactoryBean exampleRegionAttributes = new RegionAttributesFactoryBean();
 
 		exampleRegionAttributes.setCloningEnabled(false);
 		exampleRegionAttributes.setEvictionAttributes(exampleEvictionAttributes);
 		exampleRegionAttributes.setEntryIdleTimeout(exampleExpirationAttributes);
+		exampleRegionAttributes.setEntryTimeToLive(exampleExpirationAttributes);
 		exampleRegionAttributes.setInitialCapacity(101);
 		exampleRegionAttributes.setKeyConstraint(String.class);
 		exampleRegionAttributes.setLoadFactor(0.75f);
@@ -91,6 +92,7 @@ public class ExampleApplicationConfiguration {
 
 	@Bean
 	EvictionAttributesFactoryBean exampleEvictionAttributes() {
+
 		EvictionAttributesFactoryBean exampleEvictionAttributes = new EvictionAttributesFactoryBean();
 
 		exampleEvictionAttributes.setAction(EvictionAction.LOCAL_DESTROY);
@@ -102,6 +104,7 @@ public class ExampleApplicationConfiguration {
 
 	@Bean
 	ExpirationAttributesFactoryBean exampleExpirationAttributes() {
+
 		ExpirationAttributesFactoryBean exampleExpirationAttributes = new ExpirationAttributesFactoryBean();
 
 		exampleExpirationAttributes.setAction(ExpirationAction.LOCAL_DESTROY);
