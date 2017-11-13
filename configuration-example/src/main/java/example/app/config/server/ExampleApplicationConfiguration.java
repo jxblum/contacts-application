@@ -16,8 +16,6 @@
 
 package example.app.config.server;
 
-import java.util.concurrent.TimeUnit;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
@@ -30,8 +28,11 @@ import org.apache.geode.cache.Region;
 import org.apache.geode.cache.RegionAttributes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.data.gemfire.PartitionedRegionFactoryBean;
 import org.springframework.data.gemfire.RegionAttributesFactoryBean;
 import org.springframework.data.gemfire.eviction.EvictionAttributesFactoryBean;
@@ -56,9 +57,14 @@ import org.springframework.data.gemfire.expiration.ExpirationAttributesFactoryBe
 @SuppressWarnings("unused")
 public class ExampleApplicationConfiguration {
 
+	@Bean
+	static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+		return new PropertySourcesPlaceholderConfigurer();
+	}
+
 	@Bean(name = "Example")
 	PartitionedRegionFactoryBean<String, Object> exampleRegion(Cache gemfireCache,
-			RegionAttributes<String, Object> exampleRegionAttributes) {
+			@Qualifier("exampleRegionAttributes") RegionAttributes<String, Object> exampleRegionAttributes) {
 
 		PartitionedRegionFactoryBean<String, Object> exampleRegion = new PartitionedRegionFactoryBean<>();
 
@@ -91,24 +97,26 @@ public class ExampleApplicationConfiguration {
 	}
 
 	@Bean
-	EvictionAttributesFactoryBean exampleEvictionAttributes() {
+	EvictionAttributesFactoryBean exampleEvictionAttributes(
+			@Value("${gemfire.cache.eviction.threshold:100}") int threshold) {
 
 		EvictionAttributesFactoryBean exampleEvictionAttributes = new EvictionAttributesFactoryBean();
 
 		exampleEvictionAttributes.setAction(EvictionAction.LOCAL_DESTROY);
-		exampleEvictionAttributes.setThreshold(100);
+		exampleEvictionAttributes.setThreshold(threshold);
 		exampleEvictionAttributes.setType(EvictionPolicyType.ENTRY_COUNT);
 
 		return exampleEvictionAttributes;
 	}
 
 	@Bean
-	ExpirationAttributesFactoryBean exampleExpirationAttributes() {
+	ExpirationAttributesFactoryBean exampleExpirationAttributes(
+			@Value("${gemfire.cache.expiration.timeout:120}") int timeout) {
 
 		ExpirationAttributesFactoryBean exampleExpirationAttributes = new ExpirationAttributesFactoryBean();
 
 		exampleExpirationAttributes.setAction(ExpirationAction.LOCAL_DESTROY);
-		exampleExpirationAttributes.setTimeout(Long.valueOf(TimeUnit.MINUTES.toMillis(2)).intValue());
+		exampleExpirationAttributes.setTimeout(timeout);
 
 		return exampleExpirationAttributes;
 	}
