@@ -18,10 +18,10 @@ package example.app.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.data.gemfire.cache.config.EnableGemfireCaching;
+import org.springframework.data.gemfire.config.annotation.EnableCachingDefinedRegions;
+import org.springframework.data.gemfire.config.annotation.PeerCacheApplication;
 
-import example.app.config.gemfire.GemFireConfiguration;
+import attic.app.config.gemfire.GemFireConfiguration;
 import example.app.repo.GeocodingRepository;
 import example.app.repo.provider.GoogleMapsApiGeocodingRepository;
 import example.app.service.GeocodingService;
@@ -32,7 +32,7 @@ import example.app.service.GeocodingService;
  * as the [JSR-107] caching provider.
  *
  * @author John Blum
- * @see example.app.config.gemfire.GemFireConfiguration
+ * @see GemFireConfiguration
  * @see example.app.repo.GeocodingRepository
  * @see example.app.repo.provider.GoogleMapsApiGeocodingRepository
  * @see example.app.service.GeocodingService
@@ -43,9 +43,8 @@ import example.app.service.GeocodingService;
  * @see org.springframework.data.gemfire.cache.GemfireCacheManager
  * @since 1.0.0
  */
-@Configuration
-@EnableGemfireCaching
-@Import(GemFireConfiguration.class)
+@PeerCacheApplication(name = "CachingExampleApplication")
+@EnableCachingDefinedRegions
 @SuppressWarnings("unused")
 public class CachingExampleConfiguration {
 

@@ -35,6 +35,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.geo.Point;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import attic.app.config.gemfire.GemFireConfiguration;
 import example.app.config.CachingExampleConfiguration;
 import example.app.model.Address;
 import example.app.model.State;
@@ -49,7 +50,7 @@ import example.app.service.GeocodingServiceIntegrationTests.TestConfiguration;
  * @see org.mockito.Mockito
  * @see org.springframework.boot.test.context.SpringBootTest
  * @see org.springframework.data.geo.Point
- * @see example.app.config.gemfire.GemFireConfiguration
+ * @see GemFireConfiguration
  * @see example.app.model.Address
  * @see example.app.service.GeocodingService
  * @since 1.0.0
@@ -84,8 +85,8 @@ public class GeocodingServiceIntegrationTests {
   @Before
   public void setup() {
 
-    addressToLatitudeLongitude.clear();
-    latitudeLongitudeToAddress.clear();
+    addressToLatitudeLongitude.removeAll(addressToLatitudeLongitude.keySet());
+    latitudeLongitudeToAddress.removeAll(latitudeLongitudeToAddress.keySet());
 
     assertThat(addressToLatitudeLongitude.isEmpty()).isTrue();
     assertThat(latitudeLongitudeToAddress.isEmpty()).isTrue();
@@ -94,6 +95,7 @@ public class GeocodingServiceIntegrationTests {
 
   @Test
   public void geocodeCachesSuccessfully() {
+
     assertThat(geocodingService.geocode(addressOne)).isEqualTo(addressOne.getLocation());
     assertThat(geocodingService.isCacheMiss()).isTrue();
     assertThat(geocodingService.geocode(addressOne)).isEqualTo(addressOne.getLocation());
@@ -104,6 +106,7 @@ public class GeocodingServiceIntegrationTests {
 
   @Test
   public void reverseGeocodeCachesSuccessfully() {
+
     assertThat(geocodingService.reverseGeocode(addressOne.getLocation())).isEqualTo(addressOne);
     assertThat(geocodingService.isCacheMiss()).isTrue();
     assertThat(geocodingService.reverseGeocode(addressOne.getLocation())).isEqualTo(addressOne);

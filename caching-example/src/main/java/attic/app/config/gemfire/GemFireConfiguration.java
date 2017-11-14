@@ -14,7 +14,7 @@
  * permissions and limitations under the License.
  */
 
-package example.app.config.gemfire;
+package attic.app.config.gemfire;
 
 import org.apache.geode.cache.Cache;
 import org.springframework.context.annotation.Bean;
@@ -26,7 +26,7 @@ import org.springframework.data.geo.Point;
 import example.app.model.Address;
 
 /**
- * The GemFireConfiguration class is a Spring {@link Configuration} class containing configuration meta-data
+ * The {@link GemFireConfiguration} class is a Spring {@link Configuration} class containing configuration meta-data
  * to configure and bootstrap an embedded GemFire Server peer cache in the application's JVM.
  *
  * @author John Blum
