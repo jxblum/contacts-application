@@ -6,8 +6,8 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <artifactId>contacts-application</artifactId>
     <groupId>example.apps</groupId>
+    <artifactId>contacts-application</artifactId>
     <version>1.0.0.RELEASE</version>
   </parent>
 
