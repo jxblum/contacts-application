@@ -76,7 +76,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import example.app.core.bean.factory.config.BeanPostProcessorSupport;
 import example.app.core.util.CollectionUtils;
 import example.app.geode.cache.loader.EchoCacheLoader;
 import example.app.geode.security.GeodeSecurityIntegrationTests.GeodeClientConfiguration;
@@ -129,6 +128,7 @@ public class GeodeSecurityIntegrationTests extends AbstractGeodeIntegrationTests
 
   @BeforeClass
   public static void runGeodeServer() throws IOException {
+
     geodeServer = run(GeodeServerConfiguration.class,
       String.format("-Dgemfire.log-level=%s", logLevel()),
       String.format("-Dshiro.authentication.strategy=%s",
@@ -157,6 +157,7 @@ public class GeodeSecurityIntegrationTests extends AbstractGeodeIntegrationTests
   @Test
   @DirtiesContext
   public void authorizedUser() {
+
     assertThat(echo.get("one")).isEqualTo("one");
     assertThat(echo.put("two", "four")).isNull();
     assertThat(echo.get("two")).isEqualTo("four");
@@ -164,6 +165,7 @@ public class GeodeSecurityIntegrationTests extends AbstractGeodeIntegrationTests
 
   @Test
   public void unauthorizedUser() {
+
     assertThat(echo.get("one")).isEqualTo("one");
 
     exception.expect(ServerOperationException.class);
@@ -182,6 +184,7 @@ public class GeodeSecurityIntegrationTests extends AbstractGeodeIntegrationTests
 
     @Bean("Echo")
     ClientRegionFactoryBean<String, String> echoRegion(GemFireCache gemfireCache) {
+
       ClientRegionFactoryBean<String, String> echoRegion = new ClientRegionFactoryBean<>();
 
       echoRegion.setCache(gemfireCache);
@@ -248,6 +251,7 @@ public class GeodeSecurityIntegrationTests extends AbstractGeodeIntegrationTests
 
     @Bean
     DataSource hsqlDataSource() {
+
       return new EmbeddedDatabaseBuilder()
         .setName("geode_security")
         .setScriptEncoding("UTF-8")
@@ -309,9 +313,12 @@ public class GeodeSecurityIntegrationTests extends AbstractGeodeIntegrationTests
 
     @Bean
     PropertiesRealm shiroRealm() {
+
       PropertiesRealm propertiesRealm = new PropertiesRealm();
+
       propertiesRealm.setResourcePath("classpath:shiro.properties");
       propertiesRealm.setPermissionResolver(new GeodePermissionResolver());
+
       return propertiesRealm;
     }
   }
@@ -323,9 +330,14 @@ public class GeodeSecurityIntegrationTests extends AbstractGeodeIntegrationTests
 
     @Bean
     BeanPostProcessor shiroSecurityManagerPostProcessor() {
-      return new BeanPostProcessorSupport() {
-        @Override public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+
+      return new BeanPostProcessor() {
+
+        @Override
+        public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+
           if ("shiroSecurityManager".equals(beanName) && bean instanceof AuthenticatingSecurityManager) {
+
             Authenticator authenticator = ((AuthenticatingSecurityManager) bean).getAuthenticator();
 
             if (authenticator instanceof ModularRealmAuthenticator) {
@@ -340,7 +352,9 @@ public class GeodeSecurityIntegrationTests extends AbstractGeodeIntegrationTests
 
     @SuppressWarnings("all")
     private AuthenticationStrategy authenticationStrategyResolver() {
-      String authenticationStategyName = systemProperty("shiro.authentication.strategy", "atLeastOneSuccessful");
+
+      String authenticationStategyName =
+        systemProperty("shiro.authentication.strategy", "atLeastOneSuccessful");
 
       ShiroAuthenticationStrategy authenticationStrategy =
         ShiroAuthenticationStrategy.findBy(authenticationStategyName);
@@ -370,17 +384,23 @@ public class GeodeSecurityIntegrationTests extends AbstractGeodeIntegrationTests
     @Bean
     @Order(1)
     IniRealm iniRealm() {
+
       IniRealm iniRealm = new IniRealm("classpath:partial-shiro.ini");
+
       iniRealm.setPermissionResolver(new GeodePermissionResolver());
+
       return iniRealm;
     }
 
     @Bean
     @Order(2)
     PropertiesRealm propertiesRealm() {
+
       PropertiesRealm propertiesRealm = new PropertiesRealm();
+
       propertiesRealm.setResourcePath("classpath:partial-shiro.properties");
       propertiesRealm.setPermissionResolver(new GeodePermissionResolver());
+
       return propertiesRealm;
     }
   }
