@@ -98,10 +98,10 @@
     <multithreadedtc.version>1.01</multithreadedtc.version>
     <pivotal-gemfire.version>9.1.1</pivotal-gemfire.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <spring-data-gemfire.version>2.0.0.RELEASE</spring-data-gemfire.version>
-    <spring-data-geode.version>2.0.0.RELEASE</spring-data-geode.version>
-    <spring-session-data-gemfire.version>2.0.0.M2</spring-session-data-gemfire.version>
-    <spring-session-data-geode.version>2.0.0.M2</spring-session-data-geode.version>
+    <spring-data-gemfire.version>2.0.2.RELEASE</spring-data-gemfire.version>
+    <spring-data-geode.version>2.0.2.RELEASE</spring-data-geode.version>
+    <spring-session-data-gemfire.version>2.0.0.RC1</spring-session-data-gemfire.version>
+    <spring-session-data-geode.version>2.0.0.RC1</spring-session-data-geode.version>
     <spring-shell.version>1.2.0.RELEASE</spring-shell.version>
   </properties>
 
