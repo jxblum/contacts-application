@@ -50,10 +50,6 @@
     </developer>
   </developers>
 
-  <properties>
-    <spring-data-geode.version>2.1.0.BUILD-SNAPSHOT</spring-data-geode.version>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>example.apps</groupId>
