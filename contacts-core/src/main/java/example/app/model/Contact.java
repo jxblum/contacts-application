@@ -52,8 +52,8 @@ import org.springframework.util.StringUtils;
  * @since 1.0.0
  */
 @Entity
-@Table(name = "Contacts")
 @Region("Contacts")
+@Table(name = "Contacts")
 @JsonIgnoreProperties(value = { "new", "notNew" }, ignoreUnknown = true)
 @SuppressWarnings("unused")
 public class Contact implements Identifiable<Long>, Serializable {
