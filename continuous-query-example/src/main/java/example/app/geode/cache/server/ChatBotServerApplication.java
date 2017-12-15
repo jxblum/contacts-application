@@ -53,6 +53,7 @@ public class ChatBotServerApplication {
 
     new SpringApplicationBuilder(ChatBotServerApplication.class)
       .web(WebApplicationType.NONE)
+      .build()
       .run(args);
   }
 

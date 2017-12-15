@@ -46,7 +46,7 @@ import example.app.geode.cache.client.service.provider.ChatBotService;
 //@ClientCacheApplication(name = "ChatBotClient", durableClientId = "abc123", locators = @Locator,
 //  readyForEvents = true, subscriptionEnabled = true)
 @ClientCacheApplication(name = "ChatBotClient", locators = @Locator, subscriptionEnabled = true)
-@EnableContinuousQueries(poolName = "DEFAULT")
+@EnableContinuousQueries
 @EnableEntityDefinedRegions(basePackageClasses = Chat.class)
 @EnableGemfireCaching
 @EnableGemfireRepositories(basePackageClasses = ChatRepository.class)
