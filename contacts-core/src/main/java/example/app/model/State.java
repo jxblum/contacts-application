@@ -35,6 +35,7 @@ public enum State {
 	COLORADO("CO", "Colarado"),
 	CONNECTICUT("CT", "Connecticut"),
 	DELAWARE("DE", "Delaware"),
+	DISTRICT_OF_COLUMBIA("DC", "District of Columbia"),
 	FLORIDA("FL", "Florida"),
 	GEORGIA("GA", "Georgia"),
 	HAWAII("HI", "Hawaii"),
@@ -82,6 +83,7 @@ public enum State {
 	private String name;
 
 	public static State valueOfAbbreviation(String abbreviation) {
+
 		for (State state : values()) {
 			if (state.getAbbreviation().equalsIgnoreCase(abbreviation)) {
 				return state;
@@ -92,6 +94,7 @@ public enum State {
 	}
 
 	public static State valueOfName(String name) {
+
 		for (State state : values()) {
 			if (state.getName().equalsIgnoreCase(name)) {
 				return state;
@@ -102,6 +105,7 @@ public enum State {
 	}
 
 	State(String abbreviation, String name) {
+
 		Assert.hasText(abbreviation, "State abbreviation is required");
 		Assert.hasText(name, "State name is required");
 
