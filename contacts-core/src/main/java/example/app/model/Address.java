@@ -28,6 +28,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import org.cp.elements.lang.Identifiable;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.gemfire.mapping.annotation.Indexed;
+import org.springframework.data.gemfire.mapping.annotation.Region;
 import org.springframework.data.geo.Point;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
@@ -43,6 +45,7 @@ import org.springframework.util.ObjectUtils;
  * @since 1.0.0
  */
 @Entity
+@Region
 @JsonIgnoreProperties(value = { "new", "notNew" }, ignoreUnknown = true)
 @SuppressWarnings("unused")
 public class Address implements Identifiable<Long>, Serializable {
@@ -51,9 +54,11 @@ public class Address implements Identifiable<Long>, Serializable {
 
 	private Long id;
 
+	@Indexed
 	private Point location;
 
 	private State state;
+
 	private String city;
 	private String street;
 	private String zipCode;
@@ -61,6 +66,7 @@ public class Address implements Identifiable<Long>, Serializable {
 	private Type type = Type.DEFAULT;
 
 	public static Address newAddress(Point location) {
+
 		Assert.notNull(location, "location is required");
 
 		Address address = new Address();
@@ -71,6 +77,7 @@ public class Address implements Identifiable<Long>, Serializable {
 	}
 
 	public static Address newAddress(String street, String city, State state, String zipCode) {
+
 		Assert.hasText(street, "street is required");
 		Assert.hasText(city, "city is required");
 		Assert.notNull(state, "state is required");
@@ -98,7 +105,7 @@ public class Address implements Identifiable<Long>, Serializable {
 	@javax.persistence.Id
 	@GeneratedValue
 	public Long getId() {
-		return id;
+		return this.id;
 	}
 
 	public void setLocation(Point location) {
@@ -106,7 +113,7 @@ public class Address implements Identifiable<Long>, Serializable {
 	}
 
 	public Point getLocation() {
-		return location;
+		return this.location;
 	}
 
 	public void setStreet(String street) {
@@ -115,7 +122,7 @@ public class Address implements Identifiable<Long>, Serializable {
 
 	@Column(nullable = false)
 	public String getStreet() {
-		return street;
+		return this.street;
 	}
 
 	public void setCity(String city) {
@@ -124,7 +131,7 @@ public class Address implements Identifiable<Long>, Serializable {
 
 	@Column(nullable = false)
 	public String getCity() {
-		return city;
+		return this.city;
 	}
 
 	public void setState(State state) {
@@ -134,7 +141,7 @@ public class Address implements Identifiable<Long>, Serializable {
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	public State getState() {
-		return state;
+		return this.state;
 	}
 
 	public void setZipCode(String zipCode) {
@@ -143,7 +150,7 @@ public class Address implements Identifiable<Long>, Serializable {
 
 	@Column(name = "zip_code", nullable = false)
 	public String getZipCode() {
-		return zipCode;
+		return this.zipCode;
 	}
 
 	public void setType(Type type) {
@@ -152,12 +159,13 @@ public class Address implements Identifiable<Long>, Serializable {
 
 	@Enumerated(EnumType.STRING)
 	public Type getType() {
-		return (type != null ? type : Type.DEFAULT);
+		return this.type != null ? this.type : Type.DEFAULT;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == this) {
+
+		if (this == obj) {
 			return true;
 		}
 
@@ -176,18 +184,21 @@ public class Address implements Identifiable<Long>, Serializable {
 
 	@Override
 	public int hashCode() {
+
 		int hashValue = 17;
+
 		hashValue = 37 * hashValue + ObjectUtils.nullSafeHashCode(this.getLocation());
 		hashValue = 37 * hashValue + ObjectUtils.nullSafeHashCode(this.getStreet());
 		hashValue = 37 * hashValue + ObjectUtils.nullSafeHashCode(this.getCity());
 		hashValue = 37 * hashValue + ObjectUtils.nullSafeHashCode(this.getState());
 		hashValue = 37 * hashValue + ObjectUtils.nullSafeHashCode(this.getZipCode());
+
 		return hashValue;
 	}
 
 	@Override
 	public String toString() {
-		return String.format("%1$s, %2$s, %3$s %4$s [Location = %5$s, Type = %6$s]",
+		return String.format("%1$s %2$s, %3$s %4$s [Location = %5$s, Type = %6$s]",
 			getStreet(), getCity(), getState(), getZipCode(), getLocation(), getType());
 	}
 
