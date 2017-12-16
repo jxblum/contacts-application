@@ -79,7 +79,6 @@
       <groupId>javax.cache</groupId>
       <artifactId>cache-api</artifactId>
       <version>${cache-api.version}</version>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.maps</groupId>
