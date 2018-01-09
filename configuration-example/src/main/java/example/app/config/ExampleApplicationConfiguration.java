@@ -9,12 +9,12 @@
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
- * implied. See the License for the specific language governing
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
 
-package example.app.config.server;
+package example.app.config;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -24,6 +24,7 @@ import org.apache.geode.cache.EvictionAction;
 import org.apache.geode.cache.EvictionAttributes;
 import org.apache.geode.cache.ExpirationAction;
 import org.apache.geode.cache.ExpirationAttributes;
+import org.apache.geode.cache.GemFireCache;
 import org.apache.geode.cache.Region;
 import org.apache.geode.cache.RegionAttributes;
 import org.slf4j.Logger;
@@ -41,12 +42,13 @@ import org.springframework.data.gemfire.expiration.ExpirationAttributesFactoryBe
 
 /**
  * The {@link ExampleApplicationConfiguration} class is a Spring {@link Configuration @Configuration} class
- * that configures and initializes an example Apache Geode cache {@link Region}.
+ * that configures and initializes an example Apache Geode {@link Cache} {@link Region}.
  *
  * @author John Blum
  * @see org.springframework.context.annotation.Bean
  * @see org.springframework.context.annotation.Configuration
  * @see org.apache.geode.cache.Cache
+ * @see org.apache.geode.cache.GemFireCache
  * @see org.apache.geode.cache.EvictionAttributes
  * @see org.apache.geode.cache.ExpirationAttributes
  * @see org.apache.geode.cache.Region
@@ -63,11 +65,12 @@ public class ExampleApplicationConfiguration {
 	}
 
 	@Bean(name = "Example")
-	PartitionedRegionFactoryBean<String, Object> exampleRegion(Cache gemfireCache,
+	PartitionedRegionFactoryBean<String, Object> exampleRegion(GemFireCache gemfireCache,
 			@Qualifier("exampleRegionAttributes") RegionAttributes<String, Object> exampleRegionAttributes) {
 
 		PartitionedRegionFactoryBean<String, Object> exampleRegion = new PartitionedRegionFactoryBean<>();
 
+		exampleRegion.setAttributes(exampleRegionAttributes);
 		exampleRegion.setCache(gemfireCache);
 		exampleRegion.setClose(false);
 		exampleRegion.setPersistent(false);
@@ -98,7 +101,7 @@ public class ExampleApplicationConfiguration {
 
 	@Bean
 	EvictionAttributesFactoryBean exampleEvictionAttributes(
-			@Value("${gemfire.cache.eviction.threshold:100}") int threshold) {
+			@Value("${configuration-example.gemfire.cache.eviction.threshold:100}") int threshold) {
 
 		EvictionAttributesFactoryBean exampleEvictionAttributes = new EvictionAttributesFactoryBean();
 
@@ -111,7 +114,7 @@ public class ExampleApplicationConfiguration {
 
 	@Bean
 	ExpirationAttributesFactoryBean exampleExpirationAttributes(
-			@Value("${gemfire.cache.expiration.timeout:120}") int timeout) {
+			@Value("${configuration-example.gemfire.cache.expiration.timeout:120}") int timeout) {
 
 		ExpirationAttributesFactoryBean exampleExpirationAttributes = new ExpirationAttributesFactoryBean();
 
@@ -129,7 +132,7 @@ public class ExampleApplicationConfiguration {
 
 	@PostConstruct
 	public void postConstruct() {
-		logger.info("int[] class type is {}", int[].class);
-		example.put("key1", new int[] { 0, 1, 2 });
+		this.logger.info("int[] class type is {}", int[].class);
+		this.example.put("key1", new int[] { 0, 1, 2 });
 	}
 }

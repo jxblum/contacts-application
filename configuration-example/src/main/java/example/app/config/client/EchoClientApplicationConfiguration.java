@@ -17,14 +17,17 @@
 package example.app.config.client;
 
 import org.apache.geode.cache.GemFireCache;
+import org.apache.geode.cache.Region;
+import org.apache.geode.cache.client.ClientCache;
 import org.apache.geode.cache.client.ClientRegionShortcut;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.gemfire.client.ClientRegionFactoryBean;
 
 /**
- * The EchoClientApplicationConfiguration class is a Spring {@link Configuration @Configuration} class that configures
- * a Geode, client cache Region proxying the Server Region to access echo messages.
+ * The {@link EchoClientApplicationConfiguration} class is a Spring {@link Configuration @Configuration} class
+ * that configures an Apache Geode, {@link ClientCache} {@link Region} to proxy the server {@link Region}
+ * by the same {@link String name} for accessing echo messages.
  *
  * @author John Blum
  * @see org.springframework.context.annotation.Bean

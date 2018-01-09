@@ -17,6 +17,7 @@
 package example.app.config.server;
 
 import org.apache.geode.cache.Cache;
+import org.apache.geode.cache.Region;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.gemfire.PartitionedRegionFactoryBean;
@@ -24,8 +25,8 @@ import org.springframework.data.gemfire.PartitionedRegionFactoryBean;
 import example.app.geode.cache.loader.EchoCacheLoader;
 
 /**
- * The EchoServerApplicationConfiguration class is a Spring {@link Configuration @Configuration} class that configures
- * a Geode, Server-side, PARTITION Region for storing echo messages.
+ * The {@link EchoServerApplicationConfiguration} class is a Spring {@link Configuration @Configuration} class
+ * that configures an Apache Geode, server-side, {@literal PARTITION} {@link Region} for storing echo messages.
  *
  * @author John Blum
  * @see org.springframework.context.annotation.Bean
