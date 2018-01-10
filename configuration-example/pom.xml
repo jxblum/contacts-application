@@ -57,6 +57,7 @@
 
   <properties>
     <hazelcast.version>3.7.2</hazelcast.version>
+    <jansi.version>1.16</jansi.version>
     <spring-data-geode.version>2.1.0.BUILD-SNAPSHOT</spring-data-geode.version>
   </properties>
 
@@ -72,12 +73,23 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.fusesource.jansi</groupId>
+      <artifactId>jansi</artifactId>
+      <version>${jansi.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-logging</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.springframework.data</groupId>
