@@ -50,16 +50,10 @@
     </developer>
   </developers>
 
-  <properties>
-    <hibernate.version>1.0.0.Final</hibernate.version>
-    <jdom.version>2.0.6</jdom.version>
-  </properties>
-
   <dependencies>
     <dependency>
-      <groupId>org.hibernate.javax.persistence</groupId>
-      <artifactId>hibernate-jpa-2.1-api</artifactId>
-      <version>${hibernate.version}</version>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-entitymanager</artifactId>
     </dependency>
     <dependency>
       <groupId>org.hsqldb</groupId>
@@ -69,7 +63,7 @@
     <dependency>
       <groupId>org.jdom</groupId>
       <artifactId>jdom2</artifactId>
-      <version>${jdom.version}</version>
+      <version>${jdom2.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>

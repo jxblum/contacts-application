@@ -55,11 +55,6 @@
     </developer>
   </developers>
 
-  <properties>
-    <hazelcast.version>3.7.2</hazelcast.version>
-    <jansi.version>1.16</jansi.version>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>example.apps</groupId>

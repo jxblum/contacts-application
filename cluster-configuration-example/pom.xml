@@ -53,10 +53,6 @@
     </developer>
   </developers>
 
-  <properties>
-    <spring-data-geode.version>2.0.0.DATAGEODE-34-SNAPSHOT</spring-data-geode.version>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>example.apps</groupId>

@@ -50,10 +50,6 @@
     </developer>
   </developers>
 
-  <properties>
-    <cache-api.version>1.0.0</cache-api.version>
-  </properties>
-
   <repositories>
     <repository>
       <id>sonatype-nexus-snapshots</id>

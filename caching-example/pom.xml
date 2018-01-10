@@ -50,12 +50,6 @@
     </developer>
   </developers>
 
-  <properties>
-    <cache-api.version>1.0.0</cache-api.version>
-    <google-maps-api.version>0.1.15</google-maps-api.version>
-    <hazelcast.version>3.7.2</hazelcast.version>
-  </properties>
-
   <repositories>
     <repository>
       <id>sonatype-nexus-snapshots</id>
