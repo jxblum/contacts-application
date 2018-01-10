@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+  <Appenders>
+    <Console name="STDOUT">
+      <Layout type="PatternLayout" pattern="%highlight{%m%n%n}{blue}"/>
+    </Console>
+  </Appenders>
+  <Loggers>
+    <Logger name="example.app" level="info" additivity="false">
+      <AppenderRef ref="STDOUT"/>
+    </Logger>
+  </Loggers>
+</Configuration>
