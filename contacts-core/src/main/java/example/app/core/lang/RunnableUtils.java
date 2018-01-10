@@ -19,15 +19,22 @@ package example.app.core.lang;
 import static example.app.core.lang.RunnableUtils.SleepDeprivedException.newSleepDeprivedException;
 
 import java.util.Optional;
+import java.util.Scanner;
 
 /**
- * The RunnableUtils class...
+ * {@link RunnableUtils} is an abstract utility class for working with {@link Runnable Runnables}.
  *
  * @author John Blum
+ * @see java.lang.Runnable
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
 public abstract class RunnableUtils {
+
+  public static void promptPressEnterToExit() {
+    System.err.println("Press <enter> to exit...");
+    new Scanner(System.in).nextLine();
+  }
 
   public static boolean safeRunWithPause(long milliseconds, Runnable runner) {
     boolean slept = safeSleep(milliseconds);
