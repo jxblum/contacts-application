@@ -9,12 +9,12 @@
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
- * implied. See the License for the specific language governing
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
 
-package example.app.spring.java.geode.server;
+package example.app.spring.java.server;
 
 import java.util.Properties;
 
@@ -32,8 +32,8 @@ import org.springframework.data.gemfire.server.CacheServerFactoryBean;
 import example.app.config.server.EchoServerApplicationConfiguration;
 
 /**
- * The JavaConfiguredGeodeServerApplication class is a {@link SpringBootApplication} that configures and bootstraps
- * a Geode Server application JVM process using Spring Java-based configuration meta-data.
+ * The {@link JavaConfiguredGeodeServerApplication} class is a {@link SpringBootApplication} that configures
+ * and bootstraps an Apache Geode server JVM process using Spring Java-based configuration meta-data.
  *
  * @author John Blum
  * @see org.springframework.boot.SpringApplication
@@ -41,8 +41,10 @@ import example.app.config.server.EchoServerApplicationConfiguration;
  * @see org.springframework.context.annotation.Bean
  * @see org.springframework.context.annotation.Import
  * @see org.springframework.context.support.PropertySourcesPlaceholderConfigurer
+ * @see org.springframework.data.gemfire.CacheFactoryBean
+ * @see org.springframework.data.gemfire.server.CacheServerFactoryBean
  * @see org.apache.geode.cache.Cache
- * @see EchoServerApplicationConfiguration
+ * @see example.app.config.server.EchoServerApplicationConfiguration
  * @since 1.0.0
  */
 @SpringBootApplication
@@ -50,14 +52,10 @@ import example.app.config.server.EchoServerApplicationConfiguration;
 @SuppressWarnings("unused")
 public class JavaConfiguredGeodeServerApplication {
 
-	protected static final String DEFAULT_GEMFIRE_LOG_LEVEL = "config";
+	protected static final String GEMFIRE_LOG_LEVEL = "config";
 
 	public static void main(String[] args) {
 		SpringApplication.run(JavaConfiguredGeodeServerApplication.class, args);
-	}
-
-	String applicationName() {
-		return JavaConfiguredGeodeServerApplication.class.getSimpleName();
 	}
 
 	@Bean
@@ -66,27 +64,32 @@ public class JavaConfiguredGeodeServerApplication {
 	}
 
 	@Bean
-	Properties gemfireProperties(@Value("${gemfire.log.level:"+DEFAULT_GEMFIRE_LOG_LEVEL+"}") String logLevel,
-			@Value("${gemfire.locator.embedded.host-port:localhost[10334]}") String startLocator,
-			@Value("${gemfire.manager:true}") boolean jmxManager,
-			@Value("${gemfire.manager.port:1099}") int jmxManagerPort,
-			@Value("${gemfire.manager.start:false}") boolean jmxManagerStart) {
+	Properties gemfireProperties(
+			@Value("${configuration-example.gemfire.locator.host-port:localhost[10334]}") String startLocator,
+			@Value("${configuration-example.gemfire.log.level:"+ GEMFIRE_LOG_LEVEL +"}") String logLevel,
+			@Value("${configuration-example.gemfire.manager:true}") boolean jmxManager,
+			@Value("${configuration-example.gemfire.manager.port:1099}") int jmxManagerPort,
+			@Value("${configuration-example.gemfire.manager.start:false}") boolean jmxManagerStart) {
 
 		Properties gemfireProperties = new Properties();
 
 		gemfireProperties.setProperty("name", applicationName());
-		gemfireProperties.setProperty("mcast-port", "0");
-		gemfireProperties.setProperty("log-level", logLevel);
 		gemfireProperties.setProperty("jmx-manager", String.valueOf(jmxManager));
 		gemfireProperties.setProperty("jmx-manager-port", String.valueOf(jmxManagerPort));
 		gemfireProperties.setProperty("jmx-manager-start", String.valueOf(jmxManagerStart));
+		gemfireProperties.setProperty("log-level", logLevel);
 		gemfireProperties.setProperty("start-locator", startLocator);
 
 		return gemfireProperties;
 	}
 
+	String applicationName() {
+		return JavaConfiguredGeodeServerApplication.class.getSimpleName();
+	}
+
 	@Bean
 	CacheFactoryBean gemfireCache(@Qualifier("gemfireProperties") Properties gemfireProperties) {
+
 		CacheFactoryBean gemfireCache = new CacheFactoryBean();
 
 		gemfireCache.setClose(true);
@@ -97,11 +100,11 @@ public class JavaConfiguredGeodeServerApplication {
 
 	@Bean
 	CacheServerFactoryBean gemfireCacheServer(Cache gemfireCache,
-			@Value("${gemfire.cache.server.bind-address:localhost}") String bindAddress,
-			@Value("${gemfire.cache.server.hostname-for-clients:localhost}") String hostnameForClients,
-			@Value("${gemfire.cache.server.max-connections:50}") int maxConnections,
-			@Value("${gemfire.cache.server.max-time-between-pings:300000}") int maxTimeBetweenPings,
-			@Value("${gemfire.cache.server.port:40404}") int port) {
+			@Value("${configuration-example.gemfire.cache.server.bind-address:localhost}") String bindAddress,
+			@Value("${configuration-example.gemfire.cache.server.hostname-for-clients:localhost}") String hostnameForClients,
+			@Value("${configuration-example.gemfire.cache.server.max-connections:50}") int maxConnections,
+			@Value("${configuration-example.gemfire.cache.server.max-time-between-pings:300000}") int maxTimeBetweenPings,
+			@Value("${configuration-example.gemfire.cache.server.port:40404}") int port) {
 
 		CacheServerFactoryBean gemfireCacheServer = new CacheServerFactoryBean();
 

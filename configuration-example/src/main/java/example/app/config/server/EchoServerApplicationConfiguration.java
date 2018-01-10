@@ -16,7 +16,7 @@
 
 package example.app.config.server;
 
-import org.apache.geode.cache.Cache;
+import org.apache.geode.cache.GemFireCache;
 import org.apache.geode.cache.Region;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -40,7 +40,7 @@ import example.app.geode.cache.loader.EchoCacheLoader;
 public class EchoServerApplicationConfiguration {
 
 	@Bean(name = "Echo")
-	PartitionedRegionFactoryBean<Object, Object> echoRegion(Cache gemfireCache) {
+	PartitionedRegionFactoryBean<Object, Object> echoRegion(GemFireCache gemfireCache) {
 
 		PartitionedRegionFactoryBean<Object, Object> echoRegion = new PartitionedRegionFactoryBean<>();
 

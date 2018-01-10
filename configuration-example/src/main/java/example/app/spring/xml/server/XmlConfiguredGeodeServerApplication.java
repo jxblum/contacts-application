@@ -9,20 +9,20 @@
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
- * implied. See the License for the specific language governing
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
 
-package example.app.spring.xml.geode.server;
+package example.app.spring.xml.server;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ImportResource;
 
 /**
- * The XmlConfiguredGeodeServerApplication class is a {@link SpringBootApplication} that configures and bootstraps
- * a Geode Server application JVM process using Spring Data GemFire's XML namespace.
+ * The {@link XmlConfiguredGeodeServerApplication} class is a {@link SpringBootApplication} that configures
+ * and bootstraps an Apache Geode server JVM process using Spring Data for Apache Geodes's XML namespace.
  *
  * @author John Blum
  * @see org.springframework.boot.SpringApplication
@@ -31,7 +31,7 @@ import org.springframework.context.annotation.ImportResource;
  * @since 1.0.0
  */
 @SpringBootApplication
-@ImportResource("spring-cache.xml")
+@ImportResource("spring-server-cache.xml")
 public class XmlConfiguredGeodeServerApplication {
 
 	public static void main(String[] args) {

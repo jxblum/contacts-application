@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:gfe="http://www.springframework.org/schema/gemfire"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+        http://www.springframework.org/schema/gemfire http://www.springframework.org/schema/gemfire/spring-gemfire.xsd
+">
+
+  <context:property-placeholder/>
+
+  <util:properties id="gemfireProperties">
+    <prop key="name">XmlConfiguredGeodeClientApplication</prop>
+    <prop key="log-level">${configuration-example.gemfire.log.level:config}</prop>
+  </util:properties>
+
+  <gfe:client-cache properties-ref="gemfireProperties"/>
+
+  <gfe:pool>
+    <gfe:server host="${configuration-example.gemfire.cache.server.host:localhost}"
+                port="${configuration-example.gemfire.cache.server.port:40404}"/>
+  </gfe:pool>
+
+  <gfe:client-region id="Echo" shortcut="PROXY"/>
+
+</beans>

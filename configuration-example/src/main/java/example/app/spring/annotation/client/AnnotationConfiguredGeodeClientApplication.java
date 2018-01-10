@@ -9,12 +9,12 @@
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
- * implied. See the License for the specific language governing
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
 
-package example.app.spring.annotation.geode.client;
+package example.app.spring.annotation.client;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -28,15 +28,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.gemfire.config.annotation.ClientCacheApplication;
-import org.springframework.data.gemfire.config.annotation.EnableSsl;
 
 import example.app.config.client.EchoClientApplicationConfiguration;
-import example.app.spring.annotation.geode.server.AnnotationConfiguredGeodeServerApplication;
+import example.app.spring.annotation.server.AnnotationConfiguredGeodeServerApplication;
 
 /**
- * The AnnotationConfiguredGeodeClientApplication class is a {@link SpringBootApplication} that configures and bootstraps
- * and Geode cache client application JVM process using Spring Data Geode's new and improved Java annotation-based
- * configuration approach.
+ * The {@link AnnotationConfiguredGeodeClientApplication} class is a {@link SpringBootApplication} that configures
+ * and bootstraps an Apache Geode client JVM process using Spring Data for Apache Geode's new Java annotation-based
+ * configuration model.
  *
  * @author John Blum
  * @see org.springframework.boot.CommandLineRunner
@@ -44,18 +43,15 @@ import example.app.spring.annotation.geode.server.AnnotationConfiguredGeodeServe
  * @see org.springframework.boot.autoconfigure.SpringBootApplication
  * @see org.springframework.context.annotation.Import
  * @see org.springframework.data.gemfire.config.annotation.ClientCacheApplication
+ * @see org.apache.geode.cache.Region
  * @see example.app.config.client.EchoClientApplicationConfiguration
- * @see AnnotationConfiguredGeodeServerApplication
+ * @see example.app.spring.annotation.server.AnnotationConfiguredGeodeServerApplication
  * @since 1.0.0
  */
 @SpringBootApplication
-@ClientCacheApplication(servers = { @ClientCacheApplication.Server(port = AnnotationConfiguredGeodeServerApplication.GEODE_CACHE_SERVER_PORT)})
-@EnableSsl(components = { EnableSsl.Component.SERVER },
-	keystore = "/Users/jblum/pivdev/springonePlatform-2016/configuration-example/etc/geode/security/trusted.keystore",
-	keystorePassword = "s3cr3t",
-	keystoreType = "JKS",
-	truststore = "/Users/jblum/pivdev/springonePlatform-2016/configuration-example/etc/geode/security/trusted.keystore",
-	truststorePassword = "s3cr3t")
+@ClientCacheApplication(servers = {
+	@ClientCacheApplication.Server(port = AnnotationConfiguredGeodeServerApplication.GEODE_CACHE_SERVER_PORT)
+})
 @Import(EchoClientApplicationConfiguration.class)
 @SuppressWarnings("all")
 public class AnnotationConfiguredGeodeClientApplication implements CommandLineRunner {
@@ -64,7 +60,7 @@ public class AnnotationConfiguredGeodeClientApplication implements CommandLineRu
 		SpringApplication.run(AnnotationConfiguredGeodeClientApplication.class, args);
 	}
 
-	protected final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Resource(name = "Echo")
 	private Region<String, String> echo;
@@ -77,8 +73,8 @@ public class AnnotationConfiguredGeodeClientApplication implements CommandLineRu
 	}
 
 	private String sendEchoRequest(String echoRequest) {
-		String echoResponse = echo.get(echoRequest);
-		logger.info("Client says {}; Server says {}", echoRequest, echoResponse);
+		String echoResponse = this.echo.get(echoRequest);
+		this.logger.info("Client says {}; Server says {}", echoRequest, echoResponse);
 		return echoResponse;
 	}
 }
