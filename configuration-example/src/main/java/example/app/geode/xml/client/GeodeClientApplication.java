@@ -14,37 +14,40 @@
  * permissions and limitations under the License.
  */
 
-package example.app.geode.client;
+package example.app.geode.xml.client;
 
+import static example.app.geode.cache.util.CacheUtils.close;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.cp.elements.util.ArrayUtils.nullSafeArray;
+import static org.cp.elements.util.CollectionUtils.nullSafeList;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
-import org.apache.geode.cache.GemFireCache;
 import org.apache.geode.cache.Region;
 import org.apache.geode.cache.client.ClientCache;
 import org.apache.geode.cache.client.ClientCacheFactory;
-import org.apache.geode.cache.client.ClientRegionShortcut;
-import org.apache.geode.cache.server.CacheServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.Assert;
 
 /**
- * The GeodeClientApplication class...
+ * The {@link GeodeClientApplication} class uses Apache Geode's XML configuration meta-data
+ * to configure and bootstrap an Apache Geode {@link ClientCache} application.
  *
  * @author John Blum
+ * @see java.lang.Runnable
+ * @see org.apache.geode.cache.GemFireCache
+ * @see org.apache.geode.cache.Region
+ * @see org.apache.geode.cache.client.ClientCache
+ * @see org.apache.geode.cache.client.ClientCacheFactory
  * @since 1.0.0
  */
 public class GeodeClientApplication implements Runnable {
 
-  protected static final int GEMFIRE_SERVER_PORT = CacheServer.DEFAULT_PORT;
-
-  protected static final String DEFAULT_GEMFIRE_LOG_LEVEL = "config";
   protected static final String ECHO_REGION_NAME = "Echo";
-  protected static final String GEMFIRE_SERVER_HOST = "localhost";
+  protected static final String GEMFIRE_CACHE_XML = "geode-client-cache.xml";
+  protected static final String GEMFIRE_LOG_LEVEL = "config";
 
   public static void main(String[] args) {
     GeodeClientApplication.run(args);
@@ -55,31 +58,34 @@ public class GeodeClientApplication implements Runnable {
   }
 
   public static GeodeClientApplication run(String[] args) {
-    GeodeClientApplication cacheClientApplication = newGeodeClientApplication(args);
-    cacheClientApplication.run();
-    return cacheClientApplication;
+    GeodeClientApplication geodeClientApplication = newGeodeClientApplication(args);
+    geodeClientApplication.run();
+    return geodeClientApplication;
   }
-
-  protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   private final List<String> arguments;
 
-  private Region<String, String> echo;
+  private final Logger logger = LoggerFactory.getLogger(getClass());
 
   public GeodeClientApplication(String[] args) {
-    this(Arrays.asList(args));
+    this(Arrays.asList(nullSafeArray(args, String.class)));
   }
 
   public GeodeClientApplication(List<String> args) {
+    this.arguments = nullSafeList(args);
+  }
 
-    Assert.notNull(args, "Program arguments are required");
+  protected List<String> getArguments() {
+    return this.arguments;
+  }
 
-    this.arguments = args;
+  protected Logger getLogger() {
+    return this.logger;
   }
 
   @Override
   public void run() {
-    run(this.arguments);
+    run(getArguments());
   }
 
   @SuppressWarnings("all")
@@ -88,37 +94,27 @@ public class GeodeClientApplication implements Runnable {
     ClientCache gemfireCache = null;
 
     try {
-      gemfireCache = gemfireCache(gemfireProperties());
-      echo = echoRegion(gemfireCache);
 
+      gemfireCache = gemfireCache(gemfireProperties(), cacheXmlFile());
+
+      Region<String, String> echo = gemfireCache.getRegion(ECHO_REGION_NAME);
+
+      assertThat(echo).isNotNull();
       assertThat(echo.getName()).isEqualTo(ECHO_REGION_NAME);
       assertThat(echo.isEmpty()).isTrue();
       assertThat(echo.size()).isEqualTo(0);
-      assertThat(sendEchoRequest("Hello")).isEqualTo("Hello");
-      assertThat(sendEchoRequest("Test")).isEqualTo("Test");
-      assertThat(sendEchoRequest("Good-Bye")).isEqualTo("Good-Bye");
+      assertThat(sendEchoRequest(echo, "Hello")).isEqualTo("Hello");
+      assertThat(sendEchoRequest(echo, "Test")).isEqualTo("Test");
+      assertThat(sendEchoRequest(echo, "Good-Bye")).isEqualTo("Good-Bye");
       assertThat(echo.isEmpty()).isTrue();
       assertThat(echo.size()).isEqualTo(0);
     }
     catch (Exception cause) {
-      cause.printStackTrace(System.err);
+      getLogger().error("", cause);
     }
     finally {
       close(gemfireCache);
     }
-  }
-
-  boolean close(GemFireCache cache) {
-    try {
-      if (cache != null) {
-        cache.close();
-        return true;
-      }
-    }
-    catch (Exception ignore) {
-    }
-
-    return false;
   }
 
   Properties gemfireProperties() {
@@ -132,27 +128,24 @@ public class GeodeClientApplication implements Runnable {
   }
 
   String applicationName() {
-    return GeodeClientApplication.class.getSimpleName();
+    return example.app.geode.java.client.GeodeClientApplication.class.getSimpleName();
   }
 
   String logLevel() {
-    return System.getProperty("gemfire.log.level", DEFAULT_GEMFIRE_LOG_LEVEL);
+    return System.getProperty("configuration-example.gemfire.log.level", GEMFIRE_LOG_LEVEL);
   }
 
-  ClientCache gemfireCache(Properties gemfireProperties) {
-
-    return new ClientCacheFactory(gemfireProperties)
-      .addPoolServer(GEMFIRE_SERVER_HOST, GEMFIRE_SERVER_PORT)
-      .create();
+  String cacheXmlFile() {
+    return System.getProperty("configuration-example.gemfire.cache.xml", GEMFIRE_CACHE_XML);
   }
 
-  Region<String, String> echoRegion(ClientCache gemfireCache) {
-    return gemfireCache.<String, String>createClientRegionFactory(ClientRegionShortcut.PROXY).create(ECHO_REGION_NAME);
+  ClientCache gemfireCache(Properties gemfireProperties, String cacheXmlFile) {
+    return new ClientCacheFactory(gemfireProperties).set("cache-xml-file", cacheXmlFile).create();
   }
 
-  String sendEchoRequest(String echoRequest) {
+  String sendEchoRequest(Region<String, String> echo, String echoRequest) {
     String echoResponse = echo.get(echoRequest);
-    logger.info("Client said {}; Server said {}", echoRequest, echoResponse);
+    this.logger.info("Client said {}; Server said {}", echoRequest, echoResponse);
     return echoResponse;
   }
 }

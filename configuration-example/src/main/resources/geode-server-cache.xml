@@ -1,9 +1,12 @@
-<?xml version="1.0"?>
-<!DOCTYPE cache PUBLIC  "-//GemStone Systems, Inc.//GemFire Declarative Caching 8.0//EN"
-	"http://www.gemstone.com/dtd/cache8_0.dtd">
-<cache>
+<?xml version="1.0" encoding="UTF-8"?>
+<cache xmlns="http://geode.apache.org/schema/cache"
+			 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			 xsi:schemaLocation="http://geode.apache.org/schema/cache http://geode.apache.org/schema/cache/cache-1.0.xsd"
+			 version="1.0">
+
 	<cache-server bind-address="localhost" hostname-for-clients="localhost" port="40404"
 		max-connections="50" maximum-time-between-pings="300000"/>
+
 	<region name="Echo" refid="PARTITION">
 		<region-attributes>
 			<key-constraint>java.lang.String</key-constraint>
@@ -13,4 +16,5 @@
 			</cache-loader>
 		</region-attributes>
 	</region>
+
 </cache>
