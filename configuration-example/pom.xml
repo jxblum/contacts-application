@@ -17,14 +17,13 @@
   <name>Configuration Example</name>
   <description>
     The Configuration Example module for the Contacts Application project contains examples
-    of using Spring Data GemFire's new and improved Java annotation-based configuration meta-data model
-    and approach to configuring and bootstrapping Apache Geode or Pivotal GemFire Servers and cache client
-    applications, to both simplify and speed up the application development of Spring, Java applications
-    using Apache Geode or Pivotal GemFire. This new Java annotation-based configuration meta-data model
-    was inspired by Spring Boot's Java annotation and auto-configuration, convention over configuration
-    approach.
+    of using Spring Data for Apache Geode's new and improved Java Annotation-based configuration meta-data
+    and approach to configuring and bootstrapping Apache Geode or Pivotal GemFire servers and client applications,
+    to both simplify and speed up the application development of Spring, Java applications using either Apache Geode
+    or Pivotal GemFire. This new Java Annotation-based configuration meta-data model was inspired by Spring Boot's
+    Java Annotation and auto-configuration, convention over configuration approach.
   </description>
-  <url>http://docs.spring.io/spring-data-gemfire/docs/current/reference/html/#bootstrap</url>
+  <url>https://docs.spring.io/spring-data/geode/docs/current/reference/html/#bootstrap-annotation-config</url>
 
   <licenses>
     <license>
