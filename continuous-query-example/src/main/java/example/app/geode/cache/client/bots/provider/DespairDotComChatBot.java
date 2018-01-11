@@ -76,7 +76,7 @@ public class DespairDotComChatBot implements ChatBot {
 
   @Override
   public Chat chat() {
-    return chats.get(this.randomIndexGenerator.nextInt(chats.size())).using(this.chatBotId);
+    return chats.get(this.randomIndexGenerator.nextInt(chats.size())).with(this.chatBotId);
   }
 
   @Override

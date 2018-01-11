@@ -95,6 +95,11 @@ public class ChatBotService implements ChatService {
     return this.chatBot;
   }
 
+  /* (non-Javadoc) */
+  private Optional<ChatBot> getDespairChatBot() {
+    return Optional.ofNullable(this.despairChatBot);
+  }
+
   /**
    * Returns a reference to the {@link ChatRepository} used by this service to perform basic CRUD and query
    * data access operations on {@link Chat chats}.
@@ -155,12 +160,12 @@ public class ChatBotService implements ChatService {
   @Override
   @CachePut(cacheNames = "Chat", key = "#result.id")
   public Chat send(Person person, String message) {
-    return incrementSendCount(identify(Chat.newChat(person, message).using(String.format("Web%s", this.chatBotId))));
+    return incrementSendCount(identify(Chat.newChat(person, message).with(String.format("Web%s", this.chatBotId))));
   }
 
   @Scheduled(initialDelay = 2000L, fixedRateString = "${example.app.chat.bot.schedule.rate:5000}")
   public void sendDespairQuote() {
-    Optional.ofNullable(this.despairChatBot).ifPresent(chatBot -> send(chatBot.chat()));
+    getDespairChatBot().ifPresent(chatBot -> send(chatBot.chat()));
   }
 
   @Scheduled(fixedRateString = "${example.app.chat.bot.schedule.rate:5000}")
@@ -186,7 +191,7 @@ public class ChatBotService implements ChatService {
   @ContinuousQuery(name = "ChatReceiver", query = "SELECT * FROM /Chat")
   public void receiveChat(CqEvent event) {
 
-    this.receiveCount.incrementAndGet();
+    incrementReceiveCount();
 
     Optional.ofNullable(event).map(it -> it.getNewValue())
       .ifPresent(chat -> this.compositeChatConsumer.accept((Chat) chat));
@@ -195,6 +200,10 @@ public class ChatBotService implements ChatService {
   @Override
   public long receiveCount() {
     return this.receiveCount.get();
+  }
+
+  private long incrementReceiveCount() {
+    return this.receiveCount.incrementAndGet();
   }
 
   @Override

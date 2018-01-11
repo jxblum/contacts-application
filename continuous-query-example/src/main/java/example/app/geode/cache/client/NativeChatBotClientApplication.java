@@ -18,7 +18,6 @@ package example.app.geode.cache.client;
 
 import java.util.Optional;
 import java.util.Properties;
-import java.util.Scanner;
 import java.util.UUID;
 
 import org.apache.geode.cache.RegionService;
@@ -34,10 +33,11 @@ import org.apache.geode.cache.query.CqListener;
 import org.apache.geode.cache.query.CqQuery;
 import org.apache.geode.cache.query.QueryService;
 
+import example.app.core.lang.RunnableUtils;
 import example.app.geode.cache.client.model.Chat;
 
 /**
- * The NativeChatBotClientApplication class...
+ * The {@link NativeChatBotClientApplication} class...
  *
  * @author John Blum
  * @since 1.0.0
@@ -50,6 +50,7 @@ public class NativeChatBotClientApplication extends AbstractChatBotClientApplica
     System.getProperty("example.continuous-query.gemfire.cache.server.host", "localhost");
 
   protected static final String CHAT_REGION_NAME = "Chat";
+  protected static final String GEMFIRE_LOG_LEVEL = "config";
 
   protected static final int CACHE_SERVER_PORT =
     Integer.parseInt(System.getProperty("example.continuous-query.gemfire.cache.server.port", "40404"));
@@ -68,9 +69,13 @@ public class NativeChatBotClientApplication extends AbstractChatBotClientApplica
     this.arguments = Optional.ofNullable(args).orElseGet(() -> new String[0]);
   }
 
+  protected String[] getArguments() {
+    return this.arguments;
+  }
+
   @Override
   public void run() {
-    run(this.arguments);
+    run(getArguments());
   }
 
   @SuppressWarnings("unused")
@@ -80,7 +85,7 @@ public class NativeChatBotClientApplication extends AbstractChatBotClientApplica
       postProcess(registerContinuousQuery(chatRegion(registerShutdownHook(
         gemfireCache(gemfireProperties()), DURABLE))));
 
-      promptToExit();
+      RunnableUtils.promptPressEnterToExit();
     }
     catch (Exception cause) {
       throw new RuntimeException("Failed to start GemFire native cache client application", cause);
@@ -92,7 +97,7 @@ public class NativeChatBotClientApplication extends AbstractChatBotClientApplica
     Properties gemfireProperties = new Properties();
 
     gemfireProperties.setProperty("name", NativeChatBotClientApplication.class.getSimpleName());
-    gemfireProperties.setProperty("log-level", "config");
+    gemfireProperties.setProperty("log-level", GEMFIRE_LOG_LEVEL);
     gemfireProperties.setProperty("durable-client-id", UUID.randomUUID().toString());
 
     return gemfireProperties;
@@ -160,11 +165,6 @@ public class NativeChatBotClientApplication extends AbstractChatBotClientApplica
   ClientCache postProcess(ClientCache gemfireCache) {
     gemfireCache.readyForEvents();
     return gemfireCache;
-  }
-
-  void promptToExit() {
-    System.err.println("Press <ENTER> to exit...");
-    new Scanner(System.in).nextLine();
   }
 
   abstract class CqListenerAdapter implements CqListener {

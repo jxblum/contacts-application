@@ -64,7 +64,7 @@ public class ChatBotClientApplication extends AbstractChatBotClientApplication {
   @PostConstruct
   public void postConstruct() {
 
-    Optional.of(this.chatService)
+    Optional.ofNullable(this.chatService)
       .filter(it -> it instanceof ChatBotService)
       .map(it -> (ChatBotService) it)
       .ifPresent(chatBotService -> chatBotService.receive(this::log));

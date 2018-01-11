@@ -66,14 +66,14 @@ public class Chat implements Comparable<Chat>, Identifiable<Long>, Serializable 
   private final String message;
 
   public static Chat newChat(Person person, String message) {
-    return new Chat(person, null, message);
+    return new Chat(null, person, message);
   }
 
   public static Chat newChat(LocalDateTime timestamp, Person person, String message) {
-    return new Chat(person, timestamp, message);
+    return new Chat(timestamp, person, message);
   }
 
-  public Chat(Person person, LocalDateTime timestamp, String message) {
+  public Chat(LocalDateTime timestamp, Person person, String message) {
 
     this.person = Optional.ofNullable(person)
       .orElseThrow(() -> newIllegalArgumentException("Person is required"));
@@ -173,7 +173,7 @@ public class Chat implements Comparable<Chat>, Identifiable<Long>, Serializable 
     return this;
   }
 
-  public Chat using(Object processId) {
+  public Chat with(Object processId) {
     this.processId = processId;
     return this;
   }
