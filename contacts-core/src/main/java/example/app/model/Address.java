@@ -27,6 +27,7 @@ import javax.persistence.GeneratedValue;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import org.cp.elements.lang.Identifiable;
+import org.cp.elements.lang.StringUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.gemfire.mapping.annotation.Indexed;
 import org.springframework.data.gemfire.mapping.annotation.Region;
@@ -95,6 +96,22 @@ public class Address implements Identifiable<Long>, Serializable {
 
 	public static Point newPoint(double x, double y) {
 		return new Point(x, y);
+	}
+
+	public static Address parse(String addressValue) {
+
+		Assert.hasText(addressValue, "Address value is required");
+
+		String[] addressComponents = addressValue.split(",");
+
+		Assert.isTrue(addressComponents.length == 4, "Expected Street, City, State and Zip");
+
+		String street = StringUtils.trim(addressComponents[0]);
+		String city = StringUtils.trim(addressComponents[1]);
+		State state = State.valueOfAbbreviation(StringUtils.trim(addressComponents[2]));
+		String zipCode = StringUtils.trim(addressComponents[3]);
+
+		return Address.newAddress(street, city, state, zipCode);
 	}
 
 	public void setId(Long id) {
