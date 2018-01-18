@@ -21,11 +21,12 @@ import java.util.regex.Pattern;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.lang.Nullable;
 
 import example.app.model.PhoneNumber;
 
 /**
- * The StringToPhoneNumberConverter class is a Spring {@link Converter} that converts
+ * The {@link StringToPhoneNumberConverter} class is a Spring {@link Converter} that converts
  * a {@link String} into a {@link PhoneNumber}.
  *
  * @author John Blum
@@ -48,6 +49,7 @@ public class StringToPhoneNumberConverter implements Converter<String, PhoneNumb
 
   /* (non-Javadoc) */
 	protected String getDigits(String value) {
+
 		StringBuilder buffer = new StringBuilder();
 
 		for (char character : nullSafeCharArray(value)) {
@@ -61,13 +63,15 @@ public class StringToPhoneNumberConverter implements Converter<String, PhoneNumb
 
   /* (non-Javadoc) */
 	protected char[] nullSafeCharArray(String value) {
-		return (value != null ? value.toCharArray() : EMPTY_CHAR_ARRAY);
+		return value != null ? value.toCharArray() : EMPTY_CHAR_ARRAY;
 	}
 
   /* (non-Javadoc) */
-	@Override
+	@Nullable @Override
 	public PhoneNumber convert(String value) {
+
 		try {
+
 			if (JSON_PHONE_NUMBER.matcher(value).find()) {
 				return new ObjectMapper().readValue(value, PhoneNumber.class);
 			}
@@ -85,7 +89,7 @@ public class StringToPhoneNumberConverter implements Converter<String, PhoneNumb
 				throw (IllegalArgumentException) e;
 			}
 
-			throw new IllegalArgumentException(String.format("Failed to convert value [%1$s] into a %2$s",
+			throw new IllegalArgumentException(String.format("Failed to convert [%1$s] into a %2$s",
 				value, PhoneNumber.class.getName()), e);
 		}
 	}
