@@ -16,15 +16,10 @@
 
 package example.app.config;
 
-import org.springframework.context.annotation.Bean;
+import org.apache.geode.cache.client.ClientRegionShortcut;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.gemfire.config.annotation.ClientCacheApplication;
 import org.springframework.data.gemfire.config.annotation.EnableCachingDefinedRegions;
-import org.springframework.data.gemfire.config.annotation.PeerCacheApplication;
-
-import attic.app.config.gemfire.GemFireConfiguration;
-import example.app.repo.GeocodingRepository;
-import example.app.repo.provider.GoogleMapsApiGeocodingRepository;
-import example.app.service.GeocodingService;
 
 /**
  * The {@link CachingExampleConfiguration} class is the Contacts Application, Caching Example
@@ -32,30 +27,13 @@ import example.app.service.GeocodingService;
  * as the [JSR-107] caching provider.
  *
  * @author John Blum
- * @see GemFireConfiguration
- * @see example.app.repo.GeocodingRepository
- * @see example.app.repo.provider.GoogleMapsApiGeocodingRepository
- * @see example.app.service.GeocodingService
- * @see org.springframework.cache.annotation.EnableCaching
- * @see org.springframework.context.annotation.Bean
- * @see org.springframework.context.annotation.Configuration
- * @see org.springframework.context.annotation.Import
  * @see org.springframework.data.gemfire.cache.GemfireCacheManager
+ * @see org.springframework.data.gemfire.cache.config.EnableGemfireCaching
  * @since 1.0.0
  */
-@PeerCacheApplication(name = "CachingExampleApplication")
-@EnableCachingDefinedRegions
+@ClientCacheApplication(name = "CachingExampleApplication")
+@EnableCachingDefinedRegions(clientRegionShortcut = ClientRegionShortcut.LOCAL)
 @SuppressWarnings("unused")
 public class CachingExampleConfiguration {
 
-  @Bean
-  @SuppressWarnings("unchecked")
-  public <T extends GeocodingRepository> T geocodingRepository() {
-    return (T) new GoogleMapsApiGeocodingRepository();
-  }
-
-  @Bean
-  public GeocodingService geocodingService() {
-    return new GeocodingService(geocodingRepository());
-  }
 }
