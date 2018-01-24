@@ -19,6 +19,7 @@ package example.app.geode.cache.observer;
 import java.util.Optional;
 
 import org.apache.geode.cache.query.CqEvent;
+import org.cp.elements.lang.SystemUtils;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -27,7 +28,6 @@ import org.springframework.data.gemfire.config.annotation.ClientCacheApplication
 import org.springframework.data.gemfire.config.annotation.EnableContinuousQueries;
 import org.springframework.data.gemfire.listener.annotation.ContinuousQuery;
 
-import example.app.core.lang.RunnableUtils;
 import example.app.geode.cache.client.AbstractChatBotClientApplication;
 import example.app.geode.cache.client.model.Chat;
 
@@ -50,7 +50,7 @@ public class ChatClientListenerApplication extends AbstractChatBotClientApplicat
       .build()
       .run(args);
 
-    RunnableUtils.promptPressEnterToExit();
+    SystemUtils.promptPressEnterToExit();
   }
 
   @ContinuousQuery(name = "ChatListener", query = "SELECT * FROM /Chat")

@@ -32,8 +32,8 @@ import org.apache.geode.cache.query.CqEvent;
 import org.apache.geode.cache.query.CqListener;
 import org.apache.geode.cache.query.CqQuery;
 import org.apache.geode.cache.query.QueryService;
+import org.cp.elements.lang.SystemUtils;
 
-import example.app.core.lang.RunnableUtils;
 import example.app.geode.cache.client.model.Chat;
 
 /**
@@ -85,7 +85,7 @@ public class NativeChatBotClientApplication extends AbstractChatBotClientApplica
       postProcess(registerContinuousQuery(chatRegion(registerShutdownHook(
         gemfireCache(gemfireProperties()), DURABLE))));
 
-      RunnableUtils.promptPressEnterToExit();
+      SystemUtils.promptPressEnterToExit();
     }
     catch (Exception cause) {
       throw new RuntimeException("Failed to start GemFire native cache client application", cause);

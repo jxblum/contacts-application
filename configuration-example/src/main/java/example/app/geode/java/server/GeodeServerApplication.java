@@ -32,10 +32,10 @@ import org.apache.geode.cache.Region;
 import org.apache.geode.cache.RegionFactory;
 import org.apache.geode.cache.RegionShortcut;
 import org.apache.geode.cache.server.CacheServer;
+import org.cp.elements.lang.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import example.app.core.lang.RunnableUtils;
 import example.app.geode.cache.loader.EchoCacheLoader;
 
 /**
@@ -134,7 +134,7 @@ public class GeodeServerApplication implements Runnable {
       gemfireCache = gemfireCache(gemfireProperties());
       gemfireCacheServer(gemfireCache);
       echoRegion(gemfireCache);
-      RunnableUtils.promptPressEnterToExit();
+      SystemUtils.promptPressEnterToExit();
     }
     catch (Exception cause) {
       getLogger().error("", cause);

@@ -16,6 +16,7 @@
 
 package example.app;
 
+import org.cp.elements.lang.RunnableUtils;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -24,7 +25,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.FilterType;
 
-import example.app.core.lang.RunnableUtils;
 import example.app.model.Address;
 import example.app.service.GeocodingService;
 
