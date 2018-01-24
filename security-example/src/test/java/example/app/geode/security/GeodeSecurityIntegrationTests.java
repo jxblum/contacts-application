@@ -53,6 +53,7 @@ import org.apache.shiro.mgt.AuthenticatingSecurityManager;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.realm.text.IniRealm;
 import org.apache.shiro.realm.text.PropertiesRealm;
+import org.cp.elements.util.MapUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -76,7 +77,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import example.app.core.util.CollectionUtils;
 import example.app.geode.cache.loader.EchoCacheLoader;
 import example.app.geode.security.GeodeSecurityIntegrationTests.GeodeClientConfiguration;
 import example.app.geode.security.model.User;
@@ -232,7 +232,7 @@ public class GeodeSecurityIntegrationTests extends AbstractGeodeIntegrationTests
     @PostConstruct
     public void postProcess() {
       logger.info("Geode Distributed System Properties [{}]%n",
-        CollectionUtils.toString(gemfireCache.getDistributedSystem().getProperties()));
+        MapUtils.toString(gemfireCache.getDistributedSystem().getProperties()));
     }
   }
 
