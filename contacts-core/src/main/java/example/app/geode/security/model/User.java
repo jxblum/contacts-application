@@ -16,7 +16,7 @@
 
 package example.app.geode.security.model;
 
-import static example.app.core.util.ArrayUtils.toArray;
+import static org.cp.elements.util.ArrayUtils.asArray;
 
 import java.io.Serializable;
 import java.security.Principal;
@@ -222,7 +222,7 @@ public class User implements Comparable<User>, Cloneable, Identifiable<String>, 
    * @see example.app.geode.security.model.Role
    */
   public User in(Iterable<Role> roles) {
-    return in(toArray(roles));
+    return in(asArray(roles, Role.class));
   }
 
   /**

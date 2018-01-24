@@ -16,7 +16,7 @@
 
 package example.app.geode.security.model;
 
-import static example.app.core.util.ArrayUtils.toArray;
+import static org.cp.elements.util.ArrayUtils.asArray;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -178,6 +178,6 @@ public class Role implements Comparable<Role>, Identifiable<String>, Iterable<Re
    * @see org.apache.geode.security.ResourcePermission
    */
   public Role with(Iterable<ResourcePermission> permissions) {
-    return with(toArray(permissions));
+    return with(asArray(permissions, ResourcePermission.class));
   }
 }

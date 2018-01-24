@@ -16,8 +16,8 @@
 
 package example.app.geode.security.repository.support;
 
-import static example.app.core.util.ArrayUtils.toArray;
 import static example.app.geode.security.model.Role.newRole;
+import static org.cp.elements.util.ArrayUtils.asArray;
 
 import java.util.HashMap;
 import java.util.List;
@@ -48,8 +48,7 @@ import example.app.geode.security.repository.CachingSecurityRepository;
  */
 @Repository
 @SuppressWarnings("unused")
-public class JdbcSecurityRepository extends CachingSecurityRepository<User>
-    implements InitializingBean {
+public class JdbcSecurityRepository extends CachingSecurityRepository<User> implements InitializingBean {
 
   protected static final String ROLES_QUERY = "SELECT name FROM geode_security.roles";
 
@@ -99,13 +98,15 @@ public class JdbcSecurityRepository extends CachingSecurityRepository<User>
    */
   @Override
   public void afterPropertiesSet() throws Exception {
+
     List<Role> roles = getJdbcTemplate().query(ROLES_QUERY, (resultSet, row) -> newRole(resultSet.getString(1)));
+
     Map<String, Role> roleMapping = new HashMap<>(roles.size());
 
     for (Role role : roles) {
-      getJdbcTemplate().query(ROLE_PERMISSIONS_QUERY, toArray(role.getName()),
-        (resultSet, row) -> role.with(newResourcePermission(resultSet.getString(1), resultSet.getString(2),
-          resultSet.getString(3), resultSet.getString(4))));
+      getJdbcTemplate().query(ROLE_PERMISSIONS_QUERY, asArray(role.getName()),
+        (resultSet, row) -> role.with(newResourcePermission(resultSet.getString(1),
+          resultSet.getString(2), resultSet.getString(3), resultSet.getString(4))));
 
       roleMapping.put(role.getName(), role);
     }
@@ -114,7 +115,7 @@ public class JdbcSecurityRepository extends CachingSecurityRepository<User>
       (resultSet, row) -> create(resultSet.getString(1)).with(resultSet.getString(2)));
 
     for (User user : users) {
-      getJdbcTemplate().query(USER_ROLES_QUERY, toArray(user.getName()),
+      getJdbcTemplate().query(USER_ROLES_QUERY, asArray(user.getName()),
         (resultSet, row) -> user.in(roleMapping.get(resultSet.getString(1))));
 
       save(user);
