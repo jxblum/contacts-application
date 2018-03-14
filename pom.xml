@@ -106,11 +106,11 @@
     <spring.version>5.0.3.RELEASE</spring.version>
     <spring-boot-data-gemfire.version>1.0.0.M1</spring-boot-data-gemfire.version>
     <spring-boot-data-geode.version>1.0.0.M1</spring-boot-data-geode.version>
-    <spring-data-gemfire.version>2.0.3.RELEASE</spring-data-gemfire.version>
-    <spring-data-geode.version>2.0.3.RELEASE</spring-data-geode.version>
-    <spring-data-releasetrain.version>Kay-SR3</spring-data-releasetrain.version>
-    <spring-session-data-gemfire.version>2.0.0.RELEASE</spring-session-data-gemfire.version>
-    <spring-session-data-geode.version>2.0.0.RELEASE</spring-session-data-geode.version>
+    <spring-data-gemfire.version>2.0.5.RELEASE</spring-data-gemfire.version>
+    <spring-data-geode.version>2.0.5.RELEASE</spring-data-geode.version>
+    <spring-data-releasetrain.version>Kay-SR5</spring-data-releasetrain.version>
+    <spring-session-data-gemfire.version>2.0.2.RELEASE</spring-session-data-gemfire.version>
+    <spring-session-data-geode.version>2.0.2.RELEASE</spring-session-data-geode.version>
     <spring-shell.version>1.2.0.RELEASE</spring-shell.version>
   </properties>
 
