@@ -30,6 +30,7 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import org.cp.elements.lang.Identifiable;
+import org.cp.elements.util.ComparatorResultBuilder;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.gemfire.mapping.annotation.Region;
 import org.springframework.util.Assert;
@@ -42,6 +43,7 @@ import org.springframework.util.StringUtils;
  *
  * @author John Blum
  * @see java.io.Serializable
+ * @see java.lang.Comparable
  * @see javax.persistence.Entity
  * @see javax.persistence.Table
  * @see org.cp.elements.lang.Identifiable
@@ -56,9 +58,12 @@ import org.springframework.util.StringUtils;
 @Table(name = "Contacts")
 @JsonIgnoreProperties(value = { "new", "notNew" }, ignoreUnknown = true)
 @SuppressWarnings("unused")
-public class Contact implements Identifiable<Long>, Serializable {
+public class Contact implements Comparable<Contact>, Identifiable<Long>, Serializable {
 
 	private static final long serialVersionUID = 6434575088917742861L;
+
+	protected static final String CONTACT_TO_STRING =
+		"{ @type = %1$s, id = %2$d, person = %3$s, address = %4$s, phoneNumber = %5$s, email = %6$s }";
 
 	private Long id;
 
@@ -174,7 +179,7 @@ public class Contact implements Identifiable<Long>, Serializable {
 
 	@OneToOne(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	public Person getPerson() {
-		return person;
+		return this.person;
 	}
 
 	public void setAddress(Address address) {
@@ -184,7 +189,7 @@ public class Contact implements Identifiable<Long>, Serializable {
 	@ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinColumn(name = "address_id")
 	public Address getAddress() {
-		return address;
+		return this.address;
 	}
 
 	public boolean hasAddress() {
@@ -196,7 +201,7 @@ public class Contact implements Identifiable<Long>, Serializable {
 	}
 
 	public String getEmail() {
-		return email;
+		return this.email;
 	}
 
 	public boolean hasEmail() {
@@ -210,11 +215,20 @@ public class Contact implements Identifiable<Long>, Serializable {
 	@ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinColumn(name = "phone_number_id")
 	public PhoneNumber getPhoneNumber() {
-		return phoneNumber;
+		return this.phoneNumber;
 	}
 
 	public boolean hasPhoneNumber() {
 		return (getPhoneNumber() != null);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public int compareTo(Contact contact) {
+
+		return ComparatorResultBuilder.<Comparable>create()
+			.doCompare(getPerson(), contact.getPerson())
+			.build();
 	}
 
 	@Override
@@ -252,8 +266,7 @@ public class Contact implements Identifiable<Long>, Serializable {
 	@Override
 	public String toString() {
 
-		return String.format(
-			"{ @type = %1$s, id = %2$d, person = %3$s, address = %4$s, phoneNumber = %5$s, email = %6$s }",
+		return String.format(CONTACT_TO_STRING,
 				getClass().getName(), getId(), getPerson(), getAddress(), getPhoneNumber(), getEmail());
 	}
 
