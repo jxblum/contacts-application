@@ -51,10 +51,6 @@
     </developer>
   </developers>
 
-  <properties>
-    <spring-data-geode.version>2.0.3.S1P-SNAPSHOT</spring-data-geode.version>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>example.apps</groupId>
@@ -64,10 +60,6 @@
       <groupId>example.apps</groupId>
       <artifactId>caching-example</artifactId>
       <version>${parent.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
