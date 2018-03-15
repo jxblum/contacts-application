@@ -18,20 +18,23 @@ package example.app.geode.cache.client;
 
 import org.cp.elements.lang.Renderer;
 
-import example.app.geode.cache.client.model.Chat;
+import example.app.chat.model.Chat;
 
 /**
- * The {@link AbstractChatBotClientApplication} class...
+ * The {@link AbstractChatClientApplication} class is an abstract base class encapsulating function
+ * common to all chat client applications.
  *
  * @author John Blum
+ * @see org.cp.elements.lang.Renderer
+ * @see example.app.chat.model.Chat
  * @since 1.0.0
  */
-public abstract class AbstractChatBotClientApplication {
+public abstract class AbstractChatClientApplication {
 
   protected void log(Chat chat) {
 
     Renderer<Chat> chatRender = it -> String.format("[%1$s] %2$s: %3$s",
-      it.getProcessId(), it.getPerson(), it.getMessage());
+      it.getProcessId().orElse("?"), it.getPerson(), it.getMessage());
 
     log(chatRender.render(chat));
   }

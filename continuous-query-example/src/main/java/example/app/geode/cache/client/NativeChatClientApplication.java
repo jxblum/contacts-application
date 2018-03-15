@@ -34,15 +34,15 @@ import org.apache.geode.cache.query.CqQuery;
 import org.apache.geode.cache.query.QueryService;
 import org.cp.elements.lang.SystemUtils;
 
-import example.app.geode.cache.client.model.Chat;
+import example.app.chat.model.Chat;
 
 /**
- * The {@link NativeChatBotClientApplication} class...
+ * The {@link NativeChatClientApplication} class...
  *
  * @author John Blum
  * @since 1.0.0
  */
-public class NativeChatBotClientApplication extends AbstractChatBotClientApplication implements Runnable {
+public class NativeChatClientApplication extends AbstractChatClientApplication implements Runnable {
 
   protected static final boolean DURABLE = true;
 
@@ -60,12 +60,12 @@ public class NativeChatBotClientApplication extends AbstractChatBotClientApplica
   protected static final String POOL_NAME = "DEFAULT";
 
   public static void main(String[] args) {
-    new NativeChatBotClientApplication(args).run();
+    new NativeChatClientApplication(args).run();
   }
 
   private final String[] arguments;
 
-  NativeChatBotClientApplication(String[] args) {
+  NativeChatClientApplication(String[] args) {
     this.arguments = Optional.ofNullable(args).orElseGet(() -> new String[0]);
   }
 
@@ -96,7 +96,7 @@ public class NativeChatBotClientApplication extends AbstractChatBotClientApplica
 
     Properties gemfireProperties = new Properties();
 
-    gemfireProperties.setProperty("name", NativeChatBotClientApplication.class.getSimpleName());
+    gemfireProperties.setProperty("name", NativeChatClientApplication.class.getSimpleName());
     gemfireProperties.setProperty("log-level", GEMFIRE_LOG_LEVEL);
     gemfireProperties.setProperty("durable-client-id", UUID.randomUUID().toString());
 

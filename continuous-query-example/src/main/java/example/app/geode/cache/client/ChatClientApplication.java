@@ -18,26 +18,21 @@ package example.app.geode.cache.client;
 
 import java.util.Optional;
 
-import javax.annotation.PostConstruct;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.data.gemfire.cache.config.EnableGemfireCaching;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.gemfire.config.annotation.ClientCacheApplication;
 import org.springframework.data.gemfire.config.annotation.ClientCacheApplication.Locator;
 import org.springframework.data.gemfire.config.annotation.EnableContinuousQueries;
 import org.springframework.data.gemfire.config.annotation.EnableEntityDefinedRegions;
-import org.springframework.data.gemfire.repository.config.EnableGemfireRepositories;
-import org.springframework.scheduling.annotation.EnableScheduling;
 
-import example.app.geode.cache.client.model.Chat;
-import example.app.geode.cache.client.repo.ChatRepository;
-import example.app.geode.cache.client.service.ChatService;
-import example.app.geode.cache.client.service.provider.ChatBotService;
+import example.app.chat.bot.config.EnableChatBot;
+import example.app.chat.model.Chat;
+import example.app.chat.service.ChatService;
 
 /**
- * The {@link ChatBotClientApplication} class...
+ * The {@link ChatClientApplication} class...
  *
  * @author John Blum
  * @since 1.0.0
@@ -46,27 +41,25 @@ import example.app.geode.cache.client.service.provider.ChatBotService;
 //@ClientCacheApplication(name = "ChatBotClient", durableClientId = "abc123", locators = @Locator,
 //  readyForEvents = true, subscriptionEnabled = true)
 @ClientCacheApplication(name = "ChatBotClient", locators = @Locator, subscriptionEnabled = true)
-@EnableContinuousQueries
 @EnableEntityDefinedRegions(basePackageClasses = Chat.class)
-@EnableGemfireCaching
-@EnableGemfireRepositories(basePackageClasses = ChatRepository.class)
-@EnableScheduling
+@EnableContinuousQueries
+@EnableChatBot
 @SuppressWarnings("unused")
-public class ChatBotClientApplication extends AbstractChatBotClientApplication {
+public class ChatClientApplication extends AbstractChatClientApplication {
 
   public static void main(String[] args) {
-    SpringApplication.run(ChatBotClientApplication.class, args);
+    SpringApplication.run(ChatClientApplication.class, args);
   }
 
-  @Autowired
-  private ChatService chatService;
+  @Bean
+  ApplicationRunner runner(ChatService chatService) {
 
-  @PostConstruct
-  public void postConstruct() {
-
-    Optional.ofNullable(this.chatService)
-      .filter(it -> it instanceof ChatBotService)
-      .map(it -> (ChatBotService) it)
-      .ifPresent(chatBotService -> chatBotService.receive(this::log));
+    return args ->
+      Optional.ofNullable(chatService)
+        .ifPresent(it -> it.register(chatEvent ->
+          chatEvent.getChat()
+            .filter(chat -> chat instanceof Chat)
+            .map(chat -> (Chat) chat)
+            .ifPresent(this::log)));
   }
 }

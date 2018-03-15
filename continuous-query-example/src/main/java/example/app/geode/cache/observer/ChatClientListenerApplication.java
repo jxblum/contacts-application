@@ -28,8 +28,8 @@ import org.springframework.data.gemfire.config.annotation.ClientCacheApplication
 import org.springframework.data.gemfire.config.annotation.EnableContinuousQueries;
 import org.springframework.data.gemfire.listener.annotation.ContinuousQuery;
 
-import example.app.geode.cache.client.AbstractChatBotClientApplication;
-import example.app.geode.cache.client.model.Chat;
+import example.app.geode.cache.client.AbstractChatClientApplication;
+import example.app.chat.model.Chat;
 
 /**
  * The ChatClientListenerApplication class...
@@ -41,7 +41,7 @@ import example.app.geode.cache.client.model.Chat;
 @ClientCacheApplication(name = "ChatClientListener", locators = @Locator, subscriptionEnabled = true)
 @EnableContinuousQueries
 @SuppressWarnings("unused")
-public class ChatClientListenerApplication extends AbstractChatBotClientApplication {
+public class ChatClientListenerApplication extends AbstractChatClientApplication {
 
   public static void main(String[] args) {
 

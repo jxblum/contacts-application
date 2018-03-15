@@ -27,24 +27,25 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import example.app.geode.cache.client.model.Chat;
-import example.app.geode.cache.client.service.ChatService;
+import example.app.chat.model.Chat;
+import example.app.chat.service.ChatService;
 import example.app.model.Person;
 
 /**
- * The {@link ChatWebClient} class is a Spring {@link RestController} implement the Web interface
+ * The {@link WebChatClient} class is a Spring {@link RestController} implement the Web interface
  * to the chat client application.
  *
  * @author John Blum
  * @see org.springframework.web.bind.annotation.RestController
- * @see example.app.geode.cache.client.model.Chat
- * @see example.app.geode.cache.client.service.ChatService
+ * @see Chat
+ * @see example.app.chat.model.Chat
+ * @see example.app.chat.service.ChatService
  * @see example.app.model.Person
  * @since 1.0.0
  */
 @RestController
 @SuppressWarnings("unused")
-public class ChatWebClient {
+public class WebChatClient {
 
   @Autowired
   private ChatService chatService;
@@ -61,7 +62,7 @@ public class ChatWebClient {
 
   @GetMapping("/chats/{name}")
   public Iterable<Chat> findBy(@PathVariable("name") Person person) {
-    return getChatService().findAll(person);
+    return getChatService().findBy(person);
   }
 
   @GetMapping("/ping")

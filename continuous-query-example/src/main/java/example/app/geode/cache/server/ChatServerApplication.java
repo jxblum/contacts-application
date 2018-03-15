@@ -32,7 +32,7 @@ import org.springframework.data.gemfire.config.annotation.EnableLocator;
 import org.springframework.data.gemfire.config.annotation.EnableManager;
 
 /**
- * The {@link ChatBotServerApplication} class...
+ * The {@link ChatServerApplication} class...
  *
  * @author John Blum
  * @see org.springframework.boot.SpringApplication
@@ -47,17 +47,17 @@ import org.springframework.data.gemfire.config.annotation.EnableManager;
 @EnableLocator
 @EnableManager
 @SuppressWarnings("unused")
-public class ChatBotServerApplication {
+public class ChatServerApplication {
 
   public static void main(String[] args) {
 
-    new SpringApplicationBuilder(ChatBotServerApplication.class)
+    new SpringApplicationBuilder(ChatServerApplication.class)
       .web(WebApplicationType.NONE)
       .build()
       .run(args);
   }
 
-  @Bean("Chat")
+  @Bean("Chats")
   public PartitionedRegionFactoryBean<Integer, String> chatRegion(GemFireCache gemfireCache,
       @Qualifier("ChatRegionAttributes") RegionAttributes<Integer, String> chatRegionAttributes) {
 
@@ -76,7 +76,7 @@ public class ChatBotServerApplication {
 
     RegionAttributesFactoryBean chatRegionAttributes = new RegionAttributesFactoryBean();
 
-    chatRegionAttributes.setEntryTimeToLive(new ExpirationAttributes(5, ExpirationAction.DESTROY));
+    chatRegionAttributes.setEntryTimeToLive(new ExpirationAttributes(15, ExpirationAction.DESTROY));
 
     return chatRegionAttributes;
   }
