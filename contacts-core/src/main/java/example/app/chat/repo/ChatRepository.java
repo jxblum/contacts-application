@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 the original author or authors.
+ * Copyright 2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,25 +14,35 @@
  * permissions and limitations under the License.
  */
 
-package example.app.geode.cache.client.repo;
+package example.app.chat.repo;
 
 import org.springframework.data.repository.CrudRepository;
 
-import example.app.geode.cache.client.model.Chat;
+import example.app.chat.model.Chat;
 import example.app.model.Person;
 
 /**
- * The {@link ChatRepository} class is a Data Access Object (DAO) implemented as a Spring Data {@link CrudRepository}
- * to perform basic CRUD and querying data access operations.
+ * The {@link ChatRepository} interface is a Data Access Object (DAO) and Spring Data {@link CrudRepository}
+ * used to perform basic CRUD and querying data access operations on {@link Chat Chats}.
  *
  * @author John Blum
  * @see java.lang.Long
  * @see org.springframework.data.repository.CrudRepository
- * @see example.app.geode.cache.client.model.Chat
+ * @see example.app.chat.model.Chat
  * @since 1.0.0
  */
-public interface ChatRepository extends CrudRepository<Chat, Long> {
+@SuppressWarnings("unused")
+public interface ChatRepository extends CrudRepository<Chat, String> {
 
+  /**
+   * Finds a {@link Iterable collection} of {@link Chat Chats} for given {@link Person}.
+   *
+   * @param person {@link Person} who's {@link Chat Chats} are searched.
+   * @return a {@link Iterable collection} of {@link Chat Chats} for given {@link Person}.
+   * @see example.app.chat.model.Chat
+   * @see example.app.model.Person
+   * @see java.lang.Iterable
+   */
   Iterable<Chat> findByPerson(Person person);
 
 }
