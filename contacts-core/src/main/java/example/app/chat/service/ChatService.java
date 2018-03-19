@@ -16,6 +16,7 @@
 
 package example.app.chat.service;
 
+import example.app.chat.event.ChatEvent;
 import example.app.chat.event.ChatListener;
 import example.app.chat.model.Chat;
 import example.app.model.Person;
@@ -31,12 +32,40 @@ import example.app.model.Person;
 @SuppressWarnings("unused")
 public interface ChatService {
 
+	/**
+	 * Returns all {@link Chat chats} stored by the chat application.
+	 *
+	 * @return a {@link Iterable collection} of all {@link Chat chats} stored by the chat application.
+	 * @see example.app.chat.model.Chat
+	 * @see java.lang.Iterable
+	 */
 	Iterable<Chat> findAll();
 
+	/**
+	 * Searches for all {@link Chat chats} sent by a given {@link Person person}.
+	 *
+	 * @param person {@link Person} who is the subject of the search.
+	 * @return a {@link Iterable collection} of all {@link Chat chats} sent by the given {@link Person person}.
+	 * @see example.app.chat.model.Chat
+	 * @see example.app.model.Person
+	 * @see java.lang.Iterable
+	 */
 	Iterable<Chat> findBy(Person person);
 
+	/**
+	 * Records a tally of the number of {@link Chat chats} received by this chat client application.
+	 *
+	 * @return a tally of the number of {@link Chat chats} received by this chat client application.
+	 */
 	long receiveCount();
 
+	/**
+	 * Registers the given {@link ChatListener} for receiving {@link ChatEvent chat events}.
+	 *
+	 * @param chatListener {@link ChatListener} to register.
+	 * @return a boolean value indicating whether the given {@link ChatListener} was successfully registered.
+	 * @see example.app.chat.event.ChatListener
+	 */
 	boolean register(ChatListener<?> chatListener);
 
 	/**
@@ -60,8 +89,20 @@ public interface ChatService {
 	 */
 	void send(Chat chat);
 
+	/**
+	 * Returns a tally of the number of {@link Chat chats} send from this chat client application.
+	 *
+	 * @return a tally of the number of {@link Chat chats} send from this chat client application.
+	 */
 	long sendCount();
 
+	/**
+	 * Unregisters the given {@link ChatListener} for receiving {@link ChatEvent chat events}.
+	 *
+	 * @param chatListener {@link ChatListener} to unregister.
+	 * @return a boolean value indicating whether the given {@link ChatListener} was successfully unregistered.
+	 * @see example.app.chat.event.ChatListener
+	 */
 	boolean unregister(ChatListener<?> chatListener);
 
 }
