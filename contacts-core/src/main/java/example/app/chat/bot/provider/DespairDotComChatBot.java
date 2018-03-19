@@ -49,7 +49,7 @@ public class DespairDotComChatBot implements ChatBot {
     Chat.newChat(despairInc, "Consistency - It is only a virtue if you are not a screw up."),
     Chat.newChat(despairInc, "Consulting - If you are not part of the solution, there's good money to be made in prolonging the problem."),
     Chat.newChat(despairInc, "Distinction - Looking sharp is easy when you haven't done any work."),
-    Chat.newChat(despairInc, "Foresight - Those who say it cannot be done just not interrupt those busy proving them right."),
+    Chat.newChat(despairInc, "Foresight - Those who say it cannot be done should not interrupt those busy proving them right."),
     Chat.newChat(despairInc, "Get To Work - You aren't being paid to believe in the power of your dreams."),
     Chat.newChat(despairInc, "Government - If you think the problems we create are bad, just wait until you see our solutions."),
     Chat.newChat(despairInc, "Hope - May not be warranted at this point."),

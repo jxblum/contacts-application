@@ -23,7 +23,7 @@ import example.app.model.Person;
 
 /**
  * The {@link ChatRepository} interface is a Data Access Object (DAO) and Spring Data {@link CrudRepository}
- * used to perform basic CRUD and querying data access operations on {@link Chat Chats}.
+ * used to perform basic CRUD and simple querying data access operations on {@link Chat Chats}.
  *
  * @author John Blum
  * @see java.lang.Long

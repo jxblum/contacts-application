@@ -20,7 +20,7 @@ import java.util.EventListener;
 
 /**
  * The {@link ChatListener} interface is an {@link EventListener} defining a contract for implementors
- * to listen for chat events.
+ * to listen for {@link ChatEvent chat events}.
  *
  * @author John Blum
  * @see java.util.EventListener

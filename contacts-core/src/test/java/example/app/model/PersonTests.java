@@ -83,6 +83,7 @@ public class PersonTests {
 
 	@Test
 	public void getAgeWhenBirthDateIsNullThrowsIllegalStateException() {
+
 		Person jonDoe = newPerson("Jon", "Doe");
 
 		assertThat(jonDoe).isNotNull();
@@ -91,7 +92,7 @@ public class PersonTests {
 
 		exception.expect(IllegalStateException.class);
 		exception.expectCause(is(nullValue(Throwable.class)));
-		exception.expectMessage("birth date of person [Jon Doe] is unknown");
+		exception.expectMessage("Birth date of person [Jon Doe] is unknown");
 
 		jonDoe.getAge();
 	}

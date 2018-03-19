@@ -22,7 +22,9 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
@@ -66,188 +68,203 @@ import org.springframework.util.ObjectUtils;
 @SuppressWarnings("unused")
 public class Person implements Comparable<Person>, Identifiable<Long>, Serializable {
 
-	private static final long serialVersionUID = -7204456214709927355L;
+  private static final long serialVersionUID = -7204456214709927355L;
 
-	private Long id;
+  private static final Map<String, Person> cachedPeople = new ConcurrentHashMap<>();
 
-	private LocalDate birthDate;
+  public static Person newPerson(String firstName, String lastName) {
 
-	private Gender gender;
+    Assert.hasText(firstName, "First name is required");
+    Assert.hasText(lastName, "Last name is required");
 
-	private String firstName;
+    Person person = new Person();
 
-	private String lastName;
+    person.setFirstName(firstName);
+    person.setLastName(lastName);
 
-	public static Person newPerson(String firstName, String lastName) {
+    return person;
+  }
 
-		Assert.hasText(firstName, "firstName is required");
-		Assert.hasText(lastName, "lastName is required");
+  public static Person newPerson(Person person) {
 
-		Person person = new Person();
+    Person copy = new Person();
 
-		person.setFirstName(firstName);
-		person.setLastName(lastName);
+    copy.setBirthDate(person.getBirthDate());
+    copy.setFirstName(person.getFirstName());
+    copy.setGender(person.getGender());
+    copy.setLastName(person.getLastName());
 
-		return person;
-	}
+    return copy;
+  }
 
-	public static Person newPerson(Person person) {
+  public static Person newCachedPerson(String firstName, String lastName) {
 
-		Person copy = new Person();
+    return cachedPeople.computeIfAbsent(toFullName(firstName, lastName),
+      fullName -> newPerson(firstName, lastName));
+  }
 
-		copy.setBirthDate(person.getBirthDate());
-		copy.setFirstName(person.getFirstName());
-		copy.setGender(person.getGender());
-		copy.setLastName(person.getLastName());
+  private static String toFullName(String firstName, String lastName) {
 
-		return copy;
-	}
+    Assert.hasText(firstName, "First name is required");
+    Assert.hasText(lastName, "Last name is required");
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    return String.format("%1$s %2$s", firstName.trim(), lastName.trim());
+  }
 
-	@Id
-	@javax.persistence.Id
-	@GeneratedValue
-	public Long getId() {
-		return id;
-	}
+  private Long id;
 
-	@Transient
-	@SuppressWarnings("all")
-	public int getAge() {
+  private LocalDate birthDate;
 
-		LocalDate birthDate = Optional.ofNullable(getBirthDate())
-			.orElseThrow(() -> newIllegalStateException("birth date of person [%s] is unknown", getName()));
+  private Gender gender;
 
-		Period period = Period.between(birthDate, LocalDate.now());
+  private String firstName;
+  private String lastName;
 
-		return period.getYears();
-	}
+  public void setId(Long id) {
+    this.id = id;
+  }
 
-	public void setBirthDateFor(int age) {
-		Assert.isTrue(age >= 0, "Age must be greater than equal to 0");
-		setBirthDate(LocalDate.now().minusYears(age));
-	}
+  @Id
+  @javax.persistence.Id
+  @GeneratedValue
+  public Long getId() {
+    return id;
+  }
 
-	public void setBirthDate(LocalDate birthDate) {
+  @Transient
+  @SuppressWarnings("all")
+  public int getAge() {
 
-		if (birthDate != null && birthDate.isAfter(LocalDate.now())) {
-			throw new IllegalArgumentException(String.format("[%s] cannot be born after today [%s]",
-				getName(), toString(LocalDate.now())));
-		}
+    LocalDate birthDate = Optional.ofNullable(getBirthDate())
+      .orElseThrow(() -> newIllegalStateException("Birth date of person [%s] is unknown", getName()));
 
-		this.birthDate = birthDate;
-	}
+    Period period = Period.between(birthDate, LocalDate.now());
 
-	@Column(name = "birth_date")
-	public LocalDate getBirthDate() {
-		return this.birthDate;
-	}
+    return period.getYears();
+  }
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
+  public void setBirthDateFor(int age) {
+    Assert.isTrue(age >= 0, "Age must be greater than equal to 0");
+    setBirthDate(LocalDate.now().minusYears(age));
+  }
 
-	@Column(name = "first_name")
-	public String getFirstName() {
-		return this.firstName;
-	}
+  public void setBirthDate(LocalDate birthDate) {
 
-	public void setGender(Gender gender) {
-		this.gender = gender;
-	}
+    if (birthDate != null && birthDate.isAfter(LocalDate.now())) {
+      throw new IllegalArgumentException(String.format("[%s] cannot be born after today [%s]",
+        getName(), toString(LocalDate.now())));
+    }
 
-	@Enumerated(EnumType.STRING)
-	public Gender getGender() {
-		return this.gender;
-	}
+    this.birthDate = birthDate;
+  }
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
+  @Column(name = "birth_date")
+  public LocalDate getBirthDate() {
+    return this.birthDate;
+  }
 
-	@Column(name = "last_name")
-	public String getLastName() {
-		return this.lastName;
-	}
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
 
-	@Transient
-	public String getName() {
-		return (String.format("%1$s %2$s", getFirstName(), getLastName())).trim();
-	}
+  @Column(name = "first_name")
+  public String getFirstName() {
+    return this.firstName;
+  }
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public int compareTo(Person person) {
+  public void setGender(Gender gender) {
+    this.gender = gender;
+  }
 
-		return ComparatorResultBuilder.<Comparable>create()
-			.doCompare(this.getLastName(), person.getLastName())
-			.doCompare(this.getFirstName(), person.getFirstName())
-			.doCompare(this.getBirthDate(), person.getBirthDate())
-			.build();
-	}
+  @Enumerated(EnumType.STRING)
+  public Gender getGender() {
+    return this.gender;
+  }
 
-	@Override
-	public boolean equals(Object obj) {
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
+  }
 
-		if (this == obj) {
-			return true;
-		}
+  @Column(name = "last_name")
+  public String getLastName() {
+    return this.lastName;
+  }
 
-		if (!(obj instanceof Person)) {
-			return false;
-		}
+  @Transient
+  public String getName() {
+    return toFullName(getFirstName(), getLastName());
+  }
 
-		Person that = (Person) obj;
+  @Override
+  @SuppressWarnings("unchecked")
+  public int compareTo(Person person) {
 
-		return ObjectUtils.nullSafeEquals(this.getBirthDate(), that.getBirthDate())
-			&& ObjectUtils.nullSafeEquals(this.getFirstName(), that.getFirstName())
-			&& ObjectUtils.nullSafeEquals(this.getLastName(), that.getLastName());
-	}
+    return ComparatorResultBuilder.<Comparable>create()
+      .doCompare(this.getLastName(), person.getLastName())
+      .doCompare(this.getFirstName(), person.getFirstName())
+      .doCompare(this.getBirthDate(), person.getBirthDate())
+      .build();
+  }
 
-	@Override
-	public int hashCode() {
+  @Override
+  public boolean equals(Object obj) {
 
-		int hashValue = 17;
+    if (this == obj) {
+      return true;
+    }
 
-		hashValue = 37 * hashValue + ObjectUtils.nullSafeHashCode(getBirthDate());
-		hashValue = 37 * hashValue + ObjectUtils.nullSafeHashCode(getFirstName());
-		hashValue = 37 * hashValue + ObjectUtils.nullSafeHashCode(getLastName());
+    if (!(obj instanceof Person)) {
+      return false;
+    }
 
-		return hashValue;
-	}
+    Person that = (Person) obj;
 
-	@Override
-	public String toString() {
-		return getName();
-		//return String.format("{ @type = %1$s, firstName = %2$s, lastName = %3$s, birthDate = %4$s, gender = %5$s }",
-		//	getClass().getName(), getFirstName(), getLastName(), toString(getBirthDate()), getGender());
-	}
+    return ObjectUtils.nullSafeEquals(this.getBirthDate(), that.getBirthDate())
+      && ObjectUtils.nullSafeEquals(this.getFirstName(), that.getFirstName())
+      && ObjectUtils.nullSafeEquals(this.getLastName(), that.getLastName());
+  }
 
-	protected String toString(LocalDate date) {
+  @Override
+  public int hashCode() {
 
-		return Optional.ofNullable(date)
-			.map(it -> it.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
-			.orElse(null);
-	}
+    int hashValue = 17;
 
-	@SuppressWarnings("unchecked")
-	public <T extends Person> T age(int age) {
-		setBirthDateFor(age);
-		return (T) this;
-	}
+    hashValue = 37 * hashValue + ObjectUtils.nullSafeHashCode(getBirthDate());
+    hashValue = 37 * hashValue + ObjectUtils.nullSafeHashCode(getFirstName());
+    hashValue = 37 * hashValue + ObjectUtils.nullSafeHashCode(getLastName());
 
-	@SuppressWarnings("unchecked")
-	public <T extends Person> T as(Gender gender) {
-		setGender(gender);
-		return (T) this;
-	}
+    return hashValue;
+  }
 
-	@SuppressWarnings("unchecked")
-	public <T extends Person> T born(LocalDate birthDate) {
-		setBirthDate(birthDate);
-		return (T) this;
-	}
+  @Override
+  public String toString() {
+    return getName();
+    //return String.format("{ @type = %1$s, firstName = %2$s, lastName = %3$s, birthDate = %4$s, gender = %5$s }",
+    //	getClass().getName(), getFirstName(), getLastName(), toString(getBirthDate()), getGender());
+  }
+
+  protected String toString(LocalDate date) {
+
+    return Optional.ofNullable(date)
+      .map(it -> it.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+      .orElse(null);
+  }
+
+  @SuppressWarnings("unchecked")
+  public <T extends Person> T age(int age) {
+    setBirthDateFor(age);
+    return (T) this;
+  }
+
+  @SuppressWarnings("unchecked")
+  public <T extends Person> T as(Gender gender) {
+    setGender(gender);
+    return (T) this;
+  }
+
+  @SuppressWarnings("unchecked")
+  public <T extends Person> T born(LocalDate birthDate) {
+    setBirthDate(birthDate);
+    return (T) this;
+  }
 }
