@@ -33,10 +33,10 @@ public abstract class AbstractChatClientApplication {
 
   protected void log(Chat chat) {
 
-    Renderer<Chat> chatRender = it -> String.format("[%1$s] %2$s: %3$s",
-      it.getProcessId().orElse("?"), it.getPerson(), it.getMessage());
+    Renderer<Chat> chatRenderer = it ->
+      String.format("[%1$s] %2$s: %3$s", it.getProcessId().orElse("?"), it.getPerson(), it.getMessage());
 
-    log(chatRender.render(chat));
+    log(chatRenderer.render(chat));
   }
 
   protected void log(String message, Object... args) {

@@ -28,13 +28,22 @@ import org.springframework.data.gemfire.config.annotation.ClientCacheApplication
 import org.springframework.data.gemfire.config.annotation.EnableContinuousQueries;
 import org.springframework.data.gemfire.listener.annotation.ContinuousQuery;
 
-import example.app.geode.cache.client.AbstractChatClientApplication;
 import example.app.chat.model.Chat;
+import example.app.geode.cache.client.AbstractChatClientApplication;
 
 /**
- * The ChatClientListenerApplication class...
+ * The {@link ChatClientListenerApplication} class is a {@link SpringBootApplication} as well as an Apache Geode
+ * {@link ClientCacheApplication} that functions as a chat message listener, allowing uses to participate as a
+ * passive chat recipient.
  *
  * @author John Blum
+ * @see org.apache.geode.cache.client.ClientCache
+ * @see org.springframework.boot.autoconfigure.SpringBootApplication
+ * @see org.springframework.boot.builder.SpringApplicationBuilder
+ * @see org.springframework.data.gemfire.config.annotation.ClientCacheApplication
+ * @see org.springframework.data.gemfire.config.annotation.EnableContinuousQueries
+ * @see org.springframework.data.gemfire.listener.annotation.ContinuousQuery
+ * @see example.app.geode.cache.client.AbstractChatClientApplication
  * @since 1.0.0
  */
 @SpringBootApplication

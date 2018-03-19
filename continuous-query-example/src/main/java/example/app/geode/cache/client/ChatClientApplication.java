@@ -18,6 +18,7 @@ package example.app.geode.cache.client;
 
 import java.util.Optional;
 
+import org.apache.geode.cache.client.ClientCache;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -32,9 +33,20 @@ import example.app.chat.model.Chat;
 import example.app.chat.service.ChatService;
 
 /**
- * The {@link ChatClientApplication} class...
+ * The {@link ChatClientApplication} class is a {@link SpringBootApplication} as well as an Apache Geode
+ * {@link ClientCache} application that functions as a chat client enabling senders/receivers to send
+ * and receive chat messages back and forth.
  *
  * @author John Blum
+ * @see org.apache.geode.cache.client.ClientCache
+ * @see org.springframework.boot.ApplicationRunner
+ * @see org.springframework.boot.SpringApplication
+ * @see org.springframework.boot.autoconfigure.SpringBootApplication
+ * @see org.springframework.data.gemfire.config.annotation.ClientCacheApplication
+ * @see org.springframework.data.gemfire.config.annotation.EnableContinuousQueries
+ * @see org.springframework.data.gemfire.config.annotation.EnableEntityDefinedRegions
+ * @see example.app.geode.cache.client.AbstractChatClientApplication
+ * @see example.app.chat.bot.config.EnableChatBot
  * @since 1.0.0
  */
 @SpringBootApplication

@@ -20,6 +20,7 @@ import org.apache.geode.cache.ExpirationAction;
 import org.apache.geode.cache.ExpirationAttributes;
 import org.apache.geode.cache.GemFireCache;
 import org.apache.geode.cache.RegionAttributes;
+import org.apache.geode.cache.server.CacheServer;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -32,11 +33,15 @@ import org.springframework.data.gemfire.config.annotation.EnableLocator;
 import org.springframework.data.gemfire.config.annotation.EnableManager;
 
 /**
- * The {@link ChatServerApplication} class...
+ * The {@link ChatServerApplication} class is a {@link SpringBootApplication} and an Apache Geode {@link CacheServer}
+ * application that functions as a chat server serving chat clients.
  *
  * @author John Blum
- * @see org.springframework.boot.SpringApplication
+ * @see org.apache.geode.cache.GemFireCache
+ * @see org.apache.geode.cache.server.CacheServer
  * @see org.springframework.boot.autoconfigure.SpringBootApplication
+ * @see org.springframework.boot.builder.SpringApplicationBuilder
+ * @see org.springframework.data.gemfire.PartitionedRegionFactoryBean
  * @see org.springframework.data.gemfire.config.annotation.CacheServerApplication
  * @see org.springframework.data.gemfire.config.annotation.EnableLocator
  * @see org.springframework.data.gemfire.config.annotation.EnableManager
