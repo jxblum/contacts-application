@@ -21,7 +21,7 @@ import org.cp.elements.lang.Renderer;
 import example.app.chat.model.Chat;
 
 /**
- * The {@link AbstractChatClientApplication} class is an abstract base class encapsulating function
+ * The {@link AbstractChatClientApplication} class is an abstract base class encapsulating functionality
  * common to all chat client applications.
  *
  * @author John Blum

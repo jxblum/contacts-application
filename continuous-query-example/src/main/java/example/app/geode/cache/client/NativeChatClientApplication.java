@@ -37,9 +37,13 @@ import org.cp.elements.lang.SystemUtils;
 import example.app.chat.model.Chat;
 
 /**
- * The {@link NativeChatClientApplication} class...
+ * The {@link NativeChatClientApplication} class is an {@link AbstractChatClientApplication} implemented by using
+ * Apache Geode's public, native Java API.
  *
  * @author John Blum
+ * @see java.lang.Runnable
+ * @see org.apache.geode.cache.client.ClientCache
+ * @see example.app.geode.cache.client.AbstractChatClientApplication
  * @since 1.0.0
  */
 public class NativeChatClientApplication extends AbstractChatClientApplication implements Runnable {
@@ -55,7 +59,7 @@ public class NativeChatClientApplication extends AbstractChatClientApplication i
   protected static final int CACHE_SERVER_PORT =
     Integer.parseInt(System.getProperty("example.continuous-query.gemfire.cache.server.port", "40404"));
 
-  protected static final String CONTINUOUS_QUERY = "SELECT * FROM /Chat";
+  protected static final String CONTINUOUS_QUERY = "SELECT * FROM /Chats";
 
   protected static final String POOL_NAME = "DEFAULT";
 
@@ -122,12 +126,11 @@ public class NativeChatClientApplication extends AbstractChatClientApplication i
 
   ClientCache chatRegion(ClientCache gemfireCache) {
 
-    ClientRegionFactory<Long, Chat> chatRegionFactory =
+    ClientRegionFactory<String, Chat> chatRegionFactory =
       gemfireCache.createClientRegionFactory(ClientRegionShortcut.PROXY);
 
-    chatRegionFactory.setKeyConstraint(Long.class);
+    chatRegionFactory.setKeyConstraint(String.class);
     chatRegionFactory.setValueConstraint(Chat.class);
-
     chatRegionFactory.create(CHAT_REGION_NAME);
 
     return gemfireCache;
