@@ -35,11 +35,11 @@ public class ChatEvent<T> extends EventObject {
 
 	protected static final String CHAT_EVENT_TO_STRING = "%1$s: \"%2$s\"";
 
-	private T chat;
-
 	public static ChatEvent newChatEvent(Object source) {
 		return new ChatEvent(source);
 	}
+
+	private T chat;
 
 	protected ChatEvent(Object source) {
 		super(source);
