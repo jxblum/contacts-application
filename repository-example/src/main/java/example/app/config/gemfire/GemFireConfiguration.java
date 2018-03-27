@@ -115,6 +115,7 @@ public class GemFireConfiguration {
 
 	@Bean
 	public PartitionAttributesFactoryBean contactsRegionPartitionAttributes() {
+
 		PartitionAttributesFactoryBean contactsRegionPartitionAttributes = new PartitionAttributesFactoryBean();
 
 		contactsRegionPartitionAttributes.setColocatedWith("/Customers");

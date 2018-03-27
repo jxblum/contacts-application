@@ -52,7 +52,7 @@ import example.app.model.Contact;
  * @since 1.0.0
  */
 @Configuration
-@EnableJpaRepositories(basePackages = "example.app.repo.jpa")
+@EnableJpaRepositories(basePackageClasses = example.app.repo.jpa.ContactRepository.class)
 @EnableTransactionManagement
 @SuppressWarnings("unused")
 public class JpaConfiguration {
