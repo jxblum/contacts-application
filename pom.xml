@@ -18,9 +18,7 @@
 
   <modules>
     <module>contacts-core</module>
-<!--
     <module>boot-example</module>
--->
     <module>caching-example</module>
     <module>cluster-configuration-example</module>
     <module>configuration-example</module>
