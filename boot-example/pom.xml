@@ -56,6 +56,17 @@
 
   <repositories>
     <repository>
+      <id>spring-libs-snapshot</id>
+      <name>Spring libs-snapshot Maven Repository</name>
+      <url>https://repo.spring.io/libs-snapshot</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+    <repository>
       <id>sonatype-nexus-snapshots</id>
       <name>Sonatype Nexus Snapshots</name>
       <url>https://oss.sonatype.org/content/repositories/snapshots</url>
@@ -77,15 +88,11 @@
           <groupId>org.apache.logging.log4j</groupId>
           <artifactId>log4j-to-slf4j</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-logging</artifactId>
+        </exclusion>
       </exclusions>
-      <!--
-            <exclusions>
-              <exclusion>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-logging</artifactId>
-              </exclusion>
-            </exclusions>
-      -->
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -95,33 +102,25 @@
           <groupId>org.apache.logging.log4j</groupId>
           <artifactId>log4j-to-slf4j</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-logging</artifactId>
+        </exclusion>
       </exclusions>
-      <!--
-            <exclusions>
-              <exclusion>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-logging</artifactId>
-              </exclusion>
-            </exclusions>
-      -->
     </dependency>
     <dependency>
-      <groupId>org.springframework.boot</groupId>
+      <groupId>org.springframework.geode</groupId>
       <artifactId>geode-spring-boot-starter</artifactId>
       <exclusions>
         <exclusion>
           <groupId>org.apache.logging.log4j</groupId>
           <artifactId>log4j-to-slf4j</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-logging</artifactId>
+        </exclusion>
       </exclusions>
-      <!--
-            <exclusions>
-              <exclusion>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-logging</artifactId>
-              </exclusion>
-            </exclusions>
-      -->
     </dependency>
   </dependencies>
 
