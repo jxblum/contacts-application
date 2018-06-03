@@ -18,7 +18,6 @@ package example.app.geode.cache.client;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.apache.geode.cache.client.ClientRegionShortcut;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -38,8 +37,7 @@ import example.app.geode.cache.client.repo.BookRepository;
  * @since 1.0.0
  */
 @SpringBootApplication
-@EnableEntityDefinedRegions(basePackageClasses = Book.class,
-  clientRegionShortcut = ClientRegionShortcut.LOCAL)
+@EnableEntityDefinedRegions(basePackageClasses = Book.class)
 @SuppressWarnings("unused")
 public class BootExampleApplication {
 
