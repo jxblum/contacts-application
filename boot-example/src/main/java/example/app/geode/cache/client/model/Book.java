@@ -16,6 +16,8 @@
 
 package example.app.geode.cache.client.model;
 
+import java.io.Serializable;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.gemfire.mapping.annotation.Region;
 
@@ -24,15 +26,19 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 /**
- * The Book class...
+ * The {@link Book} class is an Abstract Data Type (ADT) modeling a book.
  *
  * @author John Blum
+ * @see java.io.Serializable
+ * @see lombok
+ * @see org.springframework.data.annotation.Id
+ * @see org.springframework.data.gemfire.mapping.annotation.Region
  * @since 1.0.0
  */
 @Data
 @Region("Books")
 @RequiredArgsConstructor(staticName = "newBook")
-public class Book {
+public class Book implements Serializable {
 
   @Id @NonNull
   private final ISBN isbn;
