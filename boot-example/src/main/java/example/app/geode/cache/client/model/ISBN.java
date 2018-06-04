@@ -20,13 +20,17 @@ import java.io.Serializable;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.StringUtils;
+import org.springframework.data.annotation.PersistenceConstructor;
+import org.springframework.data.annotation.Transient;
 
 import lombok.Getter;
 
 /**
- * The ISBN class...
+ * The {@link ISBN} class is a Abstract Data Type (ADT) modeling a book 10 digit or 13 digit ISBN number.
  *
  * @author John Blum
+ * @see java.io.Serializable
+ * @see org.springframework.data.annotation.PersistenceConstructor
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -42,6 +46,7 @@ public class ISBN implements Serializable {
   @Getter
   private final String number;
 
+  @PersistenceConstructor
   private ISBN(String number) {
 
     Assert.hasText(number, "ISBN number is required");
@@ -52,12 +57,40 @@ public class ISBN implements Serializable {
     this.number = number;
   }
 
+  @Transient
   public boolean isTenDigit() {
     return getNumber().length() == 10;
   }
 
+  @Transient
   public boolean isThirteenDigit() {
     return getNumber().length() == 13;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+
+    if (this == obj) {
+      return true;
+    }
+
+    if (!(obj instanceof ISBN)) {
+      return false;
+    }
+
+    ISBN that = (ISBN) obj;
+
+    return this.getNumber().equalsIgnoreCase(that.getNumber());
+  }
+
+  @Override
+  public int hashCode() {
+
+    int hashValue = 17;
+
+    hashValue = 37 * hashValue + getNumber().hashCode();
+
+    return hashValue;
   }
 
   @Override
