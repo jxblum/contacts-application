@@ -18,17 +18,13 @@ package example.app.geode.cache.client;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.function.Predicate;
-
 import org.apache.geode.cache.client.ClientCache;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.data.gemfire.config.annotation.ClientCacheConfigurer;
 import org.springframework.data.gemfire.config.annotation.EnableClusterConfiguration;
 import org.springframework.data.gemfire.config.annotation.EnableEntityDefinedRegions;
-import org.springframework.data.gemfire.mapping.MappingPdxSerializer;
 import org.springframework.geode.config.annotation.UseMemberName;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -61,36 +57,12 @@ import example.app.geode.cache.client.repo.BookRepository;
 @SpringBootApplication
 @EnableClusterConfiguration
 @EnableEntityDefinedRegions(basePackageClasses = Book.class)
-//@EnablePdx(serializerBeanName = "customMappingPdxSerializer")
 @UseMemberName("BookExampleClientApplication")
 @SuppressWarnings("unused")
 public class BootExampleApplication {
 
   public static void main(String[] args) {
     SpringApplication.run(BootExampleApplication.class, args);
-  }
-
-  // TODO: remove ClientCacheConfigurer bean definition to register custom MappingPdxSerializer
-  // with SDG 2.0.8.RELEASE or 2.1.0.RC1.
-  @Bean
-  ClientCacheConfigurer clientCachePdxSerializerConfigurer() {
-    return (beanName, clientCacheFactoryBean) -> clientCacheFactoryBean.setPdxSerializer(customMappingPdxSerializer());
-  }
-
-  // TODO: remove custom MappingPdxSerializer bean definition with SDG 2.0.8.RELEASE or 2.1.0.RC1.
-  //@Bean
-  MappingPdxSerializer customMappingPdxSerializer() {
-
-    Predicate<Class<?>> excludeTypeFilters = type -> !type.getPackage().getName().startsWith("java");
-
-    excludeTypeFilters = excludeTypeFilters.and(type ->
-      !type.getPackage().getName().startsWith("org.springframework"));
-
-    MappingPdxSerializer mappingPdxSerializer = MappingPdxSerializer.newMappingPdxSerializer();
-
-    mappingPdxSerializer.setTypeFilters(excludeTypeFilters);
-
-    return mappingPdxSerializer;
   }
 
   @Bean
