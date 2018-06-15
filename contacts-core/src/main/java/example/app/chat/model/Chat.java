@@ -97,7 +97,7 @@ public class Chat extends IdentifiableAdapter<String> implements Comparable<Chat
   private LocalDateTime timestamp;
 
   @Id
-  private final String id;
+  private String id;
 
   private Object processId;
 
@@ -127,6 +127,11 @@ public class Chat extends IdentifiableAdapter<String> implements Comparable<Chat
     this.person = person;
     this.message = message;
     this.id = identifierSequence.nextId();
+  }
+
+  @Override
+  public void setId(String id) {
+    this.id = id;
   }
 
   @Override
