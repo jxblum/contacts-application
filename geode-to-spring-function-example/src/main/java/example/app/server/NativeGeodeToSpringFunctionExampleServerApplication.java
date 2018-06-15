@@ -37,13 +37,13 @@ import example.app.chat.model.Chat;
 import example.app.server.function.SpellCheckerWithAutoCorrectFunction;
 
 /**
- * The GeodeToSpringFunctionExampleNativeServerApplication class...
+ * The {@link NativeGeodeToSpringFunctionExampleServerApplication} class...
  *
  * @author John Blum
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class GeodeToSpringFunctionExampleNativeServerApplication {
+public class NativeGeodeToSpringFunctionExampleServerApplication {
 
   private static final int GEMFIRE_CACHE_SERVER_PORT = CacheServer.DEFAULT_PORT;
 
@@ -74,7 +74,7 @@ public class GeodeToSpringFunctionExampleNativeServerApplication {
 
     Properties gemfireProperties = new Properties();
 
-    String memberName = GeodeToSpringFunctionExampleNativeServerApplication.class.getSimpleName();
+    String memberName = NativeGeodeToSpringFunctionExampleServerApplication.class.getSimpleName();
 
     gemfireProperties.setProperty("name", memberName);
     gemfireProperties.setProperty("log-level", GEMFIRE_LOG_LEVEL);
