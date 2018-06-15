@@ -8,7 +8,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.0.2.RELEASE</version>
+    <version>2.0.3.RELEASE</version>
   </parent>
 
   <groupId>example.apps</groupId>
@@ -24,6 +24,7 @@
     <module>configuration-example</module>
     <module>continuous-query-example</module>
     <module>function-example</module>
+    <module>geode-to-spring-function-example</module>
     <module>repository-example</module>
     <module>security-example</module>
     <module>simple-caching-example</module>
