@@ -1,0 +1,751 @@
+= A New Way to Function
+
+This example (`geode-to-spring-function-example`) presents a *new* (& _upcoming_) feature in _Spring Data for Apache Geode
+& Pivotal GemFire_ (collectively, SDG^2) showing how SDG's
+https://docs.spring.io/spring-data/geode/docs/current/reference/html/#function-implementation[Annotation support for Function Implementations]
+can be used to define Apache Geode or Pivotal GemFire http://geode.apache.org/releases/latest/javadoc/org/apache/geode/cache/execute/Function.html[`Functions`]
+without requiring a Spring container to be running in the Apache Geode or Pivotal GemFire server JVM process
+
+Yes, you heard that right!
+
+To find out more details about this new and exciting (in-progress) feature, follow along in
+https://jira.spring.io/browse/DATAGEODE-120[DATAGEODE-120 - Support Function annotation-based implementations registered on Apache Geode servers without needing to start a Spring container].
+
+This feature was inspired by *Dharam Thacker* who posted this http://markmail.org/message/tsa5sjtzb4cezpxf[question]
+in the _Apache Geode User Mailing List_.  Thank you *Dharam* for the inspiration/idea.
+
+But first, let's recap.
+
+== The SDG Way to Function
+
+It should come as no surprise to existing _Spring Data for Apache Geode or Pivotal GemFire_ (SDG^2) developers, how to
+*implement* and *execute* Apache Geode/Pivotal GemFire `Functions` using SDG^2.
+
+SDG's powerful, Annotation-based `Function` support makes both https://docs.spring.io/spring-data/geode/docs/current/reference/html/#function-execution[execution]
+and https://docs.spring.io/spring-data/geode/docs/current/reference/html/#function-implementation[implementation] a snap,
+and is well https://docs.spring.io/spring-data/geode/docs/current/reference/html/#function-annotations[documented].
+
+> NOTE: To understand the difference between SDG's Annotation support for *implementations* vs. *executiona*, read
+https://docs.spring.io/spring-data/geode/docs/current/reference/html/#_implementation_vs_execution[this].
+
+For example, perhaps my application requires a very simple `Function` implementation, which greets a user
+when s/he logs into my application...
+
+.Greetings Function Implementation
+[source, java]
+----
+package ...;
+
+import ...;
+
+@Component
+class MyApplicationFunctions {
+
+  @GemfireFunction(hasResult = true)
+  String greetings(String username) {
+    return String.format("Hello %s", username);
+  }
+}
+----
+
+Using SDG, you can simply define POJO methods as proper GemFire/Geode `Functions` and SDG will handle all the necessary
+plumbing to ensure this POJO method (e.g. `greetings(:String)`) gets registered and declared as a proper GemFire/Geode
+`Function` on Spring container initialization, which will then be available for execution, either from another peer
+or a cache client application.
+
+If we now want to invoke our "_greetings_" `Function` from, say, a Spring-based cache client application, then it is
+as simple as defining an interface specifying the contract of the `Function` to execute...
+
+.Greetings Function Execution
+[source, java]
+----
+package ...;
+
+import ...;
+
+@OnServer
+interface MyApplicationFunctionExecutions {
+
+  Object greetings(String username);
+
+}
+----
+
+> NOTE: Unfortunately, there is a bug in SDG that does not honor the return type of the Function cxecution interface
+method.  The default `ResultCollector` in Apache Geode/Pivotal GemFire wraps all `Function` execution results
+in a `List` and SDG is not properly inspecting the Function execution interface method corresponding to
+the actual `Function` and evaluating the return type, and extracting the "single" result.  This bug has been captured
+in https://jira.spring.io/browse/DATAGEODE-119[DATAGEODE-119 - Fix Function annotation support to properly handle
+single result Function return types].
+
+There are several different ways to execution a `Function` from a cache client application (e.g. `OnRegion` or `OnServer(s)`),
+but in this particular case, we chose `@OnServer` since this `Function` does not access any data from any Region
+defined in GemFire/Geode.
+
+> NOTE: The "name" of the registered `Function` on the server is the name of the POJO method if not explicitly defined
+using the `id` attribute of the `@GemfireFunction` annotation.  Likewise, on the client, a developer may use
+the `@FunctionId` annotation to identify the registered `Function` (on the server) if the developer explicitly "named"
+the `Function` registered on the server using the `id` attribute of the `@GemfireFunction` annotation.
+
+==== Enabling Function Implementations & Executions
+
+====== Server (Implementation)
+
+To enable the GemFire/Geode `Function` *implementations* to be registered on the server, you simply need to use the
+`@EnableGemfireFunctions` annotation, like so...
+
+.Server Function Registration
+[source, java]
+----
+@SpringBootApplication
+@CacheServerApplication
+@EnableGemfireFunctions
+class MySpringDataGeodeApplication {
+  ...
+}
+----
+
+> NOTE: If you are not using _Spring Boot_ (shame on you ;-) or you are not using Spring's classpath component scanning
+capability in general, then you must explicitly declare the `Function` implementation class as a bean in the Spring context.
+For https://github.com/jxblum/contacts-application/blob/master/geode-to-spring-function-example/src/main/java/example/app/server/GeodeToSpringFunctionExampleServerApplication.java#L35-L51[example].
+As you can see above, `MyApplicationFunctions` was been annotated with Spring's `@Component` stereotype annotation,
+which would get picked up in the classpath component scan, so an explicit bean definition/declaration is not necessary.
+
+====== Client (Execution)
+
+To enable `Function` *executions* on the client, you simply need to use the `@EnableGemfireFunctionExecutions` annotation
+and specify the `basePackages` of where your `Function` *execution* interfaces have been defined (i.e. packaged)...
+
+.Client Function Execution Registration
+[source, java]
+----
+@SpringBootApplication
+@ClientCacheApplication
+@EnableGemfireFunctionExecutions(basePakagesClasses = MyApplicationFunctions.class)
+class MySpringDataGeodeApplication {
+  ...
+}
+----
+
+See https://github.com/jxblum/contacts-application/blob/master/geode-to-spring-function-example/src/main/java/example/app/client/GeodeToSpringFunctionExampleApplication.java#L59[here],
+for an concrete example.
+
+That is essentially it when using SDG.  Pretty easy and really quick!
+
+> NOTE: The *new* https://github.com/spring-projects/spring-boot-data-geode[_Spring Boot for Apache Geode & Pivotal GemFire_] (SBDG) project
+is going to simplify `Function` *implementation* and *execution* "enablement" even further, by simply removing the need
+to have to enable `Function` *implementations*, using the `@EnableGemfireFunctions` annotation, and *executions*,
+using the `@EnableGemfireFunctionExecutions` annotation, explicitly.  That is, by default, SBDG, will do this
+for your application using "_auto-configuration_" and you only simply need to define your `Functions` and executions.
+That was easy.
+
+==== Limitations
+
+However, this basically assumes you have configured and (possibly) bootstrapped your Apache Geode/Pivotal GemFire server
+using Spring.  While this is highly useful (and recommended) during development, it is not always possible to do
+when deploying, especially to production.  Onward...
+
+
+== The Hybrid Way to Function
+
+Some users & customers alike are restricted to using the tooling (e.g. http://geode.apache.org/docs/guide/16/tools_modules/gfsh/chapter_overview.html[_Gfsh_])
+provided in the Apache Geode or Pivotal GemFire distribution when configuring and launching their servers in their cluster.
+
+It is possible to even configure the servers started with _Gfsh_ using Spring by using the `--spring-xml-location` option
+to the using the `start server` command.  See http://geode.apache.org/docs/guide/16/tools_modules/gfsh/command-pages/start.html#topic_3764EE2DB18B4AE4A625E0354471738A[here].
+By default, this option expects the classpath location to a Spring XML configuration file.  It is possibly to bootstrap
+Spring's configuration of the a GemFire/Geode server using Java config with only a minimal snippet of XML to basically
+enable https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#beans-classpath-scanning[classpath component scanning]
+or https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#beans-annotation-config[annotation-based container configuration].
+
+Additionally, you can even specify other resource locations (i.e. other than the default, on the classpath) by using
+https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#resources-resourceloader[resource loader prefix qualifiers].
+
+However, it turns out this approach is not void of limitations either, especially when the user wished to update her `Function`
+implementations and subsequently re-deploy the modified `Function` bits using _Gfsh's_ `deploy --jar=...` command.
+
+In this case, using SDG's `Function` annotation support becomes challenging since it is difficult to "update" an SDG-defined
+and annotated POJO method-based `Function`.  Simply put, neither Apache Geode nor Pivotal GemFire recognizes
+SDG-defined `Functions`, or rather POJO methods annotated with SDG's `@GemfireFunction` annotation
+when using the `deploy` command.
+
+_So, how then can a user leverage SDG?_
+
+In this case, if a user expects the application `Function` implementations to change, and needs to be able to update
+those very `Functions` using _Gfsh's_ `deploy` command, then (previously ;-) ) the user must implement his/her `Function`
+in terms of Apache Geode/Pivotal GemFire's http://geode.apache.org/docs/guide/16/developing/function_exec/chapter_overview.html[Function API].
+
+For example...
+
+.Greetings Function implementing GemFire/Geode's `Function` interface
+[source, java]
+----
+package ...;
+
+import ...;
+
+class GreetingsFunction implements org.apache.geode.cache.execute.Function<String> {
+
+  public void execute(FunctionContext<String> functionContext) {
+
+    String username = functionContext.getArgument();
+
+    String greeting = String.format("Hello %s", username);
+
+    functionContext.getResultSender().lastResult(greeting);
+  }
+
+  public String getId() {
+    return "greetings";
+  }
+}
+----
+
+Implementing an Apache Geode/Pivotal GemFire `Function` prior to *Java 8* was far more tedious since you needed to
+implement several methods from the `Function` interface before the `Function` interface was refactored to use
+*Java 8's* *default* methods.  Even still, if you need to change the configuration of a `Function`, such as
+whether or not the `Function` `hasResult`, optimizing for writes (i.e. `optimizeForWrite`) or even changing
+the `Function's` identifier, you still need to implement these methods, which then precludes using this `Function`
+in Lambda expressions.
+
+Additionally, by implementing Apache Geode/Pivotal GemFire's `Function` interface, you are now tightly coupling
+your application code to the GemFire/Geode API, which is less than ideal since it also complicates testing.
+
+SDG's https://docs.spring.io/spring-data/geode/docs/current/api/org/springframework/data/gemfire/function/annotation/GemfireFunction.html[`@GemfireFunction` annotation]
+makes configuration of all these aspects short work, and it does not couple you to the API.
+
+Still, it is (or was) the only way you can/were-able-to "update" a `Function` by using _Gfsh's_ `deploy` command.
+
+Even though you must implement GemFire/Geode's `Function` interface to implement and update a `Function`,
+you can still take advantage of SDG's Function *execution* annotation support to execute the very same
+GemFire/Geode-defined `Function`.
+
+Therefore you can still use the SDG `Function` *execution* interface defined above to execute the GemFire/Geode-defined
+"_greetings_" `Function` as before...
+
+.Greetings Function Execution
+[source, java]
+----
+package ...;
+
+import ...;
+
+@OnServer
+interface MyApplicationFunctionExecutions {
+
+  String greetings(String username);
+
+}
+----
+
+_However, can we actually do better?_
+
+
+== Implementing & Deploying Functions with SDG & Gfsh
+
+Ideally, developers would like to define their GemFire/Geode `Functions` using SDG's powerful and convenient,
+yet simple POJO-based Annotation configuration model (i.e. with `@GemfireFunction`).
+
+Well, now you can!
+
+> NOTE: Again follow along in https://jira.spring.io/browse/DATAGEODE-120[DATAGEODE-120] for more details.
+
+_How does it work? What must I do?_
+
+In a nutshell, SDG introduces a new `o.s.d.g.function.support.SpringDefinedFunctionAwareRegistrar` class, which is a
+GemFire/Geode `Function` implementation itself.  That is, it implements `org.apache.geode.cache.execute.Function`,
+which is good!
+
+Because SDG's `SpringDefinedFunctionAwareRegistrar` implements `o.a.g.cache.execute.Function` then it will be
+identified and picked up by _Gfsh's_ `deploy` command when packaged and bundled with your application-defined
+`Functions`, which have been implemented using SDG's `Function` annotation support (i.e. `@GemfireFunction`).
+
+> NOTE: In this example, I experimented with a lot of different configuration options, e.g. using Gfsh and `cache.xml`,
+GemFire/Geode's Java API, and so on and so forth.  There are many hidden gotchas under-the-hood with Apache Geode/Pivotal GemFire,
+especially around the vagaries of class loading, which uses particularly configured `ClassLoader` mechanics when
+"deploying" `Functions` to the servers using _Gfsh's_ `deploy` command, which subsequently makes visibility
+and resource/class resolution challenging.  But not to worry, I figured this out for you.
+
+==== How to run the example?
+
+This example showcases several different ways in which you can use SDG's Annotation-based configuration support
+for GemFire/Geode `Function` implementations and executions.
+
+This example is logically organized into the https://github.com/jxblum/contacts-application/tree/master/geode-to-spring-function-example/src/main/java/example/app/client[client package]
+and https://github.com/jxblum/contacts-application/tree/master/geode-to-spring-function-example/src/main/java/example/app/server[server package].
+
+The server defines the https://github.com/jxblum/contacts-application/blob/master/geode-to-spring-function-example/src/main/java/example/app/server/function/SpellCheckerWithAutoCorrectFunction.java[`Function` *implementation*]
+and the client specifies the https://github.com/jxblum/contacts-application/blob/master/geode-to-spring-function-example/src/main/java/example/app/client/function/SpellCheckerWithAutoCorrectFunctionExecution.java[`Function` *execution* interface]
+to invoke the `Function`.
+
+The Function *implementation* builds on our _Contacts Application_, Spring Boot-based Chat app, by *spell checking*
+and *auto correcting* the `Chat` messages.  Note, the `Function` is a rather naive implementation using the first
+suggestion in the list of suggestions provided by the Spell Checker/Grammar provider, of which I found and used
+the pretty slick and cool https://languagetool.org/dev[Language Tools library].
+
+The idea is, since the `Chats` are partitioned across the servers in the cluster configured to host the `/Chats` Region,
+then a "distributed" spell check and auto-correct is more efficient, particularly since I coded the `Function` to
+only spell check/auto-correct the "latest" `Chats`.  It is crude but interesting.  Perhaps a more useful "distributed"
+compute operation might be to perform language translation using Google Translate, perhaps.  Anywy, it served
+my purposes for this example, since I already demonstrated `Address` geo-coding
+https://github.com/jxblum/contacts-application/blob/master/function-example/src/main/java/example/app/server/functions/AddressGeocodingFunction.java[here].
+
+The https://github.com/jxblum/contacts-application/blob/master/geode-to-spring-function-example/src/main/java/example/app/client/GeodeToSpringFunctionExampleApplication.java[GemFire/Geode cache client, Spring Boot/Spring Data for Apache Geode/Pivotal GemFire application],
+remains the same throughout this entire example.
+
+Only the server configuration/bootstrapping process varies.
+
+
+====== 1. Running the pure Spring approach. (*****)
+
+In this approach, you can simply launch a GemFire/Geode server using Spring (Boot), from within your IDE.
+
+See the https://github.com/jxblum/contacts-application/blob/master/geode-to-spring-function-example/src/main/java/example/app/server/GeodeToSpringFunctionExampleServerApplication.java#L35-L51[GeodeToSpringFunctionExampleServerApplication] class.
+
+As you can https://github.com/jxblum/contacts-application/blob/master/geode-to-spring-function-example/src/main/java/example/app/server/GeodeToSpringFunctionExampleServerApplication.java#L47-L50[see],
+it explicitly declares and registers the `SpellCheckerWithAutoCorrectFunction`, as well as enables `@EnableGemfireFunctions`,
+https://github.com/jxblum/contacts-application/blob/master/geode-to-spring-function-example/src/main/java/example/app/server/GeodeToSpringFunctionExampleServerApplication.java#L37[here].
+
+Additionally, this server goes onto start an embedded Locator and Manager service, thereby making it possible to
+connect to this server using _Gfsh_...
+
+```
+$ echo $GEMFIRE
+/Users/jblum/pivdev/apache-geode-1.6.0
+
+$ gfsh
+    _________________________     __
+   / _____/ ______/ ______/ /____/ /
+  / /  __/ /___  /_____  / _____  /
+ / /__/ / ____/  _____/ / /    / /
+/______/_/      /______/_/    /_/    1.6.0
+
+Monitor and Manage Apache Geode
+
+gfsh>connect
+Connecting to Locator at [host=localhost, port=10334] ..
+Connecting to Manager at [host=10.0.0.121, port=1099] ..
+Successfully connected to: [host=10.0.0.121, port=1099]
+
+gfsh>list members
+                    Name                      | Id
+--------------------------------------------- | ------------------------------------------------------------------------------------------
+GeodeToSpringFunctionExampleServerApplication | 10.0.0.121(GeodeToSpringFunctionExampleServerApplication:12050)<ec><v0>:1024 [Coordinator]
+
+gfsh>describe member --name=GeodeToSpringFunctionExampleServerApplication
+Name        : GeodeToSpringFunctionExampleServerApplication
+Id          : 10.0.0.121(GeodeToSpringFunctionExampleServerApplication:12050)<ec><v0>:1024
+Host        : 10.0.0.121
+Regions     :
+PID         : 12050
+Groups      :
+Used Heap   : 158M
+Max Heap    : 3641M
+Working Dir : /Users/jblum/pivdev/spring-data-examples-workspace/contacts-application-workspace/geode-to-spring-function-example/target
+Log file    : /Users/jblum/pivdev/spring-data-examples-workspace/contacts-application-workspace/geode-to-spring-function-example/target
+Locators    : localhost[10334]
+
+Cache Server Information
+Server Bind              :
+Server Port              : 40404
+Running                  : true
+Client Connections       : 0
+
+gfsh>list regions
+No Regions Found
+
+gfsh>list functions
+                   Member                     | Function
+--------------------------------------------- | -------------------------
+GeodeToSpringFunctionExampleServerApplication | CreateOqlIndexFunction
+GeodeToSpringFunctionExampleServerApplication | CreateRegionFunction
+GeodeToSpringFunctionExampleServerApplication | ListQqlIndexesFunction
+GeodeToSpringFunctionExampleServerApplication | spellCheckWithAutoCorrect
+```
+
+Notice that there are "*No Regions Found*".  That is because we are going to leverage 2 more convenient
+and very powerful SDG features...
+
+* https://docs.spring.io/spring-data/geode/docs/current/reference/html/#bootstrap-annotation-config-regions[enabling entity-defined Regions], and...
+* https://docs.spring.io/spring-data/geode/docs/current/reference/html/#bootstrap-annotation-config-cluster[cluster configuration push] from the client.
+
+See the corresponding configuration of `@EnableEntityDefinedRegions` in th client app,
+https://github.com/jxblum/contacts-application/blob/master/geode-to-spring-function-example/src/main/java/example/app/client/GeodeToSpringFunctionExampleApplication.java#L58[here]
+along with the `@EnableClusterConfigurationPush`,
+https://github.com/jxblum/contacts-application/blob/master/geode-to-spring-function-example/src/main/java/example/app/client/GeodeToSpringFunctionExampleApplication.java#L137-L141[here],
+which is only enabled with when the active Spring profiles is not "native" and the property (`spring.data.gemfire.cluster.config.enabled`)
+is not *false" (it is *true* by default, which we will disable in the "native" example below).
+
+You can also see that our "spellCheckWithAutoCorrect" `Function` was successfully registered.  We can now run
+our client app, create some `Chats` and invoke the `Function`...
+
+```
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::        (v2.0.3.RELEASE)
+
+Saving chats...
+Spell checking & auto-correcting chats...
+Asserting chats...
+[Jon Doe] - "What is the deal with this example anyway?"
+[Jane Doe] - "I don't know it's a dud!"
+SUCCESS!
+```
+
+And, on the server...
+
+```
+gfsh>list regions
+List of regions
+---------------
+Chats
+
+gfsh>describe region --name=/Chats
+........................................................................
+Name            : Chats
+Data Policy     : partition
+Hosting Members : GeodeToSpringFunctionExampleServerApplication
+
+Non-Default Attributes Shared By Hosting Members
+
+ Type  |    Name     | Value
+------ | ----------- | ---------
+Region | size        | 2
+       | data-policy | PARTITION
+
+gfsh>query --query="SELECT c.getPerson().getName(), c.getMessage() FROM /Chats c"
+Result : true
+Limit  : 100
+Rows   : 2
+
+getName |                 getMessage                 | Value
+------- | ------------------------------------------ | -----------------------------------------------------------------------------------------------------------------------------------
+Jon Doe | What is the deal with this example anyway? | Error getting bean properties Unterminated object at character 43 of {"getName":"Jane Doe","getMessage":"I don"t know it"s a dud!"}
+
+```
+
+> NOTE: Seems _Gfsh_ has a problem with "special" characters in the `Chat` message
+(probably with the apostrophe in `it's`). :-P
+
+
+==== 2. Running the "Native" Approach. (***)
+
+Additionally, in this example, I have provided another class to configure and bootstrap the GemFire/Geode server using
+GemFire/Geode's http://geode.apache.org/releases/latest/javadoc/index.html[Java API] directly.
+
+See the https://github.com/jxblum/contacts-application/blob/master/geode-to-spring-function-example/src/main/java/example/app/server/NativeGeodeToSpringFunctionExampleServerApplication.java#L45-L156[NativeGeodeToSpringFunctionExampleServerApplication] class.
+
+Clearly, this is a much more involved way to achieve in order achieve the same thing in Spring using SDG.
+
+However, you will note that this server https://github.com/jxblum/contacts-application/blob/master/geode-to-spring-function-example/src/main/java/example/app/server/NativeGeodeToSpringFunctionExampleServerApplication.java#L69[registers]
+(and specifically, https://github.com/jxblum/contacts-application/blob/master/geode-to-spring-function-example/src/main/java/example/app/server/NativeGeodeToSpringFunctionExampleServerApplication.java#L145-L147[this])
+the https://github.com/jxblum/contacts-application/blob/master/geode-to-spring-function-example/src/main/java/example/app/server/function/SpringDefinedFunctionInitializer.java[`example.app.server.function.SpringDefinedFunctionInitializer`]
+`Function` class.
+
+The `SpringDefinedFunctionInitializer` class extends SDG's *new* `o.s.d.g.function.support.SpringDefinedFunctionAwareRegistrar` class,
+and by placing this application-specific initializer in the same package (i.e. `example.app.server.function`)
+as our application-defined `Function` (`SpellCheckerWithAutoCorrectFunction`) it helps SDG find the POJO-based method
+`Functions` (i.e. methods annotated with `@GemfireFunction`) to be registered.  More on this later.
+
+Additionally, this "native" server class explicitly https://github.com/jxblum/contacts-application/blob/master/geode-to-spring-function-example/src/main/java/example/app/server/NativeGeodeToSpringFunctionExampleServerApplication.java#L126-L135[defines]
+the "/Chats" Region (since the client-side "_cluster configuration push_" will not work in this case; it could,
+but I am not going to get into the details here as it is beyond the scope of this example), along with
+https://github.com/jxblum/contacts-application/blob/master/geode-to-spring-function-example/src/main/java/example/app/server/NativeGeodeToSpringFunctionExampleServerApplication.java#L94-L124[starting a `CacheServer`]
+and https://github.com/jxblum/contacts-application/blob/master/geode-to-spring-function-example/src/main/java/example/app/server/NativeGeodeToSpringFunctionExampleServerApplication.java#L82-L85[enabling]
+the embedded Locator & Manager services.
+
+> NOTE: You may notice that I also set the `member-timeout` GemFire/Geode configuration property.  This was so
+I could run debugger on both the client and server so that server would not timeout and be flagged as a "sick member"
+in the cluster and kicked out of the Distributed System.  `600,000` is defined in milliseconds, so you have exactly
+*10 minutes* from the moment the break point is tripped to let the server respond before GemFire/Geode runs
+suspect member detection.
+
+Now to run the client-side you just need to tweak your IDE run profile configuration a bit by setting...
+
+`-Dspring.profiles.active=native -Dspring.data.gemfire.cluster.config.enabled=false`
+
+The output from the server, both before...
+
+```
+gfsh>connect
+Connecting to Locator at [host=localhost, port=10334] ..
+Connecting to Manager at [host=10.0.0.121, port=1099] ..
+Successfully connected to: [host=10.0.0.121, port=1099]
+
+gfsh>list members
+                       Name                         | Id
+--------------------------------------------------- | ------------------------------------------------------------------------------------------------
+NativeGeodeToSpringFunctionExampleServerApplication | 10.0.0.121(NativeGeodeToSpringFunctionExampleServerApplication:12310)<ec><v0>:1024 [Coordinator]
+
+gfsh>list regions
+List of regions
+---------------
+Chats
+
+gfsh>describe region --name=/Chats
+...............................................................................
+Name            : Chats
+Data Policy     : partition
+Hosting Members : NativeGeodeToSpringFunctionExampleServerApplication
+
+Non-Default Attributes Shared By Hosting Members
+
+ Type  |    Name     | Value
+------ | ----------- | ---------
+Region | size        | 0
+       | data-policy | PARTITION
+
+
+gfsh>list functions
+                      Member                        | Function
+--------------------------------------------------- | ------------------------------------------------------------
+NativeGeodeToSpringFunctionExampleServerApplication | example.app.server.function.SpringDefinedFunctionInitializer
+
+```
+
+And, after running the client app...
+
+```
+gfsh>describe region --name=/Chats
+...............................................................................
+Name            : Chats
+Data Policy     : partition
+Hosting Members : NativeGeodeToSpringFunctionExampleServerApplication
+
+Non-Default Attributes Shared By Hosting Members
+
+ Type  |    Name     | Value
+------ | ----------- | ---------
+Region | size        | 2
+       | data-policy | PARTITION
+
+
+gfsh>
+gfsh>query --query="SELECT c.getPerson().getName(), c.getMessage() FROM /Chats c"
+Result : true
+Limit  : 100
+Rows   : 2
+
+getName |                 getMessage                 | Value
+------- | ------------------------------------------ | -----------------------------------------------------------------------------------------------------------------------------------
+Jon Doe | What is the deal with this example anyway? | Error getting bean properties Unterminated object at character 43 of {"getName":"Jane Doe","getMessage":"I don"t know it"s a dud!"}
+
+```
+
+... is very similar.  Client app output is no different.
+
+
+==== 3. Running our cluster (Locator + Server) using _Gfsh_ (*)
+
+Lastly, I have also configured to run this example when the servers, and the cluster in general, is launched
+using _Gfsh_.  To make this more convenient, I have provided a _Gfsh_
+https://github.com/jxblum/contacts-application/blob/master/geode-to-spring-function-example/bin/start-cluster.gfsh[shell script]
+to configure and launch the cluster.
+
+> NOTE: configuring the server
+https://github.com/jxblum/contacts-application/blob/master/geode-to-spring-function-example/bin/start-cluster.gfsh#L7[classpath]
+would be highly tricky on your own; I used the output in my IDE from the servers in the previous runs
+to configure the classpath as needed.
+
+Ad you can see in the _shell script_, I https://github.com/jxblum/contacts-application/blob/master/geode-to-spring-function-example/bin/start-cluster.gfsh#L3[start] a `Locator`,
+then the https://github.com/jxblum/contacts-application/blob/master/geode-to-spring-function-example/bin/start-cluster.gfsh#L5-L7[server],
+I https://github.com/jxblum/contacts-application/blob/master/geode-to-spring-function-example/bin/start-cluster.gfsh#L9[create] our "/Chats" Region
+[deploy] *this* example JAR file (`geode-to-spring-function-example/target/geode-to-spring-function-example-1.0.0.RELEASE.jar`,
+which clearly bundles and packages the `Functions`
+https://github.com/jxblum/contacts-application/tree/master/geode-to-spring-function-example/src/main/java/example/app/server/function[contained in this example],
+then I https://github.com/jxblum/contacts-application/blob/master/geode-to-spring-function-example/bin/start-cluster.gfsh#L14[execute]
+the `SpringDefinedFunctionInitializer` `Function`, passing the `package` containing the location of the SDG-defined and `@GemfireFunction` annotated
+POJO methods (i.e. https://github.com/jxblum/contacts-application/blob/master/geode-to-spring-function-example/src/main/java/example/app/server/function/SpellCheckerWithAutoCorrectFunction.java#L62-L63[`SpellCheckerWithAutoCorrectFunction.spellCheckWithAutoCorrect(..)`])
+serving as proper GemFire/Geode Functions to "register" as the "arguments", and finally, I
+https://github.com/jxblum/contacts-application/blob/master/geode-to-spring-function-example/bin/start-cluster.gfsh#L16-L18[list]
+the configuration of my new cluster.
+
+Indeed, upon running this shell script, I see what I expect to happen...
+
+```
+gfsh>run --file=/Users/jblum/pivdev/spring-data-examples-workspace/contacts-application-workspace/geode-to-spring-function-example/bin/start-cluster.gfsh
+1. Executing - start locator --name=LocatorOne --log-level=config --J=-Dgemfire.member-timeout=600000
+
+Starting a Geode Locator in /Users/jblum/pivdev/lab/LocatorOne...
+.....
+Locator in /Users/jblum/pivdev/lab/LocatorOne on 10.0.0.121[10334] as LocatorOne is currently online.
+Process ID: 12381
+Uptime: 5 seconds
+Geode Version: 1.6.0
+Java Version: 1.8.0_152
+Log File: /Users/jblum/pivdev/lab/LocatorOne/LocatorOne.log
+JVM Arguments: -Dgemfire.enable-cluster-configuration=true -Dgemfire.load-cluster-configuration-from-dir=false -Dgemfire.log-level=config -Dgemfire.member-timeout=600000 -Dgemfire.launcher.registerSignalHandlers=true -Djava.awt.headless=true -Dsun.rmi.dgc.server.gcInterval=9223372036854775806
+Class-Path: /Users/jblum/pivdev/apache-geode-1.6.0/lib/geode-core-1.6.0.jar:/Users/jblum/pivdev/apache-geode-1.6.0/lib/geode-dependencies.jar
+
+Successfully connected to: JMX Manager [host=10.0.0.121, port=1099]
+
+Cluster configuration service is up and running.
+
+2. Executing - start server --name=ServerOne --log-level=config --J=-Dgemfire.member-timeout=600000    --J=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005    --classpath="${SYS_USER_HOME}/.m2/repository/javax/annotation/javax.annotation-api/1.3.2/javax.annotation-api-1.3.2.jar:${SYS_USER_HOME}/.m2/repository/org/codeprimate/cp-elements/1.0.0.M4/cp-elements-1.0.0.M4.jar:${SYS_USER_HOME}/.m2/repository/org/springframework/spring-core/5.0.7.RELEASE/spring-core-5.0.7.RELEASE.jar:${SYS_USER_HOME}/.m2/repository/org/springframework/spring-aop/5.0.7.RELEASE/spring-aop-5.0.7.RELEASE.jar:${SYS_USER_HOME}/.m2/repository/org/springframework/spring-beans/5.0.7.RELEASE/spring-beans-5.0.7.RELEASE.jar:${SYS_USER_HOME}/.m2/repository/org/springframework/spring-context/5.0.7.RELEASE/spring-context-5.0.7.RELEASE.jar:${SYS_USER_HOME}/.m2/repository/org/springframework/spring-context-support/5.0.7.RELEASE/spring-context-support-5.0.7.RELEASE.jar:${SYS_USER_HOME}/.m2/repository/org/springframework/spring-expression/5.0.7.RELEASE/spring-expression-5.0.7.RELEASE.jar:${SYS_USER_HOME}/.m2/repository/org/springframework/spring-tx/5.0.7.RELEASE/spring-tx-5.0.7.RELEASE.jar:${SYS_USER_HOME}/.m2/repository/org/springframework/spring-web/5.0.7.RELEASE/spring-web-5.0.7.RELEASE.jar:${SYS_USER_HOME}/.m2/repository/org/springframework/data/spring-data-commons/2.1.0.BUILD-SNAPSHOT/spring-data-commons-2.1.0.BUILD-SNAPSHOT.jar:${SYS_USER_HOME}/.m2/repository/org/springframework/data/spring-data-geode/2.1.0.DATAGEODE-120-SNAPSHOT/spring-data-geode-2.1.0.DATAGEODE-120-SNAPSHOT.jar:${SYS_USER_HOME}/.m2/repository/example/apps/contacts-core/1.0.0.RELEASE/contacts-core-1.0.0.RELEASE.jar:${SYS_USER_HOME}/.m2/repository/com/google/guava/guava/17.0/guava-17.0.jar:${SYS_USER_HOME}/.m2/repository/org/languagetool/language-en/4.1/language-en-4.1.jar:${SYS_USER_HOME}/.m2/repository/org/languagetool/languagetool-core/4.1/languagetool-core-4.1.jar:${SYS_USER_HOME}/.m2/repository/org/apache/commons/commons-lang3/3.7/commons-lang3-3.7.jar:${SYS_USER_HOME}/.m2/repository/net/java/dev/jna/jna/4.5.1/jna-4.5.1.jar:${SYS_USER_HOME}/.m2/repository/org/carrot2/morfologik-fsa/2.1.5/morfologik-fsa-2.1.5.jar:${SYS_USER_HOME}/.m2/repository/org/carrot2/morfologik-fsa-builders/2.1.5/morfologik-fsa-builders-2.1.5.jar:${SYS_USER_HOME}/.m2/repository/org/carrot2/morfologik-speller/2.1.5/morfologik-speller-2.1.5.jar:${SYS_USER_HOME}/.m2/repository/org/carrot2/morfologik-stemming/2.1.5/morfologik-stemming-2.1.5.jar:${SYS_USER_HOME}/.m2/repository/com/carrotsearch/hppc/0.7.2/hppc-0.7.2.jar:${SYS_USER_HOME}/.m2/repository/net/loomchild/segment/2.0.0/segment-2.0.0.jar:${SYS_USER_HOME}/.m2/repository/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar:${SYS_USER_HOME}/.m2/repository/com/optimaize/languagedetector/language-detector/0.6/language-detector-0.6.jar:${SYS_USER_HOME}/.m2/repository/net/arnx/jsonic/1.2.11/jsonic-1.2.11.jar:${SYS_USER_HOME}/.m2/repository/com/intellij/annotations/12.0/annotations-12.0.jar:${SYS_USER_HOME}/.m2/repository/org/apache/lucene/lucene-core/6.6.2/lucene-core-6.6.2.jar:${SYS_USER_HOME}/.m2/repository/org/apache/lucene/lucene-backward-codecs/5.5.4/lucene-backward-codecs-5.5.4.jar:${SYS_USER_HOME}/.m2/repository/edu/berkeley/nlp/berkeleylm/1.1.2/berkeleylm-1.1.2.jar:${SYS_USER_HOME}/.m2/repository/javax/xml/bind/jaxb-api/2.3.0/jaxb-api-2.3.0.jar:${SYS_USER_HOME}/.m2/repository/ch/qos/logback/logback-classic/1.2.3/logback-classic-1.2.3.jar:${SYS_USER_HOME}/.m2/repository/ch/qos/logback/logback-core/1.2.3/logback-core-1.2.3.jar:${SYS_USER_HOME}/.m2/repository/org/apache/opennlp/opennlp-tools/1.7.2/opennlp-tools-1.7.2.jar:${SYS_USER_HOME}/.m2/repository/edu/washington/cs/knowitall/opennlp-tokenize-models/1.5/opennlp-tokenize-models-1.5.jar:${SYS_USER_HOME}/.m2/repository/edu/washington/cs/knowitall/opennlp-postag-models/1.5/opennlp-postag-models-1.5.jar:${SYS_USER_HOME}/.m2/repository/edu/washington/cs/knowitall/opennlp-chunk-models/1.5/opennlp-chunk-models-1.5.jar"
+
+Post substitution: start server --name=ServerOne --log-level=config --J=-Dgemfire.member-timeout=600000    --J=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005    --classpath="/Users/jblum/.m2/repository/javax/annotation/javax.annotation-api/1.3.2/javax.annotation-api-1.3.2.jar:/Users/jblum/.m2/repository/org/codeprimate/cp-elements/1.0.0.M4/cp-elements-1.0.0.M4.jar:/Users/jblum/.m2/repository/org/springframework/spring-core/5.0.7.RELEASE/spring-core-5.0.7.RELEASE.jar:/Users/jblum/.m2/repository/org/springframework/spring-aop/5.0.7.RELEASE/spring-aop-5.0.7.RELEASE.jar:/Users/jblum/.m2/repository/org/springframework/spring-beans/5.0.7.RELEASE/spring-beans-5.0.7.RELEASE.jar:/Users/jblum/.m2/repository/org/springframework/spring-context/5.0.7.RELEASE/spring-context-5.0.7.RELEASE.jar:/Users/jblum/.m2/repository/org/springframework/spring-context-support/5.0.7.RELEASE/spring-context-support-5.0.7.RELEASE.jar:/Users/jblum/.m2/repository/org/springframework/spring-expression/5.0.7.RELEASE/spring-expression-5.0.7.RELEASE.jar:/Users/jblum/.m2/repository/org/springframework/spring-tx/5.0.7.RELEASE/spring-tx-5.0.7.RELEASE.jar:/Users/jblum/.m2/repository/org/springframework/spring-web/5.0.7.RELEASE/spring-web-5.0.7.RELEASE.jar:/Users/jblum/.m2/repository/org/springframework/data/spring-data-commons/2.1.0.BUILD-SNAPSHOT/spring-data-commons-2.1.0.BUILD-SNAPSHOT.jar:/Users/jblum/.m2/repository/org/springframework/data/spring-data-geode/2.1.0.DATAGEODE-120-SNAPSHOT/spring-data-geode-2.1.0.DATAGEODE-120-SNAPSHOT.jar:/Users/jblum/.m2/repository/example/apps/contacts-core/1.0.0.RELEASE/contacts-core-1.0.0.RELEASE.jar:/Users/jblum/.m2/repository/com/google/guava/guava/17.0/guava-17.0.jar:/Users/jblum/.m2/repository/org/languagetool/language-en/4.1/language-en-4.1.jar:/Users/jblum/.m2/repository/org/languagetool/languagetool-core/4.1/languagetool-core-4.1.jar:/Users/jblum/.m2/repository/org/apache/commons/commons-lang3/3.7/commons-lang3-3.7.jar:/Users/jblum/.m2/repository/net/java/dev/jna/jna/4.5.1/jna-4.5.1.jar:/Users/jblum/.m2/repository/org/carrot2/morfologik-fsa/2.1.5/morfologik-fsa-2.1.5.jar:/Users/jblum/.m2/repository/org/carrot2/morfologik-fsa-builders/2.1.5/morfologik-fsa-builders-2.1.5.jar:/Users/jblum/.m2/repository/org/carrot2/morfologik-speller/2.1.5/morfologik-speller-2.1.5.jar:/Users/jblum/.m2/repository/org/carrot2/morfologik-stemming/2.1.5/morfologik-stemming-2.1.5.jar:/Users/jblum/.m2/repository/com/carrotsearch/hppc/0.7.2/hppc-0.7.2.jar:/Users/jblum/.m2/repository/net/loomchild/segment/2.0.0/segment-2.0.0.jar:/Users/jblum/.m2/repository/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar:/Users/jblum/.m2/repository/com/optimaize/languagedetector/language-detector/0.6/language-detector-0.6.jar:/Users/jblum/.m2/repository/net/arnx/jsonic/1.2.11/jsonic-1.2.11.jar:/Users/jblum/.m2/repository/com/intellij/annotations/12.0/annotations-12.0.jar:/Users/jblum/.m2/repository/org/apache/lucene/lucene-core/6.6.2/lucene-core-6.6.2.jar:/Users/jblum/.m2/repository/org/apache/lucene/lucene-backward-codecs/5.5.4/lucene-backward-codecs-5.5.4.jar:/Users/jblum/.m2/repository/edu/berkeley/nlp/berkeleylm/1.1.2/berkeleylm-1.1.2.jar:/Users/jblum/.m2/repository/javax/xml/bind/jaxb-api/2.3.0/jaxb-api-2.3.0.jar:/Users/jblum/.m2/repository/ch/qos/logback/logback-classic/1.2.3/logback-classic-1.2.3.jar:/Users/jblum/.m2/repository/ch/qos/logback/logback-core/1.2.3/logback-core-1.2.3.jar:/Users/jblum/.m2/repository/org/apache/opennlp/opennlp-tools/1.7.2/opennlp-tools-1.7.2.jar:/Users/jblum/.m2/repository/edu/washington/cs/knowitall/opennlp-tokenize-models/1.5/opennlp-tokenize-models-1.5.jar:/Users/jblum/.m2/repository/edu/washington/cs/knowitall/opennlp-postag-models/1.5/opennlp-postag-models-1.5.jar:/Users/jblum/.m2/repository/edu/washington/cs/knowitall/opennlp-chunk-models/1.5/opennlp-chunk-models-1.5.jar"
+Starting a Geode Server in /Users/jblum/pivdev/lab/ServerOne...
+.....
+Server in /Users/jblum/pivdev/lab/ServerOne on 10.0.0.121[40404] as ServerOne is currently online.
+Process ID: 12382
+Uptime: 5 seconds
+Geode Version: 1.6.0
+Java Version: 1.8.0_152
+Log File: /Users/jblum/pivdev/lab/ServerOne/ServerOne.log
+JVM Arguments: -Dgemfire.default.locators=10.0.0.121[10334] -Dgemfire.start-dev-rest-api=false -Dgemfire.use-cluster-configuration=true -Dgemfire.log-level=config -Dgemfire.member-timeout=600000 -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005 -XX:OnOutOfMemoryError=kill -KILL %p -Dgemfire.launcher.registerSignalHandlers=true -Djava.awt.headless=true -Dsun.rmi.dgc.server.gcInterval=9223372036854775806
+Class-Path: /Users/jblum/pivdev/apache-geode-1.6.0/lib/geode-core-1.6.0.jar:/Users/jblum/.m2/repository/javax/annotation/javax.annotation-api/1.3.2/javax.annotation-api-1.3.2.jar:/Users/jblum/.m2/repository/org/codeprimate/cp-elements/1.0.0.M4/cp-elements-1.0.0.M4.jar:/Users/jblum/.m2/repository/org/springframework/spring-core/5.0.7.RELEASE/spring-core-5.0.7.RELEASE.jar:/Users/jblum/.m2/repository/org/springframework/spring-aop/5.0.7.RELEASE/spring-aop-5.0.7.RELEASE.jar:/Users/jblum/.m2/repository/org/springframework/spring-beans/5.0.7.RELEASE/spring-beans-5.0.7.RELEASE.jar:/Users/jblum/.m2/repository/org/springframework/spring-context/5.0.7.RELEASE/spring-context-5.0.7.RELEASE.jar:/Users/jblum/.m2/repository/org/springframework/spring-context-support/5.0.7.RELEASE/spring-context-support-5.0.7.RELEASE.jar:/Users/jblum/.m2/repository/org/springframework/spring-expression/5.0.7.RELEASE/spring-expression-5.0.7.RELEASE.jar:/Users/jblum/.m2/repository/org/springframework/spring-tx/5.0.7.RELEASE/spring-tx-5.0.7.RELEASE.jar:/Users/jblum/.m2/repository/org/springframework/spring-web/5.0.7.RELEASE/spring-web-5.0.7.RELEASE.jar:/Users/jblum/.m2/repository/org/springframework/data/spring-data-commons/2.1.0.BUILD-SNAPSHOT/spring-data-commons-2.1.0.BUILD-SNAPSHOT.jar:/Users/jblum/.m2/repository/org/springframework/data/spring-data-geode/2.1.0.DATAGEODE-120-SNAPSHOT/spring-data-geode-2.1.0.DATAGEODE-120-SNAPSHOT.jar:/Users/jblum/.m2/repository/example/apps/contacts-core/1.0.0.RELEASE/contacts-core-1.0.0.RELEASE.jar:/Users/jblum/.m2/repository/com/google/guava/guava/17.0/guava-17.0.jar:/Users/jblum/.m2/repository/org/languagetool/language-en/4.1/language-en-4.1.jar:/Users/jblum/.m2/repository/org/languagetool/languagetool-core/4.1/languagetool-core-4.1.jar:/Users/jblum/.m2/repository/org/apache/commons/commons-lang3/3.7/commons-lang3-3.7.jar:/Users/jblum/.m2/repository/net/java/dev/jna/jna/4.5.1/jna-4.5.1.jar:/Users/jblum/.m2/repository/org/carrot2/morfologik-fsa/2.1.5/morfologik-fsa-2.1.5.jar:/Users/jblum/.m2/repository/org/carrot2/morfologik-fsa-builders/2.1.5/morfologik-fsa-builders-2.1.5.jar:/Users/jblum/.m2/repository/org/carrot2/morfologik-speller/2.1.5/morfologik-speller-2.1.5.jar:/Users/jblum/.m2/repository/org/carrot2/morfologik-stemming/2.1.5/morfologik-stemming-2.1.5.jar:/Users/jblum/.m2/repository/com/carrotsearch/hppc/0.7.2/hppc-0.7.2.jar:/Users/jblum/.m2/repository/net/loomchild/segment/2.0.0/segment-2.0.0.jar:/Users/jblum/.m2/repository/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar:/Users/jblum/.m2/repository/com/optimaize/languagedetector/language-detector/0.6/language-detector-0.6.jar:/Users/jblum/.m2/repository/net/arnx/jsonic/1.2.11/jsonic-1.2.11.jar:/Users/jblum/.m2/repository/com/intellij/annotations/12.0/annotations-12.0.jar:/Users/jblum/.m2/repository/org/apache/lucene/lucene-core/6.6.2/lucene-core-6.6.2.jar:/Users/jblum/.m2/repository/org/apache/lucene/lucene-backward-codecs/5.5.4/lucene-backward-codecs-5.5.4.jar:/Users/jblum/.m2/repository/edu/berkeley/nlp/berkeleylm/1.1.2/berkeleylm-1.1.2.jar:/Users/jblum/.m2/repository/javax/xml/bind/jaxb-api/2.3.0/jaxb-api-2.3.0.jar:/Users/jblum/.m2/repository/ch/qos/logback/logback-classic/1.2.3/logback-classic-1.2.3.jar:/Users/jblum/.m2/repository/ch/qos/logback/logback-core/1.2.3/logback-core-1.2.3.jar:/Users/jblum/.m2/repository/org/apache/opennlp/opennlp-tools/1.7.2/opennlp-tools-1.7.2.jar:/Users/jblum/.m2/repository/edu/washington/cs/knowitall/opennlp-tokenize-models/1.5/opennlp-tokenize-models-1.5.jar:/Users/jblum/.m2/repository/edu/washington/cs/knowitall/opennlp-postag-models/1.5/opennlp-postag-models-1.5.jar:/Users/jblum/.m2/repository/edu/washington/cs/knowitall/opennlp-chunk-models/1.5/opennlp-chunk-models-1.5.jar:/Users/jblum/pivdev/apache-geode-1.6.0/lib/geode-dependencies.jar
+
+3. Executing - create region --name=Chats --type=PARTITION
+
+ Member   | Status
+--------- | --------------------------------------
+ServerOne | Region "/Chats" created on "ServerOne"
+
+4. Executing - deploy --jar=${SYS_USER_HOME}/pivdev/spring-data-examples-workspace/contacts-application-workspace/geode-to-spring-function-example/target/geode-to-spring-function-example-1.0.0.RELEASE.jar
+
+Post substitution: deploy --jar=/Users/jblum/pivdev/spring-data-examples-workspace/contacts-application-workspace/geode-to-spring-function-example/target/geode-to-spring-function-example-1.0.0.RELEASE.jar
+
+Deploying files: geode-to-spring-function-example-1.0.0.RELEASE.jar
+Total file size is: 0.02MB
+
+Continue?  (Y/n): Y
+ Member   |                    Deployed JAR                    | Deployed JAR Location
+--------- | -------------------------------------------------- | ---------------------------------------------------------------------------------------
+ServerOne | geode-to-spring-function-example-1.0.0.RELEASE.jar | /Users/jblum/pivdev/lab/ServerOne/geode-to-spring-function-example-1.0.0.RELEASE.v1.jar
+
+5. Executing - execute function --id=example.app.server.function.SpringDefinedFunctionInitializer --member=ServerOne --arguments=example.app.server.function
+
+Execution summary
+
+           Member ID/Name            | Function Execution Result
+------------------------------------ | -------------------------
+10.0.0.121(ServerOne:12382)<v1>:1025 | [SUCCESS]
+
+6. Executing - list members
+
+   Name    | Id
+---------- | ---------------------------------------------------------------
+LocatorOne | 10.0.0.121(LocatorOne:12381:locator)<ec><v0>:1024 [Coordinator]
+ServerOne  | 10.0.0.121(ServerOne:12382)<v1>:1025
+
+7. Executing - list regions
+
+List of regions
+---------------
+Chats
+
+8. Executing - list functions
+
+ Member   | Function
+--------- | ------------------------------------------------------------
+ServerOne | example.app.server.function.SpringDefinedFunctionInitializer
+ServerOne | spellCheckWithAutoCorrect
+```
+
+You can even see that our "_spellCheckWithAutoCorrect_" (SDG-defined) `Function` was registered as expected.  Yay!!
+
+And again, there is no difference in client app output.
+
+We still need to run with the same client run profile configuration as described above...
+
+`-Dspring.profiles.active=native -Dspring.data.gemfire.cluster.config.enabled=false`
+
+==== What about SpringDefinedFunctionInitializer, now?
+
+Initially, I tried to declare and configure SDG's own (and provided) `o.s.d.g.function.support.SpringDefinedFunctionAwareRegistrar` class
+in GemFire/Geode `cache.xml`, for https://github.com/jxblum/contacts-application/blob/master/geode-to-spring-function-example/src/main/resources/function-cache.xml#L8-L12[example].
+
+I would then deploy the `geode-to-spring-function-example/target/geode-to-spring-function-example-1.0.0.RELEASE.jar` file
+to the server started with _Gfsh_ using the `deploy --jar=...` command.  I hoped that I could register the application-specific
+`Function` contained in the JAR file, i.e. `SpellCheckerWithAutoCorrectFunction`, when I deployed the JAR by invoking
+the `Function` with the desired package argument.
+
+Next, I would execute the SDG `SpringDefinedFunctionAwareRegistrar` `Function` using _Gfsh_ with the following command...
+
+`execute function --id=org.springframework.data.gemfire.function.support.SpringDefinedFunctionAwareRegistrar --member=ServerOne --arguments=example.app.server.function`
+
+As you can see, I would pass the `package` contained the SDG-defined `Functions`.
+
+However, due to the vagaries of class loading and Java's `java.lang.ClassLoader` delegation model, it could not find
+the SDG-defined `Functions`.  Technically, it wouldn't even find another GemFire/Geode-defined `Function` class either,
+but anyway.
+
+So, then I decided that I could actually include a custom, application-specific `Function` extension of
+SDG's `SpringDefinedFunctionAwareRegistrar`, hence the `SpringDefinedFunctionInitializer` class.
+
+When this class extension is placed in the same package as the SDG-defined `Functions`, then I uses its own `package`
+as a basis for the "classpath component scan".
+
+However, it is possible to override many configuration-based properties exposed by SDG's `SpringDefinedFunctionAwareRegistrar` class
+in your application-specific extension (e.g. `SpringDefinedFunctionInitializer`) by overriding the appropriate method.
+
+For instance, I could have put the application-specific `SpringDefinedFunctionInitializer` in `example.app`,
+and then specified the "basePackages" by overriding the `protected` `getBasePackages()` method...
+
+```
+package example.app;
+
+import ...;
+
+class SpringDefinedFunctionInitializer extends SpringDefinedFunctionAwareRegistrar {
+
+  protected String[] getBasePackages() {
+
+    return new String[] {
+        SpellCheckerWithAutoCorrectFunction.class.getPackage().getName(),
+        "example.app.another.package.with.sdg.defined.functions",
+        ...
+    };
+  }
+}
+```
+
+You also have the ability to specify `exclude` and `include` `TypeFilter`s, set the `ClassLoader` used to find
+and resolve classes, etc.  I tried to make every (sensible) aspect of SDG's `SpringDefinedFunctionAwareRegistrar`
+configurable as possible, using extension.
+
+Ideally, I would also have liked to allow for "automatic registration" of SDG-defined `Functions` to occur
+at deployment-time, when using the _Gfsh_ `deploy` command.  As such, the SDG `SpringDefinedFunctionAwareRegistrar`
+indirectly implements the http://gemfire-95-javadocs.docs.pivotal.io/org/apache/geode/cache/Declarable.html[`o.a.g.cache.Declarable`] interface,
+which allow the GemFire objects (components) to receive a callback on initialization (i.e. by implementing
+the `Declarable` interface's `initialize(:Cache, :Properties)`), which the SDG `SpringDefinedFunctionAwareRegistrar`
+class does to bootstrap the registration process.
+
+Unfortunately, this https://gemfire.docs.pivotal.io/93/geode/configuring/cluster_config/deploying_application_jars.html[feature]
+(see last paragrah in the page) no longer works in Apache Geode.
+
+If that had worked, then the SDG-defined `Functions` bundled and packaged in the JAR file would have been automatically
+registered at deployment-time using the _Gfsh_ `deploy` command without any extra effort on the users part, such as
+by having to subsequently execute the `Function` using Gfsh's `execute function` command.
+
+Anyway, https://github.com/jxblum/contacts-application/blob/master/geode-to-spring-function-example/bin/start-cluster.gfsh#L11-L14[2 steps]
+instead of 1; Oh well, easy enough to script, obviously, ;-).
+
+==== Limitations
+
+While you get the expressive power of SDG to define your GemFire/Geode `Functions` using SDG's `@GemfireFunction`
+annotation on POJO-based methods, it is **not** possible to take advantage of all the Spring gems,
+like _Dependency Injection_ (DI), or AOP, and so on, simply because there is **no** Spring container to provide
+these services and functionality for your `Function`.
+
+But that is the trade-off.  If you want DI, or other services provided by the Spring container, then you must
+configure and bootstrap your GemFire/Geode servers with Spring, no exception.  You need the Spring container
+to work its magic in this case.
+
+If you want the ability to "update" your `Functions` (even if SDG-defined) then you must forgo the use of
+the Spring container, since GemFire/Geode does not recognize SDG-defined `Functions` when using
+the _Gfsh_ `deploy` command.
+
+It's that simple!
+
+== Feedback and Contributions Welcomed!
+
+If you find a issue with the example or in this doc (e.g. typo), please either use _GitHub_
+https://github.com/jxblum/contacts-application/issues[Issues] to file a bug or you are more than welcomed
+to contribute a https://github.com/jxblum/contacts-application/pulls[PR].
+
+Thank you for your time and consideration.  I hope this example was valuable.
