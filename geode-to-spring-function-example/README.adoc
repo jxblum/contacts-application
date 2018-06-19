@@ -31,7 +31,7 @@ https://docs.spring.io/spring-data/geode/docs/current/reference/html/#_implement
 For example, perhaps my application requires a very simple `Function` implementation, which greets a user
 when s/he logs into my application...
 
-.Greetings Function Implementation
+._Greetings Function Implementation_
 [source, java]
 ----
 package ...;
@@ -56,7 +56,7 @@ or a cache client application.
 If we now want to invoke our "_greetings_" `Function` from, say, a Spring-based cache client application, then it is
 as simple as defining an interface specifying the contract of the `Function` to execute...
 
-.Greetings Function Execution
+._Greetings Function Execution_
 [source, java]
 ----
 package ...;
@@ -94,7 +94,7 @@ the `Function` registered on the server using the `id` attribute of the `@Gemfir
 To enable the GemFire/Geode `Function` *implementations* to be registered on the server, you simply need to use the
 `@EnableGemfireFunctions` annotation, like so...
 
-.Server Function Registration
+._Server Function Registration_
 [source, java]
 ----
 @SpringBootApplication
@@ -116,7 +116,7 @@ which would get picked up in the classpath component scan, so an explicit bean d
 To enable `Function` *executions* on the client, you simply need to use the `@EnableGemfireFunctionExecutions` annotation
 and specify the `basePackages` of where your `Function` *execution* interfaces have been defined (i.e. packaged)...
 
-.Client Function Execution Registration
+._Client Function Execution Registration_
 [source, java]
 ----
 @SpringBootApplication
@@ -177,7 +177,7 @@ in terms of Apache Geode/Pivotal GemFire's http://geode.apache.org/docs/guide/16
 
 For example...
 
-.Greetings Function implementing GemFire/Geode's `Function` interface
+._Greetings Function implementing GemFire/Geode's `Function` interface_
 [source, java]
 ----
 package ...;
@@ -223,7 +223,7 @@ GemFire/Geode-defined `Function`.
 Therefore you can still use the SDG `Function` *execution* interface defined above to execute the GemFire/Geode-defined
 "_greetings_" `Function` as before...
 
-.Greetings Function Execution
+._Greetings Function Execution_
 [source, java]
 ----
 package ...;
@@ -296,7 +296,7 @@ remains the same throughout this entire example.
 Only the server configuration/bootstrapping process varies.
 
 
-====== 1. Running the pure Spring approach. (*****)
+====== 1. Running a pure Spring Approach
 
 In this approach, you can simply launch a GemFire/Geode server using Spring (Boot), from within your IDE.
 
@@ -432,7 +432,7 @@ Jon Doe | What is the deal with this example anyway? | Error getting bean proper
 (probably with the apostrophe in `it's`). :-P
 
 
-==== 2. Running the "Native" Approach. (***)
+==== 2. Running the "Native" Approach
 
 Additionally, in this example, I have provided another class to configure and bootstrap the GemFire/Geode server using
 GemFire/Geode's http://geode.apache.org/releases/latest/javadoc/index.html[Java API] directly.
@@ -524,7 +524,6 @@ Region | size        | 2
        | data-policy | PARTITION
 
 
-gfsh>
 gfsh>query --query="SELECT c.getPerson().getName(), c.getMessage() FROM /Chats c"
 Result : true
 Limit  : 100
@@ -539,7 +538,7 @@ Jon Doe | What is the deal with this example anyway? | Error getting bean proper
 ... is very similar.  Client app output is no different.
 
 
-==== 3. Running our cluster (Locator + Server) using _Gfsh_ (*)
+==== 3. Running a Cluster (Locator + Server) using _Gfsh_
 
 Lastly, I have also configured to run this example when the servers, and the cluster in general, is launched
 using _Gfsh_.  To make this more convenient, I have provided a _Gfsh_
@@ -686,7 +685,9 @@ in your application-specific extension (e.g. `SpringDefinedFunctionInitializer`)
 For instance, I could have put the application-specific `SpringDefinedFunctionInitializer` in `example.app`,
 and then specified the "basePackages" by overriding the `protected` `getBasePackages()` method...
 
-```
+._Application-specific SpringDefinedFunctionAwareRegistrar Extension_
+[source, java]
+----
 package example.app;
 
 import ...;
@@ -702,7 +703,7 @@ class SpringDefinedFunctionInitializer extends SpringDefinedFunctionAwareRegistr
     };
   }
 }
-```
+----
 
 You also have the ability to specify `exclude` and `include` `TypeFilter`s, set the `ClassLoader` used to find
 and resolve classes, etc.  I tried to make every (sensible) aspect of SDG's `SpringDefinedFunctionAwareRegistrar`
