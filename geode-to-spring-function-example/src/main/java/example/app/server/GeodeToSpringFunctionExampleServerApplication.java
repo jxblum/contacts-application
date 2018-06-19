@@ -27,13 +27,13 @@ import org.springframework.data.gemfire.function.config.EnableGemfireFunctions;
 import example.app.server.function.SpellCheckerWithAutoCorrectFunction;
 
 /**
- * The GeodeToSpringFunctionExampleServerApplication class...
+ * The {@link GeodeToSpringFunctionExampleServerApplication} class...
  *
  * @author John Blum
  * @since 1.0.0
  */
 @SpringBootApplication
-@CacheServerApplication(name = "GeodeToSpringFunctionExample")
+@CacheServerApplication(name = "GeodeToSpringFunctionExampleServerApplication")
 @EnableGemfireFunctions
 @EnableLocator
 @EnableManager(start = true)
