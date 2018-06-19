@@ -22,6 +22,7 @@ import org.apache.geode.cache.GemFireCache;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -44,6 +45,7 @@ import example.app.geode.function.util.FunctionUtils;
 import example.app.model.Person;
 import example.app.server.function.SpellCheckerWithAutoCorrectFunction;
 import example.app.server.function.SpellCheckerWithAutoCorrectFunction.FunctionResult;
+import example.app.server.function.SpringDefinedFunctionInitializer;
 
 /**
  * The {@link GeodeToSpringFunctionExampleApplication} class...
@@ -103,7 +105,7 @@ public class GeodeToSpringFunctionExampleApplication {
       assertThat(correctedJaneDoeChat.getMessage()).isEqualTo("I don't know it's a dud!");
 
       System.err.println(correctedJaneDoeChat.render(ChatRenderer.INSTANCE));
-      System.err.println("DONE!");
+      System.err.println("SUCCESS!");
     };
   }
 
@@ -112,8 +114,7 @@ public class GeodeToSpringFunctionExampleApplication {
   @SuppressWarnings("all")
   ApplicationListener<ContextRefreshedEvent> registerSpellCheckWithAutoCorrectFunction() {
 
-    SpringDefinedFunctionAwareRegistrar springDefinedFunctionAwareRegistrar =
-      new SpringDefinedFunctionAwareRegistrar();
+    SpringDefinedFunctionInitializer function = new SpringDefinedFunctionInitializer();
 
     String[] functionArguments = {
       SpellCheckerWithAutoCorrectFunction.class.getPackage().getName(),
@@ -124,11 +125,10 @@ public class GeodeToSpringFunctionExampleApplication {
       GemFireCache gemfireCache = contextRefreshedEvent.getApplicationContext()
         .getBean(GemfireConstants.DEFAULT_GEMFIRE_CACHE_NAME, GemFireCache.class);
 
-      GemfireOnServerFunctionTemplate functionTemplate =
-        new GemfireOnServerFunctionTemplate(gemfireCache);
+      GemfireOnServerFunctionTemplate functionTemplate = new GemfireOnServerFunctionTemplate(gemfireCache);
 
-      SpringDefinedFunctionAwareRegistrar.ResultStatus resultStatus = functionTemplate
-        .executeAndExtract(springDefinedFunctionAwareRegistrar, functionArguments);
+      SpringDefinedFunctionAwareRegistrar.ResultStatus resultStatus =
+        functionTemplate.executeAndExtract(function, functionArguments);
 
       assertThat(resultStatus).isEqualTo(SpringDefinedFunctionAwareRegistrar.ResultStatus.SUCCESS);
     };
@@ -136,7 +136,8 @@ public class GeodeToSpringFunctionExampleApplication {
 
   @Configuration
   @EnableClusterConfiguration
-  @Profile("!native")
+  @Profile({ "!native" })
+  @ConditionalOnProperty(prefix = "spring.data.gemfire.cluster.config", name="enabled", havingValue = "true")
   static class ClusterConfiguration { }
 
 }
