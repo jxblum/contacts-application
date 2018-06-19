@@ -31,10 +31,10 @@ import org.apache.geode.cache.execute.FunctionService;
 import org.apache.geode.cache.server.CacheServer;
 import org.cp.elements.lang.StringUtils;
 import org.springframework.data.gemfire.GemfireUtils;
-import org.springframework.data.gemfire.function.support.SpringDefinedFunctionAwareRegistrar;
 
 import example.app.chat.model.Chat;
 import example.app.server.function.SpellCheckerWithAutoCorrectFunction;
+import example.app.server.function.SpringDefinedFunctionInitializer;
 
 /**
  * The {@link NativeGeodeToSpringFunctionExampleServerApplication} class...
@@ -47,8 +47,8 @@ public class NativeGeodeToSpringFunctionExampleServerApplication {
 
   private static final int GEMFIRE_CACHE_SERVER_PORT = CacheServer.DEFAULT_PORT;
 
-  private static final SpringDefinedFunctionAwareRegistrar springDefinedFunctionAwareRegistrar =
-    new SpringDefinedFunctionAwareRegistrar();
+  private static final SpringDefinedFunctionInitializer springDefinedFunctionInitializer =
+    new SpringDefinedFunctionInitializer();
 
   private static final String CHATS_REGION_NAME = "Chats";
   private static final String GEMFIRE_CACHE_SERVER_HOSTNAME_FOR_CLIENTS = "localhost";
@@ -66,8 +66,8 @@ public class NativeGeodeToSpringFunctionExampleServerApplication {
 
     Region<String, Chat> chatsRegion = chatsRegion(gemfireCache);
 
-    registerSpringDefinedFunctionAwareRegistrar(gemfireCache);
-    //executeSpringDefinedFunctionAwareRegistrar(gemfireCache);
+    registerSpringDefinedFunctionInitializer(gemfireCache);
+    //executeSpringDefinedFunctionInitializer(gemfireCache);
   }
 
   private static Properties gemfireProperties() {
@@ -135,15 +135,15 @@ public class NativeGeodeToSpringFunctionExampleServerApplication {
   }
 
   @SuppressWarnings("unchecked")
-  private static void executeSpringDefinedFunctionAwareRegistrar(Cache gemfireCache) {
+  private static void executeSpringDefinedFunctionInitializer(Cache gemfireCache) {
 
     FunctionService.onMember(gemfireCache.getDistributedSystem().getDistributedMember())
       .setArguments(functionArguments)
-      .execute(springDefinedFunctionAwareRegistrar);
+      .execute(springDefinedFunctionInitializer);
   }
 
-  private static void registerSpringDefinedFunctionAwareRegistrar(Cache gemfireCache) {
-    FunctionService.registerFunction(springDefinedFunctionAwareRegistrar);
+  private static void registerSpringDefinedFunctionInitializer(Cache gemfireCache) {
+    FunctionService.registerFunction(springDefinedFunctionInitializer);
   }
 
   private static Cache registerShutdownHook(Cache gemfireCache) {
