@@ -660,30 +660,33 @@ in GemFire/Geode `cache.xml`, for https://github.com/jxblum/contacts-application
 
 I would then deploy the `geode-to-spring-function-example/target/geode-to-spring-function-example-1.0.0.RELEASE.jar` file
 to the server started with _Gfsh_ using the `deploy --jar=...` command.  I hoped that I could register the application-specific
-`Function` contained in the JAR file, i.e. `SpellCheckerWithAutoCorrectFunction`, when I deployed the JAR by invoking
-the `Function` with the desired package argument.
+`Function` contained in the JAR file, i.e. `SpellCheckerWithAutoCorrectFunction`, after I deployed the JAR simply by
+invoking the `SpringDefinedFunctionAwareRegistrar` `Function` with the desired package argument.
 
-Next, I would execute the SDG `SpringDefinedFunctionAwareRegistrar` `Function` using _Gfsh_ with the following command...
+Next, I execute the SDG `SpringDefinedFunctionAwareRegistrar` `Function` then, using _Gfsh_ with the following command...
 
 `execute function --id=org.springframework.data.gemfire.function.support.SpringDefinedFunctionAwareRegistrar --member=ServerOne --arguments=example.app.server.function`
 
-As you can see, I would pass the `package` contained the SDG-defined `Functions`.
+As you can see, I would pass the package containing the SDG-defined `Functions`.
 
 However, due to the vagaries of class loading and Java's `java.lang.ClassLoader` delegation model, it could not find
 the SDG-defined `Functions`.  Technically, it wouldn't even find another GemFire/Geode-defined `Function` class either,
 but anyway.
 
 So, then I decided that I could actually include a custom, application-specific `Function` extension of
-SDG's `SpringDefinedFunctionAwareRegistrar`, hence the `SpringDefinedFunctionInitializer` class.
+SDG's `SpringDefinedFunctionAwareRegistrar`, hence the `SpringDefinedFunctionInitializer` class along with
+the application-specific `Function(s)` (e.g. `SpellCheckerWithAutoCorrectFunction`).
 
-When this class extension is placed in the same package as the SDG-defined `Functions`, then I uses its own `package`
-as a basis for the "classpath component scan".
+When this class extension is placed in the same package as the SDG-defined `Functions`, then the `Function` uses
+its own package as a basis for the "_classpath component scan_".
 
-However, it is possible to override many configuration-based properties exposed by SDG's `SpringDefinedFunctionAwareRegistrar` class
-in your application-specific extension (e.g. `SpringDefinedFunctionInitializer`) by overriding the appropriate method.
+However, it is possible to override the many configuration-based properties exposed by SDG's `SpringDefinedFunctionAwareRegistrar` class
+in your application-specific extension (e.g. `SpringDefinedFunctionInitializer`) simply by overriding
+the appropriate method.
 
-For instance, I could have put the application-specific `SpringDefinedFunctionInitializer` in `example.app`,
-and then specified the "basePackages" by overriding the `protected` `getBasePackages()` method...
+For instance, I could have put the application-specific, `SpringDefinedFunctionInitializer` class
+in the `example.app` package, and then specify the "basePackages" by overriding the `protected`,
+`getBasePackages()` method...
 
 ._Application-specific SpringDefinedFunctionAwareRegistrar Extension_
 [source, java]
@@ -709,19 +712,20 @@ You also have the ability to specify `exclude` and `include` `TypeFilter`s, set 
 and resolve classes, etc.  I tried to make every (sensible) aspect of SDG's `SpringDefinedFunctionAwareRegistrar`
 configurable as possible, using extension.
 
-Ideally, I would also have liked to allow for "automatic registration" of SDG-defined `Functions` to occur
-at deployment-time, when using the _Gfsh_ `deploy` command.  As such, the SDG `SpringDefinedFunctionAwareRegistrar`
+Ideally, I would also have liked to allow for "_automatic registration_" of SDG-defined `Functions` to occur
+at deployment-time, when using the _Gfsh_ `deploy` command.  As such, the SDG `SpringDefinedFunctionAwareRegistrar` class
 indirectly implements the http://gemfire-95-javadocs.docs.pivotal.io/org/apache/geode/cache/Declarable.html[`o.a.g.cache.Declarable`] interface,
-which allow the GemFire objects (components) to receive a callback on initialization (i.e. by implementing
-the `Declarable` interface's `initialize(:Cache, :Properties)`), which the SDG `SpringDefinedFunctionAwareRegistrar`
+which allows the GemFire/Geode objects (components) to receive a callback on initialization (i.e. by implementing
+the `Declarable` interface's `initialize(:Cache, :Properties)` method), which the SDG `SpringDefinedFunctionAwareRegistrar`
 class does to bootstrap the registration process.
 
 Unfortunately, this https://gemfire.docs.pivotal.io/93/geode/configuring/cluster_config/deploying_application_jars.html[feature]
-(see last paragrah in the page) no longer works in Apache Geode.
+(see last paragraph in the page) no longer works in Apache Geode.
 
 If that had worked, then the SDG-defined `Functions` bundled and packaged in the JAR file would have been automatically
-registered at deployment-time using the _Gfsh_ `deploy` command without any extra effort on the users part, such as
-by having to subsequently execute the `Function` using Gfsh's `execute function` command.
+registered at deployment-time using the _Gfsh_ `deploy` command without any extra effort on the user's part, such as
+by having to subsequently execute the `SpringDefinedFunctionInitializer` `Function` using Gfsh's
+`execute function` command.
 
 Anyway, https://github.com/jxblum/contacts-application/blob/master/geode-to-spring-function-example/bin/start-cluster.gfsh#L11-L14[2 steps]
 instead of 1; Oh well, easy enough to script, obviously, ;-).
