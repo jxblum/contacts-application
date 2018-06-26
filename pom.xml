@@ -105,8 +105,8 @@
     <jansi.version>1.16</jansi.version>
     <multithreadedtc.version>1.01</multithreadedtc.version>
     <pivotal-gemfire.version>9.5.0</pivotal-gemfire.version>
-    <spring-boot-data-gemfire.version>1.0.0.BUILD-SNAPSHOT</spring-boot-data-gemfire.version>
-    <spring-boot-data-geode.version>1.0.0.BUILD-SNAPSHOT</spring-boot-data-geode.version>
+    <spring-boot-data-gemfire.version>1.0.0.M1</spring-boot-data-gemfire.version>
+    <spring-boot-data-geode.version>1.0.0.M1</spring-boot-data-geode.version>
     <spring-data-gemfire.version>2.1.0.M3</spring-data-gemfire.version>
     <spring-data-geode.version>2.1.0.M3</spring-data-geode.version>
     <spring-data-releasetrain.version>Lovelace-M3</spring-data-releasetrain.version>
@@ -222,12 +222,12 @@
       </dependency>
       <dependency>
         <groupId>org.springframework.geode</groupId>
-        <artifactId>gemfire-spring-boot-starter</artifactId>
+        <artifactId>spring-gemfire-starter</artifactId>
         <version>${spring-boot-data-gemfire.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework.geode</groupId>
-        <artifactId>geode-spring-boot-starter</artifactId>
+        <artifactId>spring-geode-starter</artifactId>
         <version>${spring-boot-data-geode.version}</version>
       </dependency>
       <dependency>
