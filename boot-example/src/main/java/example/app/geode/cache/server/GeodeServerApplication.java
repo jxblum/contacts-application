@@ -21,6 +21,8 @@ import org.apache.geode.cache.server.CacheServer;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.gemfire.config.annotation.CacheServerApplication;
 import org.springframework.data.gemfire.config.annotation.EnableLocator;
 import org.springframework.data.gemfire.config.annotation.EnableManager;
@@ -43,9 +45,7 @@ import org.springframework.data.gemfire.config.annotation.EnablePdx;
  * @since 1.0.0
  */
 @SpringBootApplication
-@CacheServerApplication(name = "BookExampleServerApplication")
-@EnableLocator
-@EnableManager(start = true)
+@CacheServerApplication(name = "BookExampleServerApplication", locators = "localhost[10334]")
 @EnablePdx(readSerialized = true)
 @SuppressWarnings("unused")
 public class GeodeServerApplication {
@@ -57,4 +57,11 @@ public class GeodeServerApplication {
       .build()
       .run(args);
   }
+
+  @Profile("locator-manager")
+  @Configuration
+  @EnableLocator
+  @EnableManager(start = true)
+  static class LocatorManagerConfiguration { }
+
 }
