@@ -1,0 +1,8 @@
+start locator --name=LocatorOne --log-level=config
+start server --name=ServerOne --log-level=config
+list members
+create region --name=RegionOne --type=PARTITION
+create region --name=RegionTwo --type=PARTITION
+create region --name=RegionThree --type=REPLICATE
+list regions
+describe member --name=ServerOne

@@ -1,0 +1,2 @@
+stop server --name=ServerOne
+stop locator --name=LocatorOne
