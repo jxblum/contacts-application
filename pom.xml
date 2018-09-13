@@ -8,7 +8,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.0.4.RELEASE</version>
+    <version>2.1.0.BUILD-SNAPSHOT</version>
   </parent>
 
   <groupId>example.apps</groupId>
@@ -34,8 +34,8 @@
   <name>Contacts Application</name>
   <description>
     The Contacts Application is a reference implementation of all things Spring, Apache Geode/Pivotal GemFire, JDBC,
-    JPA, along with many other technologies, related, integrated and tested. The purpose of this application is to
-    showcase the many features and capabilities of all these technologies both individually and together, as one
+    JPA, along with many other technologies that are related, integrated and tested. The purpose of this application
+    is to showcase the many features and capabilities of all these technologies both individually and together, as one
     cohesive, working application that demonstrates the full power, recommended practices and design patterns of these
     technologies in practice.
   </description>
@@ -141,6 +141,10 @@
     <pluginRepository>
       <id>spring-plugins-release</id>
       <url>http://repo.spring.io/plugins-release</url>
+    </pluginRepository>
+    <pluginRepository>
+      <id>spring-plugins-snapshot</id>
+      <url>http://repo.spring.io/plugins-snapshot</url>
     </pluginRepository>
   </pluginRepositories>
 
