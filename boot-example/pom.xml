@@ -52,11 +52,6 @@
 
   <properties>
     <log4j2.version>2.8.2</log4j2.version>
-    <apache-geode.version>1.2.1</apache-geode.version>
-    <pivotal-gemfire.version>9.1.1</pivotal-gemfire.version>
-    <spring-data-gemfire.version>2.0.8.BUILD-SNAPSHOT</spring-data-gemfire.version>
-    <spring-data-geode.version>2.0.8.BUILD-SNAPSHOT</spring-data-geode.version>
-    <spring-data-releasetrain.version>Kay-BUILD-SNAPSHOT</spring-data-releasetrain.version>
   </properties>
 
   <repositories>
