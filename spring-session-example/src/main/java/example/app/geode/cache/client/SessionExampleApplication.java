@@ -17,6 +17,7 @@
 package example.app.geode.cache.client;
 
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.io.StringWriter;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -34,6 +35,7 @@ import org.springframework.data.gemfire.config.annotation.ClientCacheApplication
 import org.springframework.data.gemfire.config.annotation.EnablePdx;
 import org.springframework.data.gemfire.util.CollectionUtils;
 import org.springframework.session.data.gemfire.config.annotation.web.http.EnableGemFireHttpSession;
+import org.springframework.session.data.gemfire.config.annotation.web.http.GemFireHttpSessionConfiguration;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -55,7 +57,11 @@ import lombok.RequiredArgsConstructor;
  */
 @SpringBootApplication
 @ClientCacheApplication(subscriptionEnabled = true)
-@EnableGemFireHttpSession(regionName = "Sessions", poolName = "DEFAULT")
+@EnableGemFireHttpSession(
+  regionName = "Sessions",
+  poolName = "DEFAULT",
+  sessionSerializerBeanName = GemFireHttpSessionConfiguration.SESSION_DATA_SERIALIZER_BEAN_NAME
+)
 @EnablePdx
 @Controller
 @SuppressWarnings("unused")
@@ -166,7 +172,7 @@ public class SessionExampleApplication {
   @Data
   @EqualsAndHashCode
   @RequiredArgsConstructor(staticName = "newCustomer")
-  static class Customer {
+  static class Customer implements Serializable {
 
     @NonNull
     private String name;
