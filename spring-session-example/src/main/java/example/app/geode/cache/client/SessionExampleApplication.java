@@ -17,7 +17,6 @@
 package example.app.geode.cache.client;
 
 import java.io.PrintWriter;
-import java.io.Serializable;
 import java.io.StringWriter;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -172,7 +171,7 @@ public class SessionExampleApplication {
   @Data
   @EqualsAndHashCode
   @RequiredArgsConstructor(staticName = "newCustomer")
-  static class Customer implements Serializable {
+  static class Customer {
 
     @NonNull
     private String name;
