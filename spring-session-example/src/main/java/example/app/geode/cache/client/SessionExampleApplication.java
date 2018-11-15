@@ -30,8 +30,6 @@ import javax.servlet.http.HttpSession;
 import org.apache.shiro.util.StringUtils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.data.gemfire.config.annotation.ClientCacheApplication;
 import org.springframework.data.gemfire.config.annotation.EnablePdx;
 import org.springframework.data.gemfire.util.CollectionUtils;
@@ -43,8 +41,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -73,20 +69,12 @@ public class SessionExampleApplication {
     SpringApplication.run(SessionExampleApplication.class, args);
   }
 
-  @Configuration
-  static class SpringWebMvcConfiguration {
+  @GetMapping("/")
+  public String listCustomers(HttpSession session, ModelMap modelMap) {
 
-    @Bean
-    public WebMvcConfigurer webMvcConfig() {
+    modelMap.addAttribute("sessionAttributes", attributes(updateRequestCount(session)));
 
-      return new WebMvcConfigurer() {
-
-        @Override
-        public void addViewControllers(ViewControllerRegistry registry) {
-          registry.addViewController("/").setViewName(INDEX_TEMPLATE_VIEW_NAME);
-        }
-      };
-    }
+    return INDEX_TEMPLATE_VIEW_NAME;
   }
 
   @PostMapping("/customers")
