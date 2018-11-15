@@ -1,0 +1,49 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>Customer Service</title>
+	<link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+	<style type="text/css">
+		body {
+			padding: 1em;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<h1>Description</h1>
+		<p>
+			This application demonstrates how to use a Pivotal GemFire instance to back your session.
+			Notice that there is no JSESSIONID cookie. We are also able to customize the way of identifying
+			what the requested session id is.
+		</p>
+
+		<h1>Try it</h1>
+
+		<form class="form-inline" role="form" action="./customers" method="post">
+			<label for="customerId">Customer ID</label>
+			<input id="customerId" name="customerId" type="text"/>
+			<label for="customerName">Customer Name</label>
+			<input id="customerName" name="customerName" type="text"/>
+			<input type="submit" value="Save Customer"/>
+		</form>
+
+		<hr/>
+
+		<table class="table table-striped">
+			<thead>
+			<tr>
+				<th>Customer ID</th>
+				<th>Customer Name</th>
+			</tr>
+			</thead>
+			<tbody>
+				<tr th:each="attribute: ${sessionAttributes}">
+					<td th:text="${attribute.key}">customerId</td>
+					<td th:text="${attribute.value}">customerName</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</body>
+</html>
