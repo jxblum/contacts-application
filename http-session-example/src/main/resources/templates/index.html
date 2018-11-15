@@ -1,0 +1,38 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>Session Attributes</title>
+	<link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+	<style type="text/css">
+		body {
+			padding: 1em;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<h1>Description</h1>
+		<p>
+			Example application demonstrating the effects of concurrent HTTP session access
+			when using Web container HttpSession.
+		</p>
+
+		<h1>Session Attributes</h1>
+
+		<table class="table table-striped">
+			<thead>
+			<tr>
+				<th>Attribute Key</th>
+				<th>Attribute Value</th>
+			</tr>
+			</thead>
+			<tbody>
+				<tr th:each="attribute: ${sessionAttributes}">
+					<td th:text="${attribute.key}">?</td>
+					<td th:text="${attribute.value}">?</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</body>
+</html>
