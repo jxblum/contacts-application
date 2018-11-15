@@ -20,8 +20,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.apache.geode.cache.client.ClientCache;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.boot.SpringApplication;
+import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.gemfire.config.annotation.EnableClusterConfiguration;
 import org.springframework.data.gemfire.config.annotation.EnableEntityDefinedRegions;
@@ -62,7 +63,11 @@ import example.app.geode.cache.client.repo.BookRepository;
 public class BootExampleApplication {
 
   public static void main(String[] args) {
-    SpringApplication.run(BootExampleApplication.class, args);
+
+    new SpringApplicationBuilder(BootExampleApplication.class)
+      .web(WebApplicationType.NONE)
+      .build()
+      .run(args);
   }
 
   @Bean
