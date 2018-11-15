@@ -36,4 +36,4 @@ start server --name=Server1 --server-port=0 --log-level=config --cache-xml-file=
 start server --name=Server2 --server-port=0 --log-level=config --cache-xml-file=${CACHE_XML_FILE} --classpath=${SERVER_CLASSPATH}
 #start server --name=Server2 --server-port=0 --log-level=config --cache-xml-file=${CACHE_XML_FILE} --classpath=${SERVER_CLASSPATH} --J=-Dgemfire.member-timeout=${MEMBER_TIMEOUT}
 
-create region --name=Sessions --type=PARTITION --skip-if-exists --enable-statistics=true --entry-idle-time-expiration=180 --entry-idle-time-expiration-action=INVALIDATE
+create region --name=Sessions --type=PARTITION --skip-if-exists --enable-statistics=true --entry-idle-time-expiration=300 --entry-idle-time-expiration-action=INVALIDATE

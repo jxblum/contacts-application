@@ -23,6 +23,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.gemfire.config.annotation.CacheServerApplication;
 import org.springframework.data.gemfire.config.annotation.EnableLocator;
 import org.springframework.data.gemfire.config.annotation.EnableManager;
+import org.springframework.data.gemfire.config.annotation.EnablePdx;
 import org.springframework.data.gemfire.config.annotation.PeerCacheConfigurer;
 import org.springframework.session.data.gemfire.config.annotation.web.http.EnableGemFireHttpSession;
 import org.springframework.session.data.gemfire.config.annotation.web.http.GemFireHttpSessionConfiguration;
@@ -34,15 +35,15 @@ import org.springframework.session.data.gemfire.config.annotation.web.http.GemFi
  * @since 1.0.0
  */
 @SpringBootApplication
-@CacheServerApplication(name = "SessionExampleServerApplication")
+@CacheServerApplication(name = "SpringSessionExampleServerApplication")
 @EnableGemFireHttpSession(
   regionName = "Sessions",
-  maxInactiveIntervalInSeconds = 180,
+  maxInactiveIntervalInSeconds = 300,
   sessionSerializerBeanName = GemFireHttpSessionConfiguration.SESSION_DATA_SERIALIZER_BEAN_NAME
 )
 @EnableLocator
 @EnableManager(start = true)
-//@EnablePdx(readSerialized = true)
+@EnablePdx(readSerialized = true)
 @SuppressWarnings("unused")
 public class SessionExampleServerApplication {
 
