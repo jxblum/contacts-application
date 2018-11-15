@@ -14,7 +14,7 @@
  * permissions and limitations under the License.
  */
 
-package example.tests.spring.webapp.helloworld;
+package example.tests.spring.boot.geode.server.webapp.helloword;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -34,8 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 1.0.0
  */
 @SpringBootApplication
-@CacheServerApplication(name = "SpringBootApacheGeodeCacheServerWebApplication",
-  hostnameForClients = "localhost")
+@CacheServerApplication(name = "SpringBootApacheGeodeCacheServerWebApplication", hostnameForClients = "localhost")
 @EnableGemFireProperties(bindAddress = "localhost")
 @EnableHttpService
 @EnableLocator
