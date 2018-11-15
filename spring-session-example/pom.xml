@@ -18,7 +18,8 @@
   <description>TODO</description>
 
   <properties>
-    <webjars-locator.version>0.32-1</webjars-locator.version>
+    <webjars-bootstrap.version>3.1.0</webjars-bootstrap.version>
+    <webjars-locator.version>0.30</webjars-locator.version>
   </properties>
 
   <dependencies>
@@ -48,6 +49,18 @@
     <dependency>
       <groupId>org.springframework.session</groupId>
       <artifactId>spring-session-data-geode</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.shell</groupId>
+      <artifactId>spring-shell</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.webjars</groupId>
+      <artifactId>bootstrap</artifactId>
+      <version>${webjars-bootstrap.version}</version>
     </dependency>
 
     <dependency>
