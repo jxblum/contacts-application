@@ -37,6 +37,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.data.gemfire.config.annotation.ClientCacheApplication;
 import org.springframework.session.data.gemfire.config.annotation.web.http.EnableGemFireHttpSession;
 import org.springframework.session.data.gemfire.config.annotation.web.http.GemFireHttpSessionConfiguration;
+import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.CollectionUtils;
@@ -86,8 +87,8 @@ public class ConcurrentHttpSessionAccessExampleApplication {
   }
 
   // WARNING: this is NOT Thread-safe since this method does not properly protect against the "compound operation" as a
-  // single, indivisible atomic operation.  However, it does make a best effort to minimize the effects of
-  // a race condition.
+  // single, indivisible, atomic operation.  However, it does make a best effort to minimize the effects of
+  // a race condition is reliable enough for this example test.
   @GetMapping("/semaphore/release")
   @ResponseBody
   public int releaseSemaphore() {
@@ -192,7 +193,7 @@ public class ConcurrentHttpSessionAccessExampleApplication {
   @Profile("spring-session-gemfire")
   static class GeodeHttpSessionConfiguration { }
 
-  // @EnableRedisHttpSession
+  @EnableRedisHttpSession
   @Profile("spring-session-redis")
   static class RedisHttpSessionConfiguration { }
 
