@@ -1,0 +1,180 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-3.dtd">
+<html>
+
+    <head>
+        <title>Spring Session using Apache Geode/Pivotal GemFire Test</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js" type="application/javascript"></script>
+
+        <script type="application/javascript">
+
+          function clearTable() {
+
+            $("#div1").html("");
+            $("#div2").html("");
+            $("#div3").html("");
+            $("#div4").html("");
+            $("#div5").html("");
+            $("#div6").html("");
+            $("#div7").html("");
+            $("#div8").html("");
+            $("#div9").html("");
+            $("#div10").html("");
+            $("#div11").html("?");
+          }
+
+          function errorHandler(element) {
+              element.html("ERROR!");
+          }
+
+          function insertRemoveKeys() {
+
+            clearTable();
+
+            $.ajax({url: "http://localhost:8080/getKeys", xhrFields: { withCredentials: true },
+                success: function(result) {
+                    $("#div1").html(result);
+                }, fail: errorHandler});
+
+            $.ajax({url: "http://localhost:8181/insertKey0", xhrFields: { withCredentials: true },
+                success: function(result) {
+                    $("#div2").html(result);
+                }, fail: errorHandler});
+
+            $.ajax({url: "http://localhost:8080/insertKey123", xhrFields: { withCredentials: true },
+                success: function(result) {
+                    $("#div3").html(result);
+                }, fail: errorHandler});
+
+            $.ajax({url: "http://localhost:8181/insertKey4", xhrFields: { withCredentials: true },
+                success: function(result) {
+                    $("#div4").html(result);
+                }, fail: errorHandler});
+
+            setTimeout(function () {
+                $.ajax({url: "http://localhost:8080/getKeys", xhrFields: { withCredentials: true },
+                    success: function(result) {
+                        $("#div5").html(result);
+                    },
+                    fail: errorHandler})
+            }, 1000);
+
+            setTimeout(function() {
+                $.ajax({url: "http://localhost:8181/removeKey?key=KEY-1", xhrFields: { withCredentials: true },
+                    success: function(result) {
+                        $("#div6").html(result);
+                    }, fail: errorHandler});
+            }, 1000);
+
+            setTimeout(function() {
+                $.ajax({url: "http://localhost:8080/insertKey1", xhrFields: { withCredentials: true },
+                    success: function(result) {
+                        $("#div7").html(result);
+                    }, fail: errorHandler});
+            }, 2000);
+
+            setTimeout(function() {
+                $.ajax({url: "http://localhost:8181/removeKey?key=KEY-4", xhrFields: { withCredentials: true },
+                    success: function(result) {
+                        $("#div8").html(result);
+                    }, fail: errorHandler});
+            }, 2000);
+
+            setTimeout(function() {
+                $.ajax({url: "http://localhost:8181/getKeys", xhrFields: { withCredentials: true },
+                    success: function(result) {
+                        $("#div9").html(result);
+                    }, fail: errorHandler});
+            }, 3000);
+
+            setTimeout(function() {
+                $.ajax({url: "http://localhost:8080/getKeys", xhrFields: { withCredentials: true },
+                    success: function(result) {
+                        $("#div10").html(result);
+                    }, fail: errorHandler});
+            }, 4000);
+
+            setTimeout(function() {
+                $.ajax({url: "http://localhost:8181/countKeys", xhrFields: { withCredentials: true },
+                    success: function(result) {
+                        $("#div11").html(result);
+                    }, fail: errorHandler});
+            }, 5000);
+          }
+
+          function removeKeys() {
+
+            clearTable();
+
+            $.ajax({url: "http://localhost:8181/removeKeys", xhrFields: { withCredentials: true },
+                fail: errorHandler});
+
+            setTimeout(function() {
+                $.ajax({url: "http://localhost:8080/countKeys", xhrFields: { withCredentials: true },
+                    success: function(result) {
+                        $("#div11").html(result);
+                    }, fail: errorHandler});
+            }, 2000);
+          }
+
+        </script>
+    </head>
+
+    <body>
+        <h1>Spring Session Test</h1>
+        <table border="1">
+            <tr>
+                <th>Step</th>
+                <th>Result</th>
+            </tr>
+            <tr>
+                <td>1  - 8080:getKeys</td>
+                <td><div id="div1"></div></td>
+            </tr>
+            <tr>
+                <td>2  - 8181:insertKey0</td>
+                <td><div id="div2"></div></td>
+            </tr>
+            <tr>
+                <td>3  - 8080:insertKeys123</td>
+                <td><div id="div3"></div></td>
+            </tr>
+            <tr>
+                <td>4  - 8181:insertKey4</td>
+                <td><div id="div4"></div></td>
+            </tr>
+            <tr>
+                <td>5  - 8080:getKeys(1s)</td>
+                <td><div id="div5"></div></td>
+            </tr>
+            <tr>
+                <td>6  - 8181:removeKey1(1s)</td>
+                <td><div id="div6"></div></td>
+            </tr>
+            <tr>
+                <td>7  - 8080:insertKey1(2s)</td>
+                <td><div id="div7"></div></td>
+            </tr>
+            <tr>
+                <td>8  - 8181:removeKey4(2s)</td>
+                <td><div id="div8"></div></td>
+            </tr>
+            <tr>
+                <td>9  - 8181:getKeys(3s)</td>
+                <td><div id="div9"></div></td>
+            </tr>
+            <tr>
+                <td>10 - 8080:getKeys(4s)</td>
+                <td><div id="div10"></div></td>
+            </tr>
+            <tr>
+                <td><b>TOTAL (5s)</b></td>
+                <td><div id="div11">0</div></td>
+            </tr>
+        </table>
+        <input type="button" value="Concurrent Insert/Remove Keys" onclick="insertRemoveKeys()"/>
+        &nbsp;&nbsp;
+        <input type="button" value="Remove All Keys" onclick="removeKeys()"/>
+    </body>
+
+</html>
