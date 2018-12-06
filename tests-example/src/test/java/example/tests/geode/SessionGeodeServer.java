@@ -29,13 +29,19 @@ import org.apache.geode.cache.RegionShortcut;
 import org.apache.geode.cache.server.CacheServer;
 
 /**
- * The GeodeSessionServer class...
+ * Java application to configure and bootstrap an Apache Geode Server using Apache Geode's API.
  *
  * @author John Blum
+ * @see java.util.Properties
+ * @see org.apache.geode.cache.Cache
+ * @see org.apache.geode.cache.CacheFactory
+ * @see org.apache.geode.cache.GemFireCache
+ * @see org.apache.geode.cache.Region
+ * @see org.apache.geode.cache.server.CacheServer
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class GeodeSessionServer {
+public class SessionGeodeServer {
 
   private static final int CACHE_SERVER_PORT = CacheServer.DEFAULT_PORT;
 
@@ -50,7 +56,7 @@ public class GeodeSessionServer {
 
     Properties gemfireProperties = new Properties();
 
-    gemfireProperties.setProperty("name", "GeodeSessionServer");
+    gemfireProperties.setProperty("name", "SessionGeodeServer");
     gemfireProperties.setProperty("log-level", LOG_LEVEL);
     gemfireProperties.setProperty("locators", "localhost[10334]");
     gemfireProperties.setProperty("jmx-manager", "true");
