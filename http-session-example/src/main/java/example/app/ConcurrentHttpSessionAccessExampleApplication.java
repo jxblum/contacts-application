@@ -23,9 +23,11 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import javax.servlet.http.HttpSession;
@@ -33,11 +35,14 @@ import javax.servlet.http.HttpSession;
 import org.apache.geode.cache.client.ClientRegionShortcut;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.gemfire.config.annotation.ClientCacheApplication;
 import org.springframework.session.data.gemfire.config.annotation.web.http.EnableGemFireHttpSession;
 import org.springframework.session.data.gemfire.config.annotation.web.http.GemFireHttpSessionConfiguration;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
+import org.springframework.session.web.http.CookieSerializer;
+import org.springframework.session.web.http.DefaultCookieSerializer;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.CollectionUtils;
@@ -60,6 +65,9 @@ public class ConcurrentHttpSessionAccessExampleApplication {
 
   private static final AtomicLong identifierSequence = new AtomicLong(0L);
 
+  private static final String IDENTIFIER_PREFIX =
+    System.getProperty("app.id.prefix", UUID.randomUUID().toString());
+
   private static final String ATTRIBUTE_VALUE_REQUEST_PARAMETER_NAME = "attributeValue";
   private static final String INDEX_TEMPLATE_VIEW_NAME = "index";
   private static final String PING_RESPONSE = "PONG";
@@ -70,6 +78,10 @@ public class ConcurrentHttpSessionAccessExampleApplication {
 
   public static void main(String[] args) {
     SpringApplication.run(ConcurrentHttpSessionAccessExampleApplication.class, args);
+  }
+
+  private String newIdentifier() {
+    return String.format("%1$s-%2$s", IDENTIFIER_PREFIX, identifierSequence.incrementAndGet());
   }
 
   @ExceptionHandler
@@ -88,7 +100,7 @@ public class ConcurrentHttpSessionAccessExampleApplication {
 
   // WARNING: this is NOT Thread-safe since this method does not properly protect against the "compound operation" as a
   // single, indivisible, atomic operation.  However, it does make a best effort to minimize the effects of
-  // a race condition is reliable enough for this example test.
+  // a race condition and is reliable enough for this example test.
   @GetMapping("/semaphore/release")
   @ResponseBody
   public int releaseSemaphore() {
@@ -102,9 +114,17 @@ public class ConcurrentHttpSessionAccessExampleApplication {
     return this.semaphore.availablePermits();
   }
 
+  @GetMapping("/session/attribute/count")
+  @ResponseBody
+  public long countSessionAttributes(HttpSession session) {
+    return countAttributes(session);
+  }
+
   @GetMapping("/session/view")
   public String listSessionAttributes(HttpSession session, ModelMap model) {
+
     model.addAttribute(SESSION_ATTRIBUTES_ATTRIBUTE_NAME, getAttributes(session));
+
     return INDEX_TEMPLATE_VIEW_NAME;
   }
 
@@ -113,7 +133,7 @@ public class ConcurrentHttpSessionAccessExampleApplication {
       @RequestParam(name = ATTRIBUTE_VALUE_REQUEST_PARAMETER_NAME) String attributeValue) throws Exception {
 
     model.addAttribute(SESSION_ATTRIBUTES_ATTRIBUTE_NAME,
-      getAttributes(setAttribute(session, String.valueOf(identifierSequence.incrementAndGet()),
+      getAttributes(setAttribute(session, String.valueOf(newIdentifier()),
         defaultStringIfValueNotSet(attributeValue))));
 
     this.semaphore.acquire();
@@ -128,7 +148,7 @@ public class ConcurrentHttpSessionAccessExampleApplication {
     this.semaphore.acquire();
 
     model.addAttribute(SESSION_ATTRIBUTES_ATTRIBUTE_NAME,
-      getAttributes(setAttribute(session, String.valueOf(identifierSequence.incrementAndGet()),
+      getAttributes(setAttribute(session, String.valueOf(newIdentifier()),
         defaultStringIfValueNotSet(attributeValue))));
 
     return INDEX_TEMPLATE_VIEW_NAME;
@@ -139,21 +159,21 @@ public class ConcurrentHttpSessionAccessExampleApplication {
       @RequestParam(name = ATTRIBUTE_VALUE_REQUEST_PARAMETER_NAME, required = false) String attributeValue) {
 
     model.addAttribute(SESSION_ATTRIBUTES_ATTRIBUTE_NAME,
-      getAttributes(setAttribute(session, String.valueOf(identifierSequence.incrementAndGet()),
+      getAttributes(setAttribute(session, String.valueOf(newIdentifier()),
         defaultStringIfValueNotSet(attributeValue))));
 
     return INDEX_TEMPLATE_VIEW_NAME;
   }
 
-  private String defaultStringIfValueNotSet(String value) {
-    return StringUtils.hasText(value) ? value : randomString();
-  }
+  @GetMapping("/session/remove")
+  public String removeSessionAttribute(HttpSession session,
+      @RequestParam(name = ATTRIBUTE_VALUE_REQUEST_PARAMETER_NAME, required = false) String attributeValue) {
 
-  private String randomString() {
+    getAttributeNames(session).stream()
+      .filter(attributeName -> isNotSet(attributeValue) || session.getAttribute(attributeName).equals(attributeValue))
+      .forEach(session::removeAttribute);
 
-    String uuid = UUID.randomUUID().toString();
-
-    return uuid.substring(0, 2) + uuid.substring(uuid.length() - 3);
+    return INDEX_TEMPLATE_VIEW_NAME;
   }
 
   private HttpSession setAttribute(HttpSession session, String attributeName, String attributeValue) {
@@ -163,17 +183,45 @@ public class ConcurrentHttpSessionAccessExampleApplication {
     return session;
   }
 
+  private Set<String> getAttributeNames(HttpSession session) {
+
+    return StreamSupport.stream(toIterable(session.getAttributeNames()).spliterator(), false)
+      .collect(Collectors.toSet());
+  }
+
   private Map<String, String> getAttributes(HttpSession session) {
 
     Map<String, String> sessionAttributes = new HashMap<>();
 
-    StreamSupport.stream(toIterable(session.getAttributeNames()).spliterator(), false)
-      .forEach(attributeName -> sessionAttributes.put(attributeName,
-        String.valueOf(session.getAttribute(attributeName))));
+    getAttributeNames(session).forEach(attributeName ->
+      sessionAttributes.put(attributeName, String.valueOf(session.getAttribute(attributeName))));
 
     sessionAttributes.put(SESSION_ID_ATTRIBUTE_NAME, session.getId());
 
     return sessionAttributes;
+  }
+
+  private long countAttributes(HttpSession session) {
+    return getAttributeNames(session).size();
+  }
+
+  private String defaultStringIfValueNotSet(String value) {
+    return StringUtils.hasText(value) ? value : randomString();
+  }
+
+  private boolean isNotSet(String value) {
+    return !isSet(value);
+  }
+
+  private boolean isSet(String value) {
+    return StringUtils.hasText(value);
+  }
+
+  private String randomString() {
+
+    String uuid = UUID.randomUUID().toString();
+
+    return uuid.substring(0, 3) + uuid.substring(uuid.length() - 3);
   }
 
   private <T> Iterable<T> toIterable(Enumeration<T> enumeration) {
@@ -183,15 +231,26 @@ public class ConcurrentHttpSessionAccessExampleApplication {
       .orElseGet(Collections::emptyIterator);
   }
 
-  @ClientCacheApplication(subscriptionEnabled = true)
+  @ClientCacheApplication(copyOnRead = true, subscriptionEnabled = true)
   @EnableGemFireHttpSession(
-    clientRegionShortcut = ClientRegionShortcut.CACHING_PROXY,
-    regionName = "Sessions",
+    clientRegionShortcut = ClientRegionShortcut.PROXY,
     poolName = "DEFAULT",
+    regionName = "Sessions",
     sessionSerializerBeanName = GemFireHttpSessionConfiguration.SESSION_DATA_SERIALIZER_BEAN_NAME
   )
   @Profile("spring-session-gemfire")
-  static class GeodeHttpSessionConfiguration { }
+  static class GeodeHttpSessionConfiguration {
+
+    @Bean
+    CookieSerializer nonEncodingCookieSerializer() {
+
+      DefaultCookieSerializer cookieSerializer = new DefaultCookieSerializer();
+
+      cookieSerializer.setUseBase64Encoding(false);
+
+      return cookieSerializer;
+    }
+  }
 
   @EnableRedisHttpSession
   @Profile("spring-session-redis")
