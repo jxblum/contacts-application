@@ -1,3 +1,6 @@
+SELECT session.keySet.size() FROM /Sessions session
+SELECT session.attributes.values.size() FROM /Sessions session
+SELECT DISTINCT session.getClass().getName() FROM /Sessions session
+SELECT DISTINCT session.attributes.getClass().getName() FROM /Sessions session
 SELECT session.id FROM /Sessions session
-SELECT session.getClass().getName() FROM /Sessions session
-SELECT attributes.key, attributes.value FROM /Sessions session, session.attributes attributes
+SELECT session.id, attribute.key, attribute.value FROM /Sessions session, session.attributes attribute
