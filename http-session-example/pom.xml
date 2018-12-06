@@ -15,6 +15,7 @@
   <packaging>jar</packaging>
 
   <properties>
+    <spring-session-data-geode.version>2.1.2.BUILD-SNAPSHOT</spring-session-data-geode.version>
     <webjars-bootstrap.version>3.1.0</webjars-bootstrap.version>
     <webjars-locator.version>0.30</webjars-locator.version>
   </properties>
@@ -62,6 +63,11 @@
     <dependency>
       <groupId>org.springframework.session</groupId>
       <artifactId>spring-session-data-redis</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.shell</groupId>
+      <artifactId>spring-shell</artifactId>
     </dependency>
 
     <dependency>
