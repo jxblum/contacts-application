@@ -59,6 +59,7 @@ import example.test.support.AbstractSessionIntegrationTests;
  * The MultiThreadedHighlyConcurrentClientServerHttpSessionAccessIntegrationTests class...
  *
  * @author John Blum
+ * @see example.test.support.AbstractSessionIntegrationTests
  * @since 1.0.0
  */
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
@@ -68,7 +69,7 @@ import example.test.support.AbstractSessionIntegrationTests;
 public class MultiThreadedHighlyConcurrentClientServerHttpSessionAccessIntegrationTests
     extends AbstractSessionIntegrationTests {
 
-  private static final boolean SESSION_REFERENCE_CHECK_ENABLED = false;
+  private static final boolean SESSION_REFERENCE_CHECKING_ENABLED = false;
 
   private static final int THREAD_COUNT = 180;
   private static final int WORKLOAD_SIZE = 10000;
@@ -98,7 +99,7 @@ public class MultiThreadedHighlyConcurrentClientServerHttpSessionAccessIntegrati
 
   private void assertUniqueSessionReference(Session session) {
 
-    if (SESSION_REFERENCE_CHECK_ENABLED) {
+    if (SESSION_REFERENCE_CHECKING_ENABLED) {
 
       int sessionIdentityHashCode = System.identityHashCode(session);
 
