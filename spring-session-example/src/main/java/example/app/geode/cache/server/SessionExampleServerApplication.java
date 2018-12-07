@@ -43,7 +43,7 @@ import org.springframework.session.data.gemfire.config.annotation.web.http.GemFi
 )
 @EnableLocator
 @EnableManager(start = true)
-@EnablePdx(readSerialized = true)
+@EnablePdx(ignoreUnreadFields = true, readSerialized = true)
 @SuppressWarnings("unused")
 public class SessionExampleServerApplication {
 
@@ -56,7 +56,10 @@ public class SessionExampleServerApplication {
   }
 
   @Bean
-  PeerCacheConfigurer pdxReadSerializedConfigurer() {
-    return (beanName, cacheFactoryBean) -> cacheFactoryBean.setPdxReadSerialized(true);
+  PeerCacheConfigurer pdxReadSerializedAndIgnoreUnreadFieldsConfigurer() {
+    return (beanName, cacheFactoryBean) -> {
+      cacheFactoryBean.setPdxIgnoreUnreadFields(true);
+      cacheFactoryBean.setPdxReadSerialized(true);
+    };
   }
 }
