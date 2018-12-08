@@ -181,8 +181,10 @@ public class TwoThreadsClientProxyRegionSessionIntegrationTests {
     return session;
   }
 
-  // Test for DATAGEODE-6152
+  // Test for GEM-2277
+  // Test for GEODE-6152
   /**
+   * @see <a href="https://jira-pivotal.atlassian.net/browse/GEM-2277">Java client with PROXY region may return the same object instance</a>
    * @see <a href="https://issues.apache.org/jira/browse/GEODE-6152">Client PROXY Regions may return the same Object instance on get(key) and cause Thread-safety issues</a>
    */
   @Test
@@ -190,7 +192,7 @@ public class TwoThreadsClientProxyRegionSessionIntegrationTests {
     TestFramework.runOnce(new ConcurrentClientProxyRegionGetReturnsSharedSessionInstanceTestCase());
   }
 
-  // Simple Test for DATAGEODE-6032
+  // Simple Test for GEODE-6032
 
   /**
    * @see <a href="https://issues.apache.org/jira/browse/GEODE-6032">Entire object is serialized again (and again) when Delta.hasDelta() returns false and client is using PROXY Region</a>
@@ -200,7 +202,7 @@ public class TwoThreadsClientProxyRegionSessionIntegrationTests {
     TestFramework.runOnce(new ConcurrentNonDirtySessionPutWithClientProxyRegionTestCase());
   }
 
-  // Complex Test for DATAGEODE-6032
+  // Complex Test for GEODE-6032
   /**
    * @see <a href="https://issues.apache.org/jira/browse/GEODE-6032">Entire object is serialized again (and again) when Delta.hasDelta() returns false and client is using PROXY Region</a>
    */
@@ -457,6 +459,7 @@ public class TwoThreadsClientProxyRegionSessionIntegrationTests {
     }
   }
 
+  @SuppressWarnings("unused")
   public final class ConcurrentDirtySessionPutContainingNonDirtyObjectsUsingClientProxyRegionTestCase
       extends MultithreadedTestCase {
 
