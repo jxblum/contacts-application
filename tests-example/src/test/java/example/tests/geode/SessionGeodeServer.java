@@ -45,7 +45,7 @@ public class SessionGeodeServer {
 
   private static final int CACHE_SERVER_PORT = CacheServer.DEFAULT_PORT;
 
-  private static final String LOG_LEVEL = "config";
+  private static final String GEMFIRE_LOG_LEVEL = "config";
   private static final String SESSIONS_REGION_NAME = "Sessions";
 
   public static void main(String[] args) throws IOException {
@@ -57,7 +57,7 @@ public class SessionGeodeServer {
     Properties gemfireProperties = new Properties();
 
     gemfireProperties.setProperty("name", "SessionGeodeServer");
-    gemfireProperties.setProperty("log-level", LOG_LEVEL);
+    gemfireProperties.setProperty("log-level", GEMFIRE_LOG_LEVEL);
     gemfireProperties.setProperty("locators", "localhost[10334]");
     gemfireProperties.setProperty("jmx-manager", "true");
     gemfireProperties.setProperty("jmx-manager-start", "true");
