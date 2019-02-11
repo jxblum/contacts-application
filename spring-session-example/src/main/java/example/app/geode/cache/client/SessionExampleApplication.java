@@ -16,13 +16,18 @@
 
 package example.app.geode.cache.client;
 
+import static org.springframework.data.gemfire.util.ArrayUtils.nullSafeArray;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import javax.servlet.http.HttpSession;
@@ -32,9 +37,16 @@ import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
+import org.apache.geode.DataSerializer;
+import org.apache.geode.cache.GemFireCache;
+import org.apache.geode.internal.InternalDataSerializer;
 import org.apache.shiro.util.StringUtils;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.gemfire.config.annotation.ClientCacheApplication;
 import org.springframework.data.gemfire.config.annotation.EnablePdx;
 import org.springframework.data.gemfire.util.CollectionUtils;
@@ -42,6 +54,7 @@ import org.springframework.session.data.gemfire.config.annotation.web.http.Enabl
 import org.springframework.session.data.gemfire.config.annotation.web.http.GemFireHttpSessionConfiguration;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -57,8 +70,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @SpringBootApplication
 @ClientCacheApplication(subscriptionEnabled = true)
 @EnableGemFireHttpSession(
-  regionName = "Sessions",
   poolName = "DEFAULT",
+  regionName = "Sessions",
   sessionSerializerBeanName = GemFireHttpSessionConfiguration.SESSION_DATA_SERIALIZER_BEAN_NAME
 )
 @EnablePdx
@@ -72,6 +85,27 @@ public class SessionExampleApplication {
 
   public static void main(String[] args) {
     SpringApplication.run(SessionExampleApplication.class, args);
+  }
+
+  @Configuration
+  @Profile("debug")
+  static class DebugLoggingConfiguration {
+
+    @Bean
+    ApplicationRunner runner(GemFireCache gemfireCache) {
+      return args -> printRegisteredDataSerializers();
+    }
+
+    private void printRegisteredDataSerializers() {
+
+      System.err.println("Client Registered DataSerializers:");
+
+      Arrays.stream(nullSafeArray(InternalDataSerializer.getSerializers(), DataSerializer.class))
+        .filter(Objects::nonNull)
+        .collect(Collectors.toSet())
+        .forEach(dataSerializer ->
+          System.err.printf("Registered DataSerializer [%s]%n", ObjectUtils.nullSafeClassName(dataSerializer)));
+    }
   }
 
   @GetMapping("/")
