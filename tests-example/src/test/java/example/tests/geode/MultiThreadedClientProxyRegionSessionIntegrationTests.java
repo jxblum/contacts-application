@@ -52,7 +52,7 @@ import org.apache.geode.cache.client.ClientRegionShortcut;
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class MultiThreadedClientProxyRegionSessionIntegrationTests {
+public class  MultiThreadedClientProxyRegionSessionIntegrationTests {
 
   private static final boolean COPY_ON_READ = true;
   private static final boolean SESSION_REFERENCE_CHECKING_ENABLED = false;
@@ -169,6 +169,7 @@ public class MultiThreadedClientProxyRegionSessionIntegrationTests {
   // TODO - Also remember/see GEODE-6099 (https://issues.apache.org/jira/browse/GEODE-6099)
   private Session save(Session session) {
 
+    //if (session != null) {
     if (session != null && session.hasDelta()) {
       this.sessions.put(session.getId(), session);
       session.commit();
