@@ -31,7 +31,6 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import org.apache.geode.cache.Region;
 import org.apache.geode.cache.client.ClientCache;
 import org.apache.geode.cache.client.ClientRegionShortcut;
 import org.apache.geode.cache.query.QueryService;
@@ -43,6 +42,7 @@ import org.springframework.data.gemfire.GemfireTemplate;
 import org.springframework.data.gemfire.client.ClientRegionFactoryBean;
 import org.springframework.data.gemfire.config.annotation.ClientCacheApplication;
 import org.springframework.data.gemfire.mapping.GemfireMappingContext;
+import org.springframework.data.gemfire.mapping.annotation.Region;
 import org.springframework.data.gemfire.repository.Query;
 import org.springframework.data.gemfire.repository.support.GemfireRepositoryFactoryBean;
 import org.springframework.data.repository.CrudRepository;
@@ -83,7 +83,7 @@ public class NullValueReturningRepositoryQueryMethodIntegrationTests {
   private GemfireTemplate peopleTemplate;
 
   @Resource(name = "People")
-  private Region<String, Person> peopleRegion;
+  private org.apache.geode.cache.Region<String, Person> peopleRegion;
 
   @Autowired
   private PersonRepository personRepository;
@@ -183,7 +183,7 @@ public class NullValueReturningRepositoryQueryMethodIntegrationTests {
   }
 
   @Data
-  @org.springframework.data.gemfire.mapping.annotation.Region("People")
+  @Region("People")
   @ToString(of = "name")
   @EqualsAndHashCode(of = "name")
   @RequiredArgsConstructor(staticName = "newPerson")
