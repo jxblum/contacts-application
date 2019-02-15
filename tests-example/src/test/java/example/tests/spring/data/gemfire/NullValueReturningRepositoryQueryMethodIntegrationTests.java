@@ -82,11 +82,11 @@ public class NullValueReturningRepositoryQueryMethodIntegrationTests {
   @Autowired
   private GemfireTemplate peopleTemplate;
 
-  @Resource(name = "People")
-  private org.apache.geode.cache.Region<String, Person> peopleRegion;
-
   @Autowired
   private PersonRepository personRepository;
+
+  @Resource(name = "People")
+  private org.apache.geode.cache.Region<String, Person> peopleRegion;
 
   @Test
   public void queryPersonByIdAndAge() throws Exception {
