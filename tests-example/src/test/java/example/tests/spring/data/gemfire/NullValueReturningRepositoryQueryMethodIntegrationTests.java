@@ -110,10 +110,12 @@ public class NullValueReturningRepositoryQueryMethodIntegrationTests {
     // Query Age of Non-Existing Person (i.e. Bob Doe)
     Person bobDoe = Person.newPerson("Bob Doe");
 
+    assertThat(this.personRepository.findById(bobDoe.getName()).orElse(null)).isNull();
+
     assertThat(queryAgeOfPersonUsingQueryService(bobDoe)).isNull();
 
     // Ambiguous
-    //assertThat(queryAgeOfPersonUsingRepository(bobDoe)).is...
+    //assertThat(queryAgeOfPersonUsingRepository(bobDoe)).is???
 
     assertThat(queryAgeOfPersonUsingTemplate(bobDoe)).isNull();
   }
