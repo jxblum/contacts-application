@@ -8,7 +8,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.1.2.RELEASE</version>
+    <version>2.2.0.BUILD-SNAPSHOT</version>
   </parent>
 
   <groupId>example.apps</groupId>
@@ -109,16 +109,18 @@
     <jansi.version>1.17.1</jansi.version>
     <multithreadedtc.version>1.01</multithreadedtc.version>
     <pivotal-gemfire.version>9.5.2</pivotal-gemfire.version>
-    <spring.version>5.1.4.RELEASE</spring.version>
-    <spring-boot-data-gemfire.version>1.0.0.M3</spring-boot-data-gemfire.version>
-    <spring-boot-data-geode.version>1.0.0.M3</spring-boot-data-geode.version>
-    <spring-data-gemfire.version>2.1.4.RELEASE</spring-data-gemfire.version>
-    <spring-data-geode.version>2.1.4.RELEASE</spring-data-geode.version>
-    <spring-data-releasetrain.version>Lovelace-SR4</spring-data-releasetrain.version>
+<!--
+    <spring.version>5.1.6.RELEASE</spring.version>
+-->
+    <spring-boot-data-gemfire.version>1.0.0.M4</spring-boot-data-gemfire.version>
+    <spring-boot-data-geode.version>1.0.0.M4</spring-boot-data-geode.version>
+    <spring-data-gemfire.version>2.1.6.RELEASE</spring-data-gemfire.version>
+    <spring-data-gemfire-test.version>0.0.1.RC1</spring-data-gemfire-test.version>
+    <spring-data-geode.version>2.1.6.RELEASE</spring-data-geode.version>
+    <spring-data-geode-test.version>0.0.1.RC1</spring-data-geode-test.version>
+    <spring-data-releasetrain.version>Lovelace-SR6</spring-data-releasetrain.version>
     <spring-session-data-gemfire.version>2.1.2.RELEASE</spring-session-data-gemfire.version>
     <spring-session-data-geode.version>2.1.2.RELEASE</spring-session-data-geode.version>
-    <spring-data-gemfire-test.version>0.0.1.RC1</spring-data-gemfire-test.version>
-    <spring-data-geode-test.version>0.0.1.RC1</spring-data-geode-test.version>
     <spring-shell.version>1.2.0.RELEASE</spring-shell.version>
   </properties>
 
