@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:c="http://www.springframework.org/schema/c"
+       xmlns:gfe="http://www.springframework.org/schema/geode"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/geode http://www.springframework.org/schema/geode/spring-geode.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+">
+
+  <!--<bean class="org.springframework.data.gemfire.tests.mock.config.GemFireMockObjectsBeanPostProcessor"/>-->
+
+  <util:properties id="gemfireProperties">
+    <prop key="name">NonPrimarySecondaryGatewaySenderRegionUnitTests</prop>
+    <prop key="log-level">config</prop>
+    <prop key="locators">localhost[10334]</prop>
+    <prop key="distributed-system-id">1</prop>
+  </util:properties>
+
+  <gfe:cache properties-ref="gemfireProperties"/>
+
+  <gfe:replicated-region id="Example" persistent="false" scope="DISTRIBUTED_ACK"/>
+
+  <bean class="example.tests.geode.wan.RegionMutatorBeanPostProcessor" c:regionName="Example">
+    <property name="gatewaySenderIds" value="testGatewaySenderIdOne, testGatewaySenderIdTwo"/>
+  </bean>
+
+</beans>
