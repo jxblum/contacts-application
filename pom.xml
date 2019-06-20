@@ -26,6 +26,7 @@
     <module>function-example</module>
     <module>geode-to-spring-function-example</module>
     <module>http-session-example</module>
+    <module>logging-example</module>
     <module>repository-example</module>
     <module>security-example</module>
     <module>simple-caching-example</module>
