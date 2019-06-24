@@ -6,8 +6,8 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <artifactId>contacts-application</artifactId>
     <groupId>example.apps</groupId>
+    <artifactId>contacts-application</artifactId>
     <version>1.0.0.RELEASE</version>
   </parent>
 
@@ -49,6 +49,22 @@
   </developers>
 
   <dependencies>
+
+    <dependency>
+      <groupId>org.springframework.data</groupId>
+      <artifactId>spring-data-geode</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.data</groupId>
+      <artifactId>spring-data-geode-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+    </dependency>
   </dependencies>
 
 </project>
