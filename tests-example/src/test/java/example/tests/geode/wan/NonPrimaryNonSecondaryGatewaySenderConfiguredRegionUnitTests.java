@@ -24,10 +24,16 @@ import org.junit.runner.RunWith;
 
 import org.apache.geode.cache.Cache;
 import org.apache.geode.cache.DataPolicy;
+import org.apache.geode.cache.GemFireCache;
 import org.apache.geode.cache.Region;
 import org.apache.geode.cache.RegionAttributes;
+import org.apache.geode.cache.RegionFactory;
 import org.apache.geode.cache.Scope;
 import org.apache.geode.cache.wan.GatewaySender;
+import org.springframework.context.annotation.Bean;
+import org.springframework.data.gemfire.ReplicatedRegionFactoryBean;
+import org.springframework.data.gemfire.config.annotation.EnableGemFireProperties;
+import org.springframework.data.gemfire.config.annotation.PeerCacheApplication;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -98,10 +104,10 @@ import org.springframework.test.context.junit4.SpringRunner;
  *
  *
  *
- * gfsh>create gateway-sender --id=testGatwaySenderIdOne --remote-distributed-system-id=1
+ * gfsh>create gateway-sender --id=testGatewaySenderIdOne --remote-distributed-system-id=1
  *  Member   | Status
  * --------- | ------------------------------------------------------------
- * ServerOne | GatewaySender "testGatwaySenderIdOne" created on "ServerOne"
+ * ServerOne | GatewaySender "testGatewaySenderIdOne" created on "ServerOne"
  *
  * gfsh>create gateway-sender --id=testGatewaySenderIdTwo --remote-distributed-system-id=1
  *  Member   | Status
@@ -155,5 +161,33 @@ public class NonPrimaryNonSecondaryGatewaySenderConfiguredRegionUnitTests {
     assertThat(exampleAttributes.getGatewaySenderIds())
       .containsExactlyInAnyOrder("testGatewaySenderIdOne", "testGatewaySenderIdTwo");
     assertThat(exampleAttributes.getScope()).isEqualTo(Scope.DISTRIBUTED_ACK);
+  }
+
+  @EnableGemFireProperties(distributedSystemId = 1)
+  //@PeerCacheApplication(locators = "localhost[11235]")
+  static class PeerCacheConfiguration {
+
+    @Bean("Example")
+    ReplicatedRegionFactoryBean<Object, Object> exampleRegion(GemFireCache gemfireCache) {
+
+      ReplicatedRegionFactoryBean<Object, Object> exampleRegion = new ReplicatedRegionFactoryBean<Object, Object>() {
+
+        @Override
+        protected RegionFactory<Object, Object> configure(RegionFactory<Object, Object> regionFactory) {
+
+          regionFactory.addGatewaySenderId("testGatewaySenderIdOne");
+          regionFactory.addGatewaySenderId("testGatewaySenderIdTwo");
+
+          return super.configure(regionFactory);
+        }
+      };
+
+      exampleRegion.setCache(gemfireCache);
+      exampleRegion.setClose(false);
+      exampleRegion.setPersistent(false);
+      exampleRegion.setScope(Scope.DISTRIBUTED_ACK);
+
+      return exampleRegion;
+    }
   }
 }
