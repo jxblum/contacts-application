@@ -13,7 +13,7 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
-package example.tests.geode.wan;
+package example.tests.spring.data.geode.wan;
 
 import java.util.Arrays;
 import java.util.stream.Stream;

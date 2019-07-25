@@ -13,7 +13,7 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
-package example.tests.geode.wan;
+package example.tests.spring.data.geode.wan;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -136,7 +136,7 @@ import org.springframework.test.context.junit4.SpringRunner;
  * @see org.apache.geode.cache.wan.GatewaySender
  * @see org.springframework.test.context.ContextConfiguration
  * @see org.springframework.test.context.junit4.SpringRunner
- * @see example.tests.geode.wan.RegionMutatorBeanPostProcessor
+ * @see example.tests.spring.data.geode.wan.RegionMutatorBeanPostProcessor
  * @since 1.0.0
  */
 @RunWith(SpringRunner.class)

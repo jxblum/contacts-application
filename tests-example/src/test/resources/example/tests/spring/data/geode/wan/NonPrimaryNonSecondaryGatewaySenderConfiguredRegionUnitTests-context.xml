@@ -25,7 +25,7 @@
 
   <gfe:replicated-region id="Example" persistent="false" scope="DISTRIBUTED_ACK"/>
 
-  <bean class="example.tests.geode.wan.RegionMutatorBeanPostProcessor" c:regionName="Example">
+  <bean class="example.tests.spring.data.geode.wan.RegionMutatorBeanPostProcessor" c:regionName="Example">
     <property name="gatewaySenderIds" value="testGatewaySenderIdOne, testGatewaySenderIdTwo"/>
   </bean>
 
