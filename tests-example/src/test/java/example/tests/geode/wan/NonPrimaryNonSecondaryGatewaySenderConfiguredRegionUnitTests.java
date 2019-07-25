@@ -33,7 +33,6 @@ import org.apache.geode.cache.wan.GatewaySender;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.gemfire.ReplicatedRegionFactoryBean;
 import org.springframework.data.gemfire.config.annotation.EnableGemFireProperties;
-import org.springframework.data.gemfire.config.annotation.PeerCacheApplication;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
