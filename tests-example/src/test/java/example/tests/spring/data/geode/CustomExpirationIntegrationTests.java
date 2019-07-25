@@ -14,7 +14,7 @@
  * permissions and limitations under the License.
  */
 
-package example.tests.spring.geode;
+package example.tests.spring.data.geode;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
