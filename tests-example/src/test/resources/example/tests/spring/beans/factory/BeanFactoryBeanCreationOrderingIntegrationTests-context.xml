@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:c="http://www.springframework.org/schema/c"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+  <bean id="A" class="example.tests.spring.beans.factory.BeanFactoryBeanCreationOrderingIntegrationTests.TestBean" c:name="A"/>
+  <bean id="B" class="example.tests.spring.beans.factory.BeanFactoryBeanCreationOrderingIntegrationTests.TestBean" c:name="B"/>
+  <bean id="C" class="example.tests.spring.beans.factory.BeanFactoryBeanCreationOrderingIntegrationTests.TestBean" c:name="C"/>
+
+</beans>
