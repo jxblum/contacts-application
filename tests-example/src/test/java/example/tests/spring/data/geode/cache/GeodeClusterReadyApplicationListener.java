@@ -15,10 +15,13 @@
  */
 package example.tests.spring.data.geode.cache;
 
+import java.util.Collections;
+import java.util.Objects;
+import java.util.Set;
+
 import org.apache.geode.cache.GemFireCache;
 import org.apache.geode.cache.Region;
 import org.apache.geode.cache.RegionService;
-import org.cp.elements.util.CollectionUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
@@ -38,6 +41,7 @@ import org.springframework.context.event.ContextRefreshedEvent;
  * @see org.apache.geode.cache.Region
  * @see org.apache.geode.cache.RegionService
  * @see org.springframework.context.ApplicationContext
+ * @see org.springframework.context.ApplicationEvent
  * @see org.springframework.context.ApplicationListener
  * @since 1.0.0
  */
@@ -53,12 +57,21 @@ public class GeodeClusterReadyApplicationListener implements ApplicationListener
 
     // NOTE: In reviewing the Apache Geode source code
     // (https://github.com/apache/geode/blob/rel/v1.9.0/geode-core/src/main/java/org/apache/geode/internal/cache/GemFireCacheImpl.java#L3333-L3366),
-    // the very act of calling GemFireCache.rootRegions() ensures all Regions are fully initialized, actually.
-    // Buuut, just in cases... o.O
-    CollectionUtils.nullSafeSet(CollectionUtils.nullSafeSet(cache.rootRegions()))
-      .forEach(region -> cache.getRegion(region.getFullPath()));
+    // the act of calling GemFireCache.rootRegions() sort of ensures (??) all Regions are fully initialized, actually.
+    // Buuut, just in cases... `cache.getRegion()` definitely should!
+    // (https://github.com/apache/geode/blob/rel/v1.9.0/geode-core/src/main/java/org/apache/geode/internal/cache/GemFireCacheImpl.java#L3270-L3307)
+    // And, specifically here...
+    // (https://github.com/apache/geode/blob/rel/v1.9.0/geode-core/src/main/java/org/apache/geode/internal/cache/GemFireCacheImpl.java#L3277)
+    nullSafeSet(cache.rootRegions()).stream()
+      .filter(Objects::nonNull)
+      .map(Region::getFullPath)
+      .forEach(cache::getRegion);
 
     applicationContext.publishEvent(new GeodeClusterReadyApplicationEvent(cache));
+  }
+
+  private <T> Set<T> nullSafeSet(Set<T> set) {
+    return set != null ? set : Collections.emptySet();
   }
 
   public class GeodeClusterReadyApplicationEvent extends ApplicationEvent {

@@ -60,7 +60,7 @@ import example.tests.spring.data.geode.cache.GeodeClusterReadyApplicationListene
  * @see java.util.concurrent.Callable
  * @see java.util.concurrent.CountDownLatch
  * @see java.util.concurrent.CopyOnWriteArrayList
- * @see java.util.concurrent.Execurtors
+ * @see java.util.concurrent.Executors
  * @see org.apache.geode.cache.CacheWriter
  * @see org.apache.geode.cache.GemFireCache
  * @see org.apache.geode.cache.Region
