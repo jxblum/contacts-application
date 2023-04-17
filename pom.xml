@@ -106,7 +106,7 @@
     <cache-api.version>1.1.1</cache-api.version>
     <cp-elements.version>1.0.0.M5</cp-elements.version>
     <google-maps-api.version>0.1.15</google-maps-api.version>
-    <hsqldb.version>2.4.1</hsqldb.version>
+    <hsqldb.version>2.7.1</hsqldb.version>
     <jansi.version>1.18</jansi.version>
     <multithreadedtc.version>1.01</multithreadedtc.version>
     <pivotal-gemfire.version>9.5.3</pivotal-gemfire.version>
